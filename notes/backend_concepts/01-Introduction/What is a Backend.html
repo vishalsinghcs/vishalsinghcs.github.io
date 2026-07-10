@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>What is a Backend?</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <a href="../00-Index.html" class="back-button" aria-label="Back to Index">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+        </a>
+        <h1>What is a Backend?</h1>
+        <p class="lead">
+          A traditional backend is a computer listening for requests through an
+          open port over the internet to serve content or accept data.
+        </p>
+
+        <h2>System Components</h2>
+        <ul>
+          <li>
+            <strong>DNS Server</strong>: Resolves human-readable domain names
+            into IP addresses.
+          </li>
+          <li>
+            <strong>Firewall</strong>: A security barrier that only allows
+            traffic through explicitly permitted ports.
+          </li>
+          <li>
+            <strong>Reverse Proxy</strong>: A server sitting in front of
+            application servers to manage redirects and SSL.
+          </li>
+          <li>
+            <strong>Application Server</strong>: The actual runtime executing
+            the business logic.
+          </li>
+        </ul>
+
+        <h2>How it works</h2>
+        <ol>
+          <li>
+            <strong>Client Request</strong>: A browser sends a request to a
+            domain.
+          </li>
+          <li>
+            <strong>DNS Resolution</strong>: The DNS server uses A records to
+            map the domain to the server's IP.
+          </li>
+          <li>
+            <strong>Firewall Check</strong>: The request hits the server's
+            firewall.
+          </li>
+          <li>
+            <strong>Reverse Proxy</strong>: Nginx intercepts the request and
+            forwards it to the app server.
+          </li>
+          <li>
+            <strong>Processing</strong>: The app server executes logic and
+            responds.
+          </li>
+        </ol>
+
+        <h2>Step-by-step Flow</h2>
+        <div class="custom-diagram">
+          <div class="diagram-node" style="animation-delay: 0s">
+            <div class="node-icon">🌐</div>
+            <div class="node-content">
+              <strong>Browser</strong>
+              <span>Sends Request</span>
+            </div>
+          </div>
+          <div class="diagram-arrow">↓</div>
+          <div class="diagram-node" style="animation-delay: 0.2s">
+            <div class="node-icon">🗺️</div>
+            <div class="node-content">
+              <strong>DNS Server</strong>
+              <span>Resolves IP</span>
+            </div>
+          </div>
+          <div class="diagram-arrow">↓</div>
+          <div class="diagram-node" style="animation-delay: 0.4s">
+            <div class="node-icon">🧱</div>
+            <div class="node-content">
+              <strong>Firewall</strong>
+              <span>Checks Port</span>
+            </div>
+          </div>
+          <div class="diagram-arrow">↓</div>
+          <div class="diagram-node" style="animation-delay: 0.6s">
+            <div class="node-icon">🔄</div>
+            <div class="node-content">
+              <strong>Reverse Proxy</strong>
+              <span>Forwards Request</span>
+            </div>
+          </div>
+          <div class="diagram-arrow">↓</div>
+          <div class="diagram-node" style="animation-delay: 0.8s">
+            <div class="node-icon">⚙️</div>
+            <div class="node-content">
+              <strong>Application Server</strong>
+              <span>Executes Logic</span>
+            </div>
+          </div>
+        </div>
+
+        <h2>Interview Questions</h2>
+        <div class="interview-box">
+          <ul>
+            <li>What is the role of a reverse proxy in a backend system?</li>
+            <li>
+              Trace a request from a domain name down to the specific local port
+              of an application server.
+            </li>
+            <li>
+              Why is a firewall necessary, and which ports must be open for
+              standard web traffic?
+            </li>
+          </ul>
+        </div>
+      </main>
+
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            Think of the backend as an office building. The
+            <strong>DNS</strong> is the address directory. The
+            <strong>firewall</strong> is the security guard at the door checking
+            IDs. The <strong>reverse proxy</strong> is the receptionist
+            directing you. The <strong>application server</strong> is the
+            specific worker.
+          </p>
+        </div>
+
+        <div class="premium-box box-amber">
+          <h3>Important Terms</h3>
+          <ul>
+            <li>
+              <strong>Reverse Proxy</strong> — A server that sits in front of
+              web servers.
+            </li>
+            <li>
+              <strong>DNS A Record</strong> — A DNS record pointing a domain
+              directly to an IP.
+            </li>
+          </ul>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>
+              A backend is a computer listening for requests on an open port.
+            </li>
+            <li>Requests pass through DNS, firewalls, and reverse proxies.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul style="text-align: left; margin: 0">
+            <li>DNS uses A records to resolve domains.</li>
+            <li>
+              Firewalls allow <code>Port 80</code> and <code>Port 443</code>.
+            </li>
+            <li>Nginx acts as a reverse proxy.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

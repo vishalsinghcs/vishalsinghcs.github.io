@@ -9,13 +9,22 @@ aesthetic across all notes in this repository.
 ------------------------------------------------------
  1. PAGE LAYOUT (THE 2-COLUMN SYSTEM)
 ------------------------------------------------------
-Every standard note file should use the sticky two-column layout to maximize 
-screen space and provide a great reading experience.
+E1. Overall Page Layout
+All note pages must use the `.page-wrapper` as the root container, inside of which there is a `<main class="left-column">` and an `<aside class="right-column">`.
 
-Structure:
+At the top of the main content column, include the navigation buttons followed by the breadcrumb trail, and then the main title.
+
+```html
 <div class="page-wrapper">
   <main class="left-column">
-    <!-- Main reading material, tables, and diagrams go here -->
+    <div class="nav-buttons">
+      <!-- Back, Prev, Next buttons here -->
+    </div>
+    
+    <div class="breadcrumb"><a href="../index.html">Home</a> &gt; [Module Name] &gt; [Page Name]</div>
+
+    <h1>Page Title</h1>
+    <p class="lead">Brief summary of the page concept...</p>
   </main>
   
   <aside class="right-column">

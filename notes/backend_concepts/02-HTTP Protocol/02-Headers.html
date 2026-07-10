@@ -37,6 +37,18 @@
         <h2>Why Do We Need Headers?</h2>
         <p>Instead of putting all data in the URL or the body, headers provide a quick, accessible way to check metadata without parsing the entire payload.</p>
         <p>This separation of concerns makes HTTP adaptable and efficient, enabling servers and intermediaries (like proxies or firewalls) to route and process requests effectively.</p>
+        
+        <div class="mermaid">
+        graph LR
+            subgraph Parcel [HTTP Message]
+                direction TB
+                H[Headers: Metadata & Routing Info]
+                B[Body: Actual Payload]
+                H --- B
+            end
+            Sender -- Reads Headers --> Parcel
+            Parcel -- Processed via Headers --> Receiver
+        </div>
 
         <h2>Categories of Headers</h2>
         
@@ -116,5 +128,9 @@
         </div>
       </aside>
     </div>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
   </body>
 </html>

@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HTTP Protocol Mind Map</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+      /* Give mind map some breathing room */
+      .mermaid {
+        display: flex;
+        justify-content: center;
+        background: #f8fafc;
+        padding: 2rem;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-wrapper" style="max-width: 1200px; display: block; margin: 0 auto;">
+      <main>
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="05-Advanced HTTP.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="interview-questions.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 02 - HTTP Protocol &gt; Mind Map</div>
+        <h1>HTTP Protocol Mind Map</h1>
+        <p class="lead">
+          A visual cheat sheet covering all concepts, structures, methods, caching, and advanced topics discussed in the HTTP Protocol module.
+        </p>
+
+        <div class="mermaid">
+        flowchart LR
+            Root[HTTP Protocol]
+
+            %% Basics Branch
+            Root --> Basics(Basics)
+            Basics --> B1[Statelessness<br>No memory of past requests]
+            Basics --> B2[Client-Server<br>Client initiates, Server responds]
+            Basics --> B3[Evolution<br>1.1 Persistent, 2.0 Multiplex, 3.0 QUIC]
+
+            %% Headers Branch
+            Root --> Headers(Headers)
+            Headers --> H1[Role<br>Key-value metadata for routing]
+            Headers --> H2[Categories<br>Request, General, Entity, Security]
+
+            %% Methods Branch
+            Root --> Methods(Methods)
+            Methods --> M1[Intent<br>Define semantic action]
+            Methods --> M2[Common<br>GET, POST, PUT, PATCH, DELETE]
+            Methods --> M3[Idempotency<br>Safe vs Unsafe]
+
+            %% CORS Branch
+            Root --> CORS(CORS)
+            CORS --> C1[Security<br>Cross-Origin Resource Sharing]
+            CORS --> C2[Simple Request<br>Allow-Origin Header]
+            CORS --> C3[Pre-Flight<br>OPTIONS method first]
+
+            %% Status Codes Branch
+            Root --> StatusCodes(Status Codes & Caching)
+            StatusCodes --> S1[Categories<br>2xx, 3xx, 4xx, 5xx]
+            StatusCodes --> S2[Caching<br>ETag, 304 Not Modified]
+
+            %% Advanced Branch
+            Root --> Advanced(Advanced)
+            Advanced --> A1[Security<br>HTTPS over TLS]
+            Advanced --> A2[Negotiation<br>Accept & Accept-Language]
+            Advanced --> A3[Data Transfer<br>Multipart & Chunked]
+
+            %% Styling
+            classDef main fill:#2563eb,stroke:#1e40af,stroke-width:2px,color:#fff,font-weight:bold;
+            classDef branch fill:#3b82f6,stroke:#2563eb,stroke-width:2px,color:#fff,font-weight:bold;
+            classDef node fill:#eff6ff,stroke:#bfdbfe,stroke-width:1px,color:#1e3a8a;
+
+            class Root main;
+            class Basics,Headers,Methods,CORS,StatusCodes,Advanced branch;
+            class B1,B2,B3,H1,H2,M1,M2,M3,C1,C2,C3,S1,S2,A1,A2,A3 node;
+        </div>
+
+        <div class="nav-buttons bottom">
+          <a href="05-Advanced HTTP.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="interview-questions.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+    </div>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+  </body>
+</html>

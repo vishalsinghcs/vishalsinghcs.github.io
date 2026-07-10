@@ -55,46 +55,12 @@
         </ul>
 
         <h2>Step-by-step Flow</h2>
-        <div class="custom-diagram">
-          <div class="diagram-node" style="animation-delay: 0s">
-            <div class="node-icon">🌐</div>
-            <div class="node-content">
-              <strong>Client</strong>
-              <span>Sends Request</span>
-            </div>
-          </div>
-          <div class="diagram-arrow">↓</div>
-          <div class="diagram-node" style="animation-delay: 0.2s">
-            <div class="node-icon">🗺️</div>
-            <div class="node-content">
-              <strong>DNS Server</strong>
-              <span>Resolves IP</span>
-            </div>
-          </div>
-          <div class="diagram-arrow">↓</div>
-          <div class="diagram-node" style="animation-delay: 0.4s">
-            <div class="node-icon">🧱</div>
-            <div class="node-content">
-              <strong>Firewall</strong>
-              <span>Checks Port</span>
-            </div>
-          </div>
-          <div class="diagram-arrow">↓</div>
-          <div class="diagram-node" style="animation-delay: 0.6s">
-            <div class="node-icon">🔄</div>
-            <div class="node-content">
-              <strong>Reverse Proxy</strong>
-              <span>Forwards Request</span>
-            </div>
-          </div>
-          <div class="diagram-arrow">↓</div>
-          <div class="diagram-node" style="animation-delay: 0.8s">
-            <div class="node-icon">⚙️</div>
-            <div class="node-content">
-              <strong>Application Server</strong>
-              <span>Executes Logic</span>
-            </div>
-          </div>
+        <div class="mermaid">
+        flowchart TD
+            C[🌐 Client sends request] --> D[🗺️ DNS Server resolves IP]
+            D --> F[🧱 Firewall checks port]
+            F --> R[🔄 Reverse Proxy forwards request]
+            R --> A[⚙️ Application Server executes logic]
         </div>
 
         <div class="nav-buttons bottom">
@@ -144,5 +110,9 @@
         </div>
       </aside>
     </div>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
   </body>
 </html>

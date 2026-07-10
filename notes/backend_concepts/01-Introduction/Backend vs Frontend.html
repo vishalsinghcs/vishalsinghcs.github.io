@@ -22,7 +22,7 @@
               <polyline points="15 18 9 12 15 6"></polyline>
             </svg>
           </a>
-          <a href="interview-questions.html" class="nav-btn next" aria-label="Next">
+          <a href="mind-map.html" class="nav-btn next" aria-label="Next">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
@@ -36,6 +36,12 @@
 
         <h2>How Frontends Work</h2>
         <p>Unlike backends which process logic internally and only return results, frontends download code over the network and execute it locally on the client's device.</p>
+        <div class="mermaid">
+        flowchart LR
+            A[1. Document Fetch] --> B[2. Resource Fetch]
+            B --> C[3. Painting CSS]
+            C --> D[4. Hydration JS]
+        </div>
         <ol>
           <li><strong>Document Fetch</strong>: The browser makes an HTTP request and fetches the initial HTML document.</li>
           <li><strong>Resource Fetch</strong>: The browser parses the HTML and initiates separate requests for linked resources like CSS, JavaScript, fonts, and images.</li>
@@ -160,5 +166,9 @@
         </div>
       </aside>
     </div>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
   </body>
 </html>

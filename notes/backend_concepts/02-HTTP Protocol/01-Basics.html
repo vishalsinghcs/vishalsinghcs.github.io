@@ -47,6 +47,14 @@
 
         <h3>2. Client-Server Model</h3>
         <p>A typical HTTP request flow always involves a client and a server. Communication is <strong>always initiated by the client</strong>.</p>
+        <div class="mermaid">
+        sequenceDiagram
+            participant C as Client (Browser)
+            participant S as Server
+            C->>S: 1. Initiates HTTP Request (e.g. GET /index.html)
+            note right of S: Server processes request
+            S-->>C: 2. Sends HTTP Response (e.g. 200 OK + HTML)
+        </div>
         <ul>
           <li><strong>Client:</strong> Typically a web browser or an application that initiates communication by sending a request (providing URLs, headers, etc.).</li>
           <li><strong>Server:</strong> Hosts resources and waits for incoming requests. It processes the client's request and sends back a response (HTML, JSON, etc.).</li>
@@ -54,6 +62,14 @@
 
         <h2>Evolution of HTTP</h2>
         <p>Over the years, HTTP has evolved to become faster and more efficient:</p>
+        <div class="mermaid">
+        timeline
+            title Evolution of HTTP
+            HTTP/1.0 : New connection per request : Slow performance
+            HTTP/1.1 : Persistent connections : Chunked transfer
+            HTTP/2.0 : Multiplexing : Binary framing : Server push
+            HTTP/3.0 : QUIC (UDP) : Reduced latency : No head-of-line blocking
+        </div>
         <ul>
           <li><strong>HTTP 1.0:</strong> Each request opened a new connection. This led to inefficiencies because establishing and closing TCP connections for every request/response slowed down performance.</li>
           <li><strong>HTTP 1.1:</strong> Introduced persistent connections, allowing multiple requests and responses over the same TCP connection. Added chunked transfer encoding and better caching.</li>
@@ -126,5 +142,9 @@
         </div>
       </aside>
     </div>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
   </body>
 </html>

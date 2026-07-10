@@ -82,6 +82,22 @@
         <p>Caching stores a copy of a given response so that subsequent requests can use the stored copy, bypassing the need to fetch data from the server again.</p>
 
         <h3>How it Works</h3>
+        <div class="mermaid">
+        sequenceDiagram
+            participant C as Client (Browser)
+            participant S as Server
+            
+            note over C,S: Initial Request
+            C->>S: GET /style.css
+            S-->>C: 200 OK (ETag: "v1", Cache-Control: max-age=3600)
+            note left of C: Caches style.css with ETag "v1"
+            
+            note over C,S: Subsequent Request (After 1 hour)
+            C->>S: GET /style.css (If-None-Match: "v1")
+            note right of S: Validates ETag
+            S-->>C: 304 Not Modified
+            note left of C: Reuses cached style.css
+        </div>
         <ol>
           <li><strong>Initial Request:</strong> The server responds with the payload alongside three important headers:
             <ul>
@@ -136,5 +152,9 @@
         </div>
       </aside>
     </div>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
   </body>
 </html>

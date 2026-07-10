@@ -1,0 +1,17 @@
+You are an expert software engineer and technical educator.
+
+Your task is to create ONE comprehensive Mermaid mind map from all the Markdown notes in the given topic folder. Create a mind-map.html file containing the mind map and save the file in that topic's folder and also update the navigation buttons which are affected due to its addition. Also add this page link into index.html.
+
+Requirements:
+
+- Use the `mindmap` diagram type.
+- Create a highly organized hierarchy.
+- Keep every node concise (maximum 5–8 words).
+- Under each concept, add 1–3 short child nodes containing the most important facts (not just titles).
+- Do NOT write paragraphs.
+- Highlight relationships between concepts through the hierarchy.
+- Use different Mermaid node shapes (circle, square, cloud, hexagon, etc.) to visually distinguish concept types where appropriate. :contentReference[oaicite:0]{index=0}
+- Keep the diagram readable; if a topic becomes too large, split it into multiple major branches instead of making one huge branch.
+- Optimize for quick revision in under 5 minutes.
+- The final mind map should act as a visual cheat sheet rather than complete notes.
+- I want you to make it in tree structure with proper visual spacing so that it doesn't feel messed and no nodes should overlap over each other.

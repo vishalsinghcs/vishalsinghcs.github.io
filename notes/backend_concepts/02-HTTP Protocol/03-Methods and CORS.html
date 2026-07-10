@@ -64,26 +64,31 @@
         <h3>Simple Requests</h3>
         <p>A request is considered "simple" if it uses GET, POST, or HEAD, and only utilizes basic headers and standard content types (like <code>application/x-www-form-urlencoded</code> or <code>multipart/form-data</code>).</p>
         
-        <div class="custom-diagram">
-          <div class="diagram-node" style="animation-delay: 0s">Client sends GET to api.example.com (Origin: example.com)</div>
-          <div class="diagram-arrow" style="animation-delay: 0.5s">↓</div>
-          <div class="diagram-node" style="animation-delay: 1s">Server verifies Origin, responds with Access-Control-Allow-Origin: example.com</div>
-          <div class="diagram-arrow" style="animation-delay: 1.5s">↓</div>
-          <div class="diagram-node" style="animation-delay: 2s">Browser validates header and lets response pass</div>
+        <div class="mermaid">
+        sequenceDiagram
+            participant B as Browser
+            participant S as Server
+            B->>S: GET /data (Origin: example.com)
+            note right of S: Validates Origin
+            S-->>B: 200 OK (Access-Control-Allow-Origin: example.com)
+            note left of B: Browser lets response pass
         </div>
         <p>If the server doesn't respond with a matching <code>Access-Control-Allow-Origin</code>, the browser throws a CORS error and blocks the response.</p>
 
         <h3>Pre-Flight Requests</h3>
         <p>If a request uses methods like PUT or DELETE, includes custom/non-simple headers (like <code>Authorization</code>), or uses a content-type like <code>application/json</code>, the browser fires a "pre-flight" request using the <strong>OPTIONS</strong> method.</p>
         
-        <div class="custom-diagram">
-          <div class="diagram-node" style="animation-delay: 0s">Browser auto-sends OPTIONS (inquiring about methods/headers allowed)</div>
-          <div class="diagram-arrow" style="animation-delay: 0.5s">↓</div>
-          <div class="diagram-node" style="animation-delay: 1s">Server responds 204 (No Content) with Access-Control-Allow-Methods, Headers, Max-Age</div>
-          <div class="diagram-arrow" style="animation-delay: 1.5s">↓</div>
-          <div class="diagram-node" style="animation-delay: 2s">Browser validates allowed capabilities</div>
-          <div class="diagram-arrow" style="animation-delay: 2.5s">↓</div>
-          <div class="diagram-node" style="animation-delay: 3s">Browser sends the original request (e.g., PUT)</div>
+        <div class="mermaid">
+        sequenceDiagram
+            participant B as Browser
+            participant S as Server
+            note over B,S: 1. Pre-flight Request
+            B->>S: OPTIONS /data (Access-Control-Request-Method: PUT)
+            S-->>B: 204 No Content (Access-Control-Allow-Methods: PUT)
+            note left of B: Validates Capabilities
+            note over B,S: 2. Actual Request
+            B->>S: PUT /data (Content-Type: application/json)
+            S-->>B: 200 OK (Updated Data)
         </div>
         <p>The <code>Access-Control-Max-Age</code> header tells the browser to cache this pre-flight result (e.g., for 24 hours), saving bandwidth for future requests.</p>
         <div class="nav-buttons bottom">
@@ -122,5 +127,9 @@
         </div>
       </aside>
     </div>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
   </body>
 </html>

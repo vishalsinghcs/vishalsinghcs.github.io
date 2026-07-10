@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>HTTP Headers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="01-Basics.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="03-Methods and CORS.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <h1>HTTP Headers</h1>
+        <p class="lead">
+          HTTP headers are key-value pairs that send metadata about a request or response. They provide a separate layer of information independent of the URL and the message body.
+        </p>
+
+        <h2>Why Do We Need Headers?</h2>
+        <p>Instead of putting all data in the URL or the body, headers provide a quick, accessible way to check metadata without parsing the entire payload.</p>
+        <p>This separation of concerns makes HTTP adaptable and efficient, enabling servers and intermediaries (like proxies or firewalls) to route and process requests effectively.</p>
+
+        <h2>Categories of Headers</h2>
+        
+        <h3>1. Request Headers</h3>
+        <p>Sent by the client to provide information about the request context and the client's capabilities.</p>
+        <ul>
+          <li><strong>User-Agent:</strong> Identifies the client (e.g., a specific browser, mobile app, or Postman).</li>
+          <li><strong>Authorization:</strong> Sends credentials (like a Bearer token) to authenticate the user.</li>
+          <li><strong>Accept:</strong> Specifies what kind of content the client expects (e.g., JSON, HTML, plain text).</li>
+        </ul>
+
+        <h3>2. General Headers</h3>
+        <p>Used in both requests and responses to provide metadata about the message itself.</p>
+        <ul>
+          <li><strong>Date:</strong> The timestamp of the message.</li>
+          <li><strong>Cache-Control:</strong> Dictates caching mechanisms (e.g., <code>no-cache</code> or <code>max-age</code>).</li>
+          <li><strong>Connection:</strong> Connection management (e.g., <code>keep-alive</code> or <code>close</code>).</li>
+        </ul>
+
+        <h3>3. Representation (Entity) Headers</h3>
+        <p>Describe the specific payload/body being transmitted.</p>
+        <ul>
+          <li><strong>Content-Type:</strong> The media type of the body (e.g., <code>application/json</code>).</li>
+          <li><strong>Content-Length:</strong> The size of the resource in bytes.</li>
+          <li><strong>Content-Encoding:</strong> Specifies any compression applied (e.g., <code>gzip</code> or <code>deflate</code>).</li>
+          <li><strong>ETag:</strong> A unique identifier used mostly for caching validation.</li>
+        </ul>
+
+        <h3>4. Security Headers</h3>
+        <p>Used to enhance security by controlling browser behaviors.</p>
+        <ul>
+          <li><strong>Strict-Transport-Security (HSTS):</strong> Forces the client to communicate only over HTTPS.</li>
+          <li><strong>Content-Security-Policy (CSP):</strong> Restricts where content (like scripts/images) can be loaded from, mitigating XSS.</li>
+          <li><strong>X-Frame-Options:</strong> Prevents the page from being embedded in iframes (mitigates clickjacking).</li>
+          <li><strong>X-Content-Type-Options:</strong> Prevents the browser from guessing the MIME type (MIME sniffing).</li>
+        </ul>
+
+        <h2>Capabilities Unlocked by Headers</h2>
+        <h3>Extensibility</h3>
+        <p>HTTP is highly extensible because headers can be easily added or customized without altering the underlying protocol structure. Developers can even create custom headers (e.g., <code>X-Custom-Header</code>) for app-specific use cases.</p>
+
+        <h3>Remote Control</h3>
+        <p>Headers act as a remote control, allowing the client to send instructions influencing how the server responds:</p>
+        <ul>
+          <li><strong>Content Negotiation:</strong> Using <code>Accept</code>, <code>Accept-Language</code>, or <code>Accept-Encoding</code>.</li>
+          <li><strong>Caching Control:</strong> Telling the server or intermediaries how to handle caching.</li>
+        </ul>
+        <div class="nav-buttons bottom">
+          <a href="01-Basics.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="03-Methods and CORS.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+      
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model: The Parcel</h3>
+          <p>Think of an HTTP message as a parcel. You write the recipient address, phone number, and weight on the <em>outside</em> (Headers) so couriers can process it quickly. You don't put that metadata <em>inside</em> the box (Body), because forcing everyone to open the box to figure out where it goes is highly inefficient.</p>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li>Headers are metadata key-value pairs.</li>
+            <li><strong>Request:</strong> Info about client (User-Agent, Accept).</li>
+            <li><strong>Representation:</strong> Info about the body (Content-Type, Content-Length).</li>
+            <li><strong>Security:</strong> Browser protections (CSP, HSTS).</li>
+            <li>They allow HTTP to be highly extensible and controllable.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

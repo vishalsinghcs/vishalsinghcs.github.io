@@ -3,108 +3,157 @@
   <head>
     <meta charset="UTF-8" />
     <title>Backend vs Frontend</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../styles.css">
   </head>
   <body>
     <div class="page-wrapper">
       <main class="left-column">
-        <a href="../index.html" class="back-button" aria-label="Back to Index">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="19" y1="12" x2="5" y2="12"></line>
-            <polyline points="12 19 5 12 12 5"></polyline>
-          </svg>
-        </a>
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="What is a Backend.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="interview-questions.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
         <h1>Backend vs Frontend</h1>
         <p class="lead">
-          The <strong>frontend</strong> is the client-side code executed by the user's browser, while the <strong>backend</strong> is the centralized server-side code that persists data and executes heavy business logic.
+          The fundamental difference lies in the runtime environment: frontends execute code in the user's browser, while backends execute code on a controlled, centralized server.
         </p>
 
-        <h2>Why do we need backends?</h2>
-        <p>To centralize state, securely persist data, and orchestrate actions between multiple users. Without a central authority, users cannot interact securely or reliably (e.g., User A liking User B's post).</p>
-
-        <h2>How frontends work</h2>
+        <h2>How Frontends Work</h2>
+        <p>Unlike backends which process logic internally and only return results, frontends download code over the network and execute it locally on the client's device.</p>
         <ol>
-            <li><strong>Initial Request</strong>: Browser fetches the primary HTML document.</li>
-            <li><strong>Resource Fetching</strong>: Browser parses HTML and fetches linked resources (CSS, JS, Fonts).</li>
-            <li><strong>Painting</strong>: CSS is applied to style the UI.</li>
-            <li><strong>Hydration</strong>: JavaScript is executed to add event listeners and logic.</li>
-            <li><strong>Execution</strong>: All application code runs entirely within the client's browser sandbox.</li>
+          <li><strong>Document Fetch</strong>: The browser makes an HTTP request and fetches the initial HTML document.</li>
+          <li><strong>Resource Fetch</strong>: The browser parses the HTML and initiates separate requests for linked resources like CSS, JavaScript, fonts, and images.</li>
+          <li><strong>Painting</strong>: The browser applies the fetched CSS rules to paint the visual layout of the page.</li>
+          <li><strong>Hydration</strong>: The fetched JavaScript is executed, attaching event listeners to buttons and forms to make the static page interactive.</li>
         </ol>
 
         <h2>Why can't we write backend logic in the frontend?</h2>
+        <p>Because the frontend runs on unpredictable, untrusted client devices, it faces severe limitations that make centralized backend processing necessary.</p>
+
         <table>
-            <thead>
-                <tr>
-                    <th>Restriction</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>Security & Sandboxing</strong></td>
-                    <td>Browsers isolate code from the OS. Frontend code cannot access the file system, environment variables, or sensitive logs. If not isolated, malicious sites could easily steal user files.</td>
-                </tr>
-                <tr>
-                    <td><strong>CORS Policies</strong></td>
-                    <td>Browsers restrict JavaScript from freely calling external APIs across different domains to prevent unauthorized actions and data theft.</td>
-                </tr>
-                <tr>
-                    <td><strong>Database Connections</strong></td>
-                    <td>Native database drivers require binary data handling, socket connections, and persistent connection pooling. Browsers cannot maintain these. Furthermore, millions of clients opening direct connections would crash the database.</td>
-                </tr>
-                <tr>
-                    <td><strong>Computing Power</strong></td>
-                    <td>Frontends run on unpredictable devices (e.g., old smartphones). Heavy business logic would cause lag and crashes. Backends have scalable, dedicated compute resources.</td>
-                </tr>
-            </tbody>
+          <thead>
+            <tr>
+              <th>Limitation</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Security & Sandboxing</strong></td>
+              <td>Browsers run code in isolated sandboxes to protect user devices. Frontend code cannot access the file system, read environment variables, or safely hold secret API keys.</td>
+            </tr>
+            <tr>
+              <td><strong>CORS Policies</strong></td>
+              <td>Browsers restrict external API calls (Cross-Origin Resource Sharing) to prevent malicious scripts from stealing data. You cannot freely connect to any external server from frontend code.</td>
+            </tr>
+            <tr>
+              <td><strong>Database Connections</strong></td>
+              <td>Databases require persistent socket connections and binary data parsing. Browsers cannot maintain these connections efficiently. Furthermore, millions of clients connecting directly would instantly overwhelm the database.</td>
+            </tr>
+            <tr>
+              <td><strong>Computing Power</strong></td>
+              <td>Client devices range from powerful desktops to incredibly slow smartphones. Heavy business logic running on the frontend leads to lag, crashes, and severe battery drain.</td>
+            </tr>
+          </tbody>
         </table>
-        
-        <h2>Interview Questions</h2>
-        <div class="interview-box">
-          <ul>
-            <li>What is the difference between a frontend execution environment and a backend environment?</li>
-            <li>Why is it insecure to connect directly to a database from a frontend application?</li>
-            <li>What happens during the frontend "Hydration" phase?</li>
-          </ul>
+
+        <h2>Comparison</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>Frontend</th>
+              <th>Backend</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Runtime</td>
+              <td>Client's Browser</td>
+              <td>Centralized Server</td>
+            </tr>
+            <tr>
+              <td>Security</td>
+              <td>Untrusted & Sandboxed</td>
+              <td>Trusted & Controlled</td>
+            </tr>
+            <tr>
+              <td>State</td>
+              <td>Local to the user</td>
+              <td>Shared globally</td>
+            </tr>
+            <tr>
+              <td>Database Access</td>
+              <td>No direct access</td>
+              <td>Direct, pooled connections</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="nav-buttons bottom">
+          <a href="What is a Backend.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="interview-questions.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
         </div>
       </main>
-
+      
       <aside class="right-column">
         <div class="premium-box box-blue">
           <h3>Mental Model</h3>
           <p>
-            Think of the <strong>frontend</strong> as a restaurant menu and ordering tablet provided to customers. The <strong>backend</strong> is the central kitchen that has access to all ingredients (data), manages orders from all tables simultaneously, and securely prepares the food.
+            Think of a restaurant. The <strong>Frontend</strong> is the menu and the waiter taking your order at the table. The <strong>Backend</strong> is the centralized kitchen that has access to all ingredients (data), securely prepares the meal, and manages multiple orders simultaneously.
           </p>
         </div>
 
         <div class="premium-box box-amber">
           <h3>Important Terms</h3>
           <ul>
-            <li><strong>Connection Pool</strong> — A cache of database connections maintained by the backend server so connections can be reused.</li>
-            <li><strong>Hydration</strong> — The process of attaching JavaScript event listeners to a static HTML document.</li>
-            <li><strong>Sandbox</strong> — An isolated execution environment used by browsers.</li>
+            <li><strong>Hydration</strong> — The process of executing JavaScript to attach event listeners to a static HTML page, making it interactive.</li>
+            <li><strong>Connection Pool</strong> — A cache of active database connections maintained by a backend server to efficiently handle high traffic without constantly opening/closing connections.</li>
+            <li><strong>Sandbox</strong> — A restricted execution environment enforced by browsers that prevents code from accessing the host operating system.</li>
+            <li><strong>CORS</strong> — A browser security policy that restricts web pages from making requests to a different domain than the one that served the web page.</li>
           </ul>
         </div>
 
         <div class="premium-box box-green">
           <h3>Key Takeaways</h3>
           <ul>
-            <li>Frontends execute code in the user's browser runtime.</li>
-            <li>Backends execute code in a controlled server runtime.</li>
-            <li>Security, database pooling, and network restrictions dictate that core logic must remain on the backend.</li>
+            <li>Frontends download logic and run it locally; Backends execute logic internally and send results.</li>
+            <li>Browsers enforce strict security, preventing direct file system access and cross-origin network calls.</li>
+            <li>Backends manage connection pools to protect databases from being overwhelmed by too many direct client connections.</li>
           </ul>
         </div>
 
         <div class="cloud-box">
           <h3>Quick Revision</h3>
-          <ul style="text-align: left; margin: 0">
-            <li>Frontend = Client runtime (Browser).</li>
-            <li>Backend = Server runtime (Centralized).</li>
-            <li>Frontends cannot securely access DBs directly.</li>
+          <ul>
+            <li>Frontend = Browser runtime.</li>
+            <li>Backend = Server runtime.</li>
+            <li>Browsers fetch HTML, then fetch resources, paint CSS, and hydrate JS.</li>
+            <li>Frontend logic cannot securely hold secrets or API keys.</li>
+            <li>CORS prevents arbitrary cross-domain API calls.</li>
+            <li>Backends have dedicated, scalable compute resources to handle heavy logic.</li>
           </ul>
         </div>
       </aside>

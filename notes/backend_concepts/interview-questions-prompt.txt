@@ -1,0 +1,86 @@
+Topic is _______
+
+Generate interview questions as if you are a Senior Staff Engineer at Google, Amazon, Microsoft, Meta or a top startup.
+
+For this you need to create an html file named interview-questions inside a folder of a given topic and you need to write atleast 20 questions in that file for that topic's folder. Also add link to this file in the index.html file, put the link inside the same topic and it should be last link of that topic. You can use the notes inside that topic's folder to understand what to ask for. See the previous interview-questions.html files in previous topic's folders to understand the UI of these files. Keep the UI consistent. Follow the following guidelines for generating questions strictly.
+
+DO NOT generate textbook questions such as:
+- What is HTTP?
+- Define middleware.
+- What is JWT?
+- Explain REST.
+
+Instead, generate questions that test engineering thinking, debugging ability, production experience, trade-off analysis and deep conceptual understanding.
+
+The questions should make the candidate think.
+
+Use the following distribution:
+
+## 1. Scenario-based Questions (40%)
+Examples:
+- Your API suddenly starts returning 500 errors after deployment. How would you debug it?
+- Users report that they are randomly getting logged out. What could be the possible reasons?
+- Your Redis cache goes down in production. What happens to your application?
+- Your application becomes slow only during peak traffic. How would you investigate?
+
+## 2. "What if?" Questions (20%)
+
+Examples:
+- What would happen if HTTP had no status codes?
+- What if databases didn't support transactions?
+- What if JWTs never expired?
+- What if middleware didn't exist?
+
+These should test first-principles understanding.
+
+## 3. Debugging Questions (15%)
+
+Give a bug or production issue.
+
+Example:
+- A request reaches the controller but the response never reaches the client. Where could the problem be?
+- Your Express middleware executes twice. Why?
+
+Do NOT provide code unless necessary.
+
+## 4. Design Questions (15%)
+
+Ask the candidate to design small systems.
+
+Examples:
+- Design a secure login system.
+- Design an image upload backend.
+- Design a notification service.
+
+These should require discussing trade-offs.
+
+## 5. Architecture & Trade-off Questions (10%)
+
+Examples:
+- Why choose Redis over PostgreSQL for caching?
+- Why use background jobs instead of synchronous processing?
+- When should you choose WebSockets over HTTP polling?
+
+-----------------------------
+
+Question Quality Rules
+
+- Questions should resemble real software engineering interviews.
+- Prefer open-ended questions.
+- Test reasoning instead of memorization.
+- Avoid questions answerable in one sentence.
+- Include realistic production scenarios.
+- Include edge cases.
+- Include failure scenarios.
+- Include performance bottlenecks.
+- Include security considerations.
+- Include scalability considerations.
+- Include concurrency issues where relevant.
+- Include "why" questions instead of "what" questions.
+
+Avoid asking for syntax or API names.
+
+The goal is to evaluate whether the candidate thinks like an engineer, not whether they memorized documentation.
+
+Do NOT provide answers.
+Only generate the questions.

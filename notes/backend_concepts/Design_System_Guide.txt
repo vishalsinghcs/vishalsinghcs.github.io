@@ -33,12 +33,29 @@ Behavior:
 ------------------------------------------------------
 Use these classes inside the `<main class="left-column">`:
 
-* Back Button (.back-button)
-  Always use the circular SVG back button instead of raw text.
+* Navigation Buttons (.nav-buttons, .nav-btn)
+  Use the `.nav-buttons` container to group navigation buttons. 
+  Always place a `.nav-buttons` block at the top containing Back, Prev, and Next.
+  Also place a `<div class="nav-buttons bottom">` at the end of the left-column containing Prev and Next buttons.
   Usage: 
-  <a href="..." class="back-button" aria-label="Back">
-    <svg>...</svg>
-  </a>
+  <div class="nav-buttons">
+    <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+    </a>
+    <a href="prev.html" class="nav-btn prev" aria-label="Previous">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+    </a>
+    <a href="next.html" class="nav-btn next" aria-label="Next">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </a>
+  </div>
 
 * Typography
   - Use `<h1>` for the page title.
@@ -47,16 +64,6 @@ Use these classes inside the `<main class="left-column">`:
 
 * Tables
   Standard HTML `<table>`, `<thead>`, `<tr>`, `<th>`, and `<td>` elements are automatically styled with rounded corners, subtle shadows, and crisp gray headers. Do not add inline styles to tables.
-
-* Interview Questions (.interview-box)
-  Use this for end-of-section tests or interview prep.
-  Usage:
-  <div class="interview-box">
-    <h3>Heading (Optional)</h3>
-    <ul>
-      <li>Question 1</li>
-    </ul>
-  </div>
 
 * Custom Diagrams (.custom-diagram, .diagram-node, .diagram-arrow)
   Use this for flowcharts instead of Mermaid.js. It features staggered slide-in and pulsing arrow animations.

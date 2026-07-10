@@ -247,8 +247,24 @@ tr:last-child td {
   border-bottom: none;
 }
 
-/* Back Button */
-.back-button {
+/* Navigation Buttons */
+.nav-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.nav-buttons.bottom {
+  margin-top: 3rem;
+  margin-bottom: 0;
+  justify-content: space-between;
+}
+.nav-buttons.bottom .prev {
+  margin-right: auto;
+}
+.nav-buttons.bottom .next {
+  margin-left: auto;
+}
+.nav-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -259,10 +275,14 @@ tr:last-child td {
   color: #000;
   text-decoration: none;
   transition: all 0.2s ease;
-  margin-bottom: 2rem;
   border: 1px solid #e2e8f0;
 }
-.back-button:hover {
+.nav-btn:hover {
   background: #e5e5ea;
+}
+.nav-btn.back:hover, .nav-btn.prev:hover {
   transform: translateX(-4px);
+}
+.nav-btn.next:hover {
+  transform: translateX(4px);
 }

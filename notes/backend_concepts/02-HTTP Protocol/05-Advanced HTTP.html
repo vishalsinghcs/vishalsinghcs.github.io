@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Advanced HTTP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="04-Status Codes and Caching.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="interview-questions.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <h1>Advanced HTTP Concepts</h1>
+        <p class="lead">
+          Understanding Content Negotiation, Compression, Persistent Connections, Data Streaming, and Security.
+        </p>
+
+        <h2>Content Negotiation</h2>
+        <p>A mechanism where the client and server agree on the best format, language, or encoding to exchange data. The client specifies its preferences, and the server responds with a compatible format or a fallback.</p>
+        
+        <h3>Types of Negotiation</h3>
+        <ul>
+          <li><strong>Media Type:</strong> The client uses the <code>Accept</code> header (e.g., <code>application/json</code> or <code>application/xml</code>). The server returns data in that format.</li>
+          <li><strong>Language:</strong> The client uses the <code>Accept-Language</code> header (e.g., <code>en</code>, <code>es</code>). The server serves content in English or Spanish.</li>
+          <li><strong>Encoding:</strong> The client uses the <code>Accept-Encoding</code> header (e.g., <code>gzip</code>, <code>deflate</code>) to request compressed data.</li>
+        </ul>
+
+        <h2>HTTP Compression</h2>
+        <p>Compression significantly reduces response sizes. A large 26MB uncompressed JSON file can be compressed to ~3.8MB using <code>gzip</code>. This saves enormous amounts of bandwidth and drastically improves load times.</p>
+        <ul>
+          <li>The client sends <code>Accept-Encoding: gzip</code>.</li>
+          <li>The server compresses the payload and responds with <code>Content-Encoding: gzip</code>.</li>
+          <li>The browser seamlessly decompresses the payload upon receipt.</li>
+        </ul>
+
+        <h2>Persistent Connections (Keep-Alive)</h2>
+        <p>In HTTP/1.0, every request-response cycle required opening and closing a new TCP connection, which was highly resource-intensive and slow.</p>
+        <p>HTTP/1.1 introduced <strong>Persistent Connections</strong> by default. A single TCP connection is reused for multiple requests. The <code>Connection: keep-alive</code> header can explicitly enforce this behavior, keeping the socket open until a timeout is reached or one side explicitly sends a <code>Connection: close</code> header.</p>
+
+        <h2>Handling Large Data</h2>
+        
+        <h3>Multipart Requests (Client to Server)</h3>
+        <p>Used to upload large files (images, videos). The request uses <code>Content-Type: multipart/form-data; boundary=---something</code>.</p>
+        <p>The <code>boundary</code> is a unique delimiter string that separates the binary parts of the file in the request body, allowing the server to piece the chunks back together reliably.</p>
+
+        <h3>Chunked Transfer / Server-Sent Events (Server to Client)</h3>
+        <p>Instead of buffering a massive file in server memory before sending it, the server can stream it to the client in chunks.</p>
+        <p>Using headers like <code>Content-Type: text/event-stream</code> and <code>Connection: keep-alive</code>, the client receives data continuously as it is generated, appending the chunks until the stream is complete.</p>
+
+        <h2>SSL, TLS, and HTTPS</h2>
+        <p>Security protocols that encrypt data in transit, ensuring passwords and sensitive data cannot be intercepted or tampered with.</p>
+        <ul>
+          <li><strong>SSL (Secure Sockets Layer):</strong> The original encryption protocol. It is now completely outdated and deprecated due to vulnerabilities.</li>
+          <li><strong>TLS (Transport Layer Security):</strong> The modern, secure successor to SSL. It uses certificates to authenticate servers and establish encrypted connections. (Current standard is TLS 1.3).</li>
+          <li><strong>HTTPS:</strong> Simply HTTP running over a TLS connection.</li>
+        </ul>
+        <div class="nav-buttons bottom">
+          <a href="04-Status Codes and Caching.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="interview-questions.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+      
+      <aside class="right-column">
+        <div class="premium-box box-amber">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>Boundary:</strong> A unique string delimiter used in multipart/form-data to separate file chunks.</li>
+            <li><strong>TLS:</strong> Transport Layer Security. The modern encryption standard replacing SSL.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li>Content negotiation allows dynamic adaptation of format, language, and compression based on client headers.</li>
+            <li>HTTP/1.1 uses persistent TCP connections by default.</li>
+            <li>Use <code>multipart/form-data</code> with a boundary for uploading files.</li>
+            <li>Use chunked transfers or SSE for streaming large server responses.</li>
+            <li>HTTPS = HTTP over TLS. SSL is obsolete.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

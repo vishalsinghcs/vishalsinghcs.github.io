@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Interview Questions: HTTP Protocol</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper" style="max-width: 900px; display: block; margin: 0 auto;">
+      <main>
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="05-Advanced HTTP.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <h1>Interview Questions</h1>
+        <p class="lead">
+          02 - HTTP Protocol: Methods, Headers, Caching & Advanced Concepts
+        </p>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">1. Scenario-based Questions (40%)</h3>
+          <ul style="color: #000;">
+            <li style="margin-bottom: 1rem;">Your frontend application (running on example.com) successfully logs a user in via an API call (api.example.com), but subsequent requests drop the session cookies. How would you debug the cross-origin request setup and the Set-Cookie headers?</li>
+            <li style="margin-bottom: 1rem;">A production incident occurs where your Nginx server is returning 502 Bad Gateway for all requests to a specific Node.js service. The Node process is running and CPU/Memory look fine. What HTTP-level or network-level issues could be causing this?</li>
+            <li style="margin-bottom: 1rem;">You have implemented HTTP caching using `ETag` and `Cache-Control: max-age=3600`. Users complain they aren't seeing the latest stock prices. How do you investigate whether the issue is with the client browser, a CDN, or your backend logic?</li>
+            <li style="margin-bottom: 1rem;">A client mobile app is uploading large video files, but the server is running out of memory and crashing. You observe they are sending `multipart/form-data`. How would you restructure the HTTP flow to prevent these out-of-memory errors?</li>
+            <li style="margin-bottom: 1rem;">During a high-traffic event, your backend logs show an influx of 499 (Client Closed Request) and 504 (Gateway Timeout) errors. How do you distinguish whether the bottleneck is network latency or application processing time using HTTP concepts?</li>
+            <li style="margin-bottom: 1rem;">Your team deployed a new endpoint, but an external partner is receiving a CORS preflight failure (`OPTIONS` returning 403). However, it works perfectly fine on your local machine and in Postman. How do you debug this?</li>
+            <li style="margin-bottom: 1rem;">You observe that a specific 2MB JSON response takes 5 seconds to load over 3G, but 50ms over WiFi. What HTTP headers and compression strategies would you check to ensure the payload is optimized for mobile clients?</li>
+            <li style="margin-bottom: 1rem;">An API consumer is sporadically receiving 409 Conflict errors when trying to update user profiles concurrently. How would you leverage HTTP headers like `If-Match` and `ETag` to resolve this race condition gracefully?</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">2. "What if?" Questions (20%)</h3>
+          <ul style="color: #000;">
+            <li style="margin-bottom: 1rem;">What if HTTP/1.1 did not support persistent connections (`keep-alive`)? How would modern web applications perform, and how would you architect a workaround for real-time data?</li>
+            <li style="margin-bottom: 1rem;">What if there was no concept of Idempotency in HTTP? What challenges would distributed systems face in terms of retry mechanisms and state management?</li>
+            <li style="margin-bottom: 1rem;">What if the Same-Origin Policy (SOP) and CORS were completely removed from browsers today? Describe the exact attack vectors that would immediately emerge.</li>
+            <li style="margin-bottom: 1rem;">What if HTTP headers were entirely encrypted and hidden from intermediaries like proxies and load balancers? How would this affect modern infrastructure routing and caching?</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">3. Debugging Questions (15%)</h3>
+          <ul style="color: #000;">
+            <li style="margin-bottom: 1rem;">You trigger a `PATCH` request to update a user's email, but the database reflects the update while the client receives a 405 Method Not Allowed error. Where in the stack could this discrepancy originate?</li>
+            <li style="margin-bottom: 1rem;">An API endpoint consistently returns a 200 OK status code, but the response body contains `{"error": "User not found", "code": 404}`. Why is this considered an anti-pattern, and what downstream systems does this break?</li>
+            <li style="margin-bottom: 1rem;">A browser client makes a request with `Accept-Encoding: gzip`, but the response comes back uncompressed and massive, despite the application server logs indicating that gzip compression is enabled. What components in the network path should you investigate?</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">4. Design Questions (15%)</h3>
+          <ul style="color: #000;">
+            <li style="margin-bottom: 1rem;">Design the HTTP interface for a large-scale file download service that supports pausing and resuming downloads. Which specific headers and status codes are critical for this implementation?</li>
+            <li style="margin-bottom: 1rem;">Design a rate-limiting API response strategy. How would you use HTTP status codes and custom headers to inform clients about their current usage, limits, and when they can retry?</li>
+            <li style="margin-bottom: 1rem;">Design the API payload and caching strategy for a live sports scoreboard. It needs to update rapidly during a game but remain highly cacheable to handle millions of concurrent users.</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">5. Architecture & Trade-off Questions (10%)</h3>
+          <ul style="color: #000;">
+            <li style="margin-bottom: 1rem;">When architecting a real-time chat application, what are the trade-offs between using HTTP Long Polling, Server-Sent Events (SSE) with Chunked Transfer, and WebSockets?</li>
+            <li style="margin-bottom: 1rem;">Why might an engineering team choose to serve static assets directly from a CDN using cache validation (`304 Not Modified`) rather than enforcing aggressive long-term caching (`max-age=31536000`) with unique hashed filenames? What are the operational trade-offs?</li>
+          </ul>
+        </div>
+
+        <div class="nav-buttons bottom">
+          <a href="05-Advanced HTTP.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

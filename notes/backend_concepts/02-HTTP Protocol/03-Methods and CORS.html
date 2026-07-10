@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>HTTP Methods and CORS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="02-Headers.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="04-Status Codes and Caching.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <h1>HTTP Methods and CORS</h1>
+        <p class="lead">
+          HTTP methods define the semantic intent of a request. Instead of every request doing the same structural thing, methods provide a standardized vocabulary.
+        </p>
+
+        <h2>Common HTTP Methods</h2>
+        <ul>
+          <li><strong>GET:</strong> Used to fetch data. Should not modify any server state.</li>
+          <li><strong>POST:</strong> Used to create new data on the server. Includes a request body.</li>
+          <li><strong>PATCH:</strong> Used to update existing data selectively (like an append or a partial update).</li>
+          <li><strong>PUT:</strong> Used to completely replace a resource. The data in the body fully overwrites the previous instance. (Rule of thumb: use PATCH unless a full replacement is required).</li>
+          <li><strong>DELETE:</strong> Used to delete a resource from the server.</li>
+          <li><strong>OPTIONS:</strong> Used primarily for CORS pre-flight to fetch server capabilities.</li>
+        </ul>
+
+        <h2>Idempotent vs Non-Idempotent</h2>
+        <p>Idempotency refers to whether making the same request multiple times produces the exact same result as making it once.</p>
+        
+        <h3>Idempotent Methods (GET, PUT, DELETE)</h3>
+        <p>You can execute these methods repeatedly, and the end state on the server remains the same.</p>
+        <ul>
+          <li><strong>GET:</strong> Fetching data doesn't change it.</li>
+          <li><strong>PUT:</strong> Overwriting the exact same resource with the exact same data multiple times results in the same state.</li>
+          <li><strong>DELETE:</strong> Deleting a resource leaves it deleted regardless of how many times you subsequently try to delete it.</li>
+        </ul>
+
+        <h3>Non-Idempotent Methods (POST)</h3>
+        <p>Calling these methods multiple times yields different results. For example, submitting a POST request to create a user three times will result in three distinct users being created.</p>
+
+        <h2>CORS (Cross-Origin Resource Sharing)</h2>
+        <p>Browsers enforce a <strong>Same-Origin Policy</strong> which restricts web pages from making requests to a different domain. CORS is a security mechanism that allows servers to explicitly specify who can access their resources across domains.</p>
+        
+        <h3>Simple Requests</h3>
+        <p>A request is considered "simple" if it uses GET, POST, or HEAD, and only utilizes basic headers and standard content types (like <code>application/x-www-form-urlencoded</code> or <code>multipart/form-data</code>).</p>
+        
+        <div class="custom-diagram">
+          <div class="diagram-node" style="animation-delay: 0s">Client sends GET to api.example.com (Origin: example.com)</div>
+          <div class="diagram-arrow" style="animation-delay: 0.5s">↓</div>
+          <div class="diagram-node" style="animation-delay: 1s">Server verifies Origin, responds with Access-Control-Allow-Origin: example.com</div>
+          <div class="diagram-arrow" style="animation-delay: 1.5s">↓</div>
+          <div class="diagram-node" style="animation-delay: 2s">Browser validates header and lets response pass</div>
+        </div>
+        <p>If the server doesn't respond with a matching <code>Access-Control-Allow-Origin</code>, the browser throws a CORS error and blocks the response.</p>
+
+        <h3>Pre-Flight Requests</h3>
+        <p>If a request uses methods like PUT or DELETE, includes custom/non-simple headers (like <code>Authorization</code>), or uses a content-type like <code>application/json</code>, the browser fires a "pre-flight" request using the <strong>OPTIONS</strong> method.</p>
+        
+        <div class="custom-diagram">
+          <div class="diagram-node" style="animation-delay: 0s">Browser auto-sends OPTIONS (inquiring about methods/headers allowed)</div>
+          <div class="diagram-arrow" style="animation-delay: 0.5s">↓</div>
+          <div class="diagram-node" style="animation-delay: 1s">Server responds 204 (No Content) with Access-Control-Allow-Methods, Headers, Max-Age</div>
+          <div class="diagram-arrow" style="animation-delay: 1.5s">↓</div>
+          <div class="diagram-node" style="animation-delay: 2s">Browser validates allowed capabilities</div>
+          <div class="diagram-arrow" style="animation-delay: 2.5s">↓</div>
+          <div class="diagram-node" style="animation-delay: 3s">Browser sends the original request (e.g., PUT)</div>
+        </div>
+        <p>The <code>Access-Control-Max-Age</code> header tells the browser to cache this pre-flight result (e.g., for 24 hours), saving bandwidth for future requests.</p>
+        <div class="nav-buttons bottom">
+          <a href="02-Headers.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="04-Status Codes and Caching.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+      
+      <aside class="right-column">
+        <div class="premium-box box-amber">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>Origin:</strong> The combination of protocol, domain, and port. Even running apps on different localhost ports constitutes different origins.</li>
+            <li><strong>Idempotency:</strong> The property of an operation that can be applied multiple times without changing the result beyond the initial application.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li>GET, PUT, DELETE = Idempotent.</li>
+            <li>POST = Non-idempotent.</li>
+            <li>PATCH = Selective update; PUT = Complete replacement.</li>
+            <li>CORS prevents arbitrary cross-origin requests.</li>
+            <li><strong>Simple requests</strong> just require <code>Access-Control-Allow-Origin</code>.</li>
+            <li><strong>Pre-flight requests</strong> use OPTIONS to ask the server for permission before sending the real request.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

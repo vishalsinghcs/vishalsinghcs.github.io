@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>HTTP Basics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="../01-Introduction/interview-questions.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="02-Headers.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <h1>HTTP Basics</h1>
+        <p class="lead">
+          HTTP (Hypertext Transfer Protocol) is the primary medium through which browsers talk to our servers to send or receive data. It operates primarily at the Application Layer (Layer 7) of the OSI model.
+        </p>
+
+        <h2>Core Principles of HTTP</h2>
+        <p>There are two foundational ideas at the heart of the HTTP protocol:</p>
+        
+        <h3>1. Statelessness</h3>
+        <p>HTTP has no memory of past interactions. Each request is an isolated event and must contain all the information necessary (like authentication tokens or session info) for the server to process it.</p>
+        <ul>
+          <li><strong>Simplicity:</strong> Server architecture is simplified as it doesn't need to store session information.</li>
+          <li><strong>Scalability:</strong> It's easy to distribute requests across multiple servers since no single server needs to track a session.</li>
+          <li><strong>State Management:</strong> Since it is inherently stateless, developers often implement techniques like cookies, sessions, or tokens to maintain continuity (e.g., user logins).</li>
+        </ul>
+
+        <h3>2. Client-Server Model</h3>
+        <p>A typical HTTP request flow always involves a client and a server. Communication is <strong>always initiated by the client</strong>.</p>
+        <ul>
+          <li><strong>Client:</strong> Typically a web browser or an application that initiates communication by sending a request (providing URLs, headers, etc.).</li>
+          <li><strong>Server:</strong> Hosts resources and waits for incoming requests. It processes the client's request and sends back a response (HTML, JSON, etc.).</li>
+        </ul>
+
+        <h2>Evolution of HTTP</h2>
+        <p>Over the years, HTTP has evolved to become faster and more efficient:</p>
+        <ul>
+          <li><strong>HTTP 1.0:</strong> Each request opened a new connection. This led to inefficiencies because establishing and closing TCP connections for every request/response slowed down performance.</li>
+          <li><strong>HTTP 1.1:</strong> Introduced persistent connections, allowing multiple requests and responses over the same TCP connection. Added chunked transfer encoding and better caching.</li>
+          <li><strong>HTTP 2.0:</strong> Introduced multiplexing, allowing multiple concurrent requests/responses over a single connection. Uses binary framing instead of text, and supports header compression and server push.</li>
+          <li><strong>HTTP 3.0:</strong> Built on QUIC (a transport layer protocol over UDP rather than TCP). It improves performance with faster connection establishment, reduced latency, and better handling of packet loss without head-of-line blocking.</li>
+        </ul>
+
+        <h2>HTTP Messages</h2>
+        <p>Communication occurs through messages, which are categorized into requests and responses.</p>
+        
+        <h3>Request Message (Client to Server)</h3>
+        <p>The message the client uses to ask the server to do something.</p>
+        <ul>
+          <li><strong>Request Method:</strong> e.g., GET, POST.</li>
+          <li><strong>Resource URL:</strong> The path to the requested resource.</li>
+          <li><strong>HTTP Version:</strong> e.g., HTTP/1.1.</li>
+          <li><strong>Headers:</strong> Key-value pairs containing metadata (e.g., Host).</li>
+          <li><strong>Blank Line:</strong> Signifies headers are over and the body begins.</li>
+          <li><strong>Request Body:</strong> Optional payload of data sent to the server.</li>
+        </ul>
+
+        <h3>Response Message (Server to Client)</h3>
+        <p>The message the server sends back in answer to a client's request.</p>
+        <ul>
+          <li><strong>HTTP Version:</strong> e.g., HTTP/1.1.</li>
+          <li><strong>Status Code:</strong> A number indicating the outcome (e.g., 200).</li>
+          <li><strong>Status Value:</strong> Text description of the outcome (e.g., OK).</li>
+          <li><strong>Response Headers:</strong> Metadata about the response.</li>
+          <li><strong>Blank Line:</strong> Signifies headers are over.</li>
+          <li><strong>Response Body:</strong> The requested resource (HTML, JSON, text).</li>
+        </ul>
+        <div class="nav-buttons bottom">
+          <a href="../01-Introduction/interview-questions.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="02-Headers.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+      
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>Think of HTTP as an ongoing conversation where one person (the server) has amnesia. Every time the client speaks to the server, they must re-introduce themselves and provide all context for the request.</p>
+        </div>
+
+        <div class="premium-box box-amber">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>TCP:</strong> Transmission Control Protocol. The reliable, connection-based protocol HTTP relies on for its transport.</li>
+            <li><strong>HTTPS:</strong> A secure version of HTTP that uses TLS/SSL to encrypt data.</li>
+            <li><strong>OSI Layer 7:</strong> The Application Layer where HTTP operates.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li>HTTP is stateless and follows a client-server model.</li>
+            <li>Clients initiate communication; servers respond.</li>
+            <li>HTTP/1.1 brought persistent connections.</li>
+            <li>HTTP/3 uses QUIC over UDP instead of TCP.</li>
+            <li>Messages consist of a start-line, headers, a blank line, and an optional body.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

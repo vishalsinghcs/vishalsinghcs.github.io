@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Interview Questions: Introduction to Backends</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper" style="max-width: 900px; display: block; margin: 0 auto;">
+      <main>
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="Backend vs Frontend.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="../02-HTTP Protocol/01-Basics.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <h1>Interview Questions</h1>
+        <p class="lead">
+          01 - Introduction: Backend Fundamentals & Architectures
+        </p>
+
+        <p class="muted" style="margin-bottom: 3rem;">
+          These questions test engineering thinking, debugging ability, production experience, and trade-off analysis. Try to answer them thoroughly without looking up definitions.
+        </p>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">1. Scenario-based Questions</h3>
+          <ul style="color: #000;">
+            <li style="margin-bottom: 1rem;">You deploy a new backend service and configure your reverse proxy, but users are reporting intermittent timeouts while the application server logs show no errors. How would you investigate this disconnect?</li>
+            <li style="margin-bottom: 1rem;">A frontend application is trying to fetch data from your newly deployed API, but the browser blocks the request due to CORS. The backend is receiving the preflight request but returning a 403. How do you resolve this systematically?</li>
+            <li style="margin-bottom: 1rem;">Your team decides to move a complex data transformation from the backend to the frontend to save server costs. Shortly after, mobile users start complaining about battery drain and app crashes. How do you analyze the root cause and the trade-offs made?</li>
+            <li style="margin-bottom: 1rem;">An attacker discovers the direct IP address of your application server and tries to bypass the reverse proxy by sending requests directly to it. How should your system components (firewalls, internal networks) be configured to prevent this?</li>
+            <li style="margin-bottom: 1rem;">A DNS configuration change was made to point your domain to a new server IP. However, some users across the globe are still being routed to the old server 24 hours later. What could be happening and how can you gracefully handle the traffic on the old server?</li>
+            <li style="margin-bottom: 1rem;">You are tasked with migrating a monolithic backend to a new infrastructure. During the migration, you need both the old and new systems to run simultaneously without changing the frontend code. How can you achieve this using existing networking components?</li>
+            <li style="margin-bottom: 1rem;">A junior developer accidentally commits the database connection strings into the frontend React application code. What are the immediate risks, how does the browser sandbox factor in, and how would you mitigate the breach?</li>
+            <li style="margin-bottom: 1rem;">Your web application suddenly experiences a 10x traffic spike. The reverse proxy handles it fine, but the application server starts dropping connections to the database. What architectural limits have been hit and how do you fix it?</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">2. "What if?" Questions</h3>
+          <ul style="color: #000;">
+            <li style="margin-bottom: 1rem;">What would happen to web applications if browsers did not enforce a strict security sandbox around frontend JavaScript execution?</li>
+            <li style="margin-bottom: 1rem;">What if a system didn't use a reverse proxy and exposed the raw Node.js application server directly to the internet on Port 80/443? What production features would you lose?</li>
+            <li style="margin-bottom: 1rem;">What if DNS resolution was strictly synchronous and took an average of 5 seconds per request without any caching mechanisms? How would modern web architecture adapt?</li>
+            <li style="margin-bottom: 1rem;">What if we allowed frontend applications to establish direct persistent connections (like TCP sockets) directly to a PostgreSQL database?</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">3. Debugging Questions</h3>
+          <ul style="color: #000;">
+            <li style="margin-bottom: 1rem;">A user clicks a button on the frontend, the network tab shows a successful HTTP 200 response, but the UI does not update and the console shows a "cannot read property of undefined" error. Where is the bug most likely located and why?</li>
+            <li style="margin-bottom: 1rem;">Your backend logs show that a specific API endpoint is being hit 100 times per second from a single IP address, but the reverse proxy logs show only 5 requests per second from that IP. What architectural misconfiguration is happening?</li>
+            <li style="margin-bottom: 1rem;">You notice that your application server is slowly running out of memory over the course of a week, eventually crashing. The frontend memory usage is perfectly stable. How do you debug this memory leak in the backend runtime?</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">4. Design Questions</h3>
+          <ul style="color: #000;">
+            <li style="margin-bottom: 1rem;">Design a high-level architecture for a real-time collaborative document editor (like Google Docs). What responsibilities belong in the frontend sandbox and what must be strictly handled by the centralized backend?</li>
+            <li style="margin-bottom: 1rem;">Design a system to prevent malicious bots from scraping your API. Where in the request lifecycle (DNS, Firewall, Reverse Proxy, App Server) would you implement the rate limiting and why?</li>
+            <li style="margin-bottom: 1rem;">Design a secure mechanism for a frontend application to authenticate and communicate with a third-party payment provider without exposing sensitive API keys to the user's browser.</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">5. Architecture & Trade-off Questions</h3>
+          <ul style="color: #000;">
+            <li style="margin-bottom: 1rem;">Why might a company choose to use Server-Side Rendering (SSR) where the backend generates the HTML, versus Client-Side Rendering (CSR) where the backend only serves JSON and the frontend hydrates the UI?</li>
+            <li style="margin-bottom: 1rem;">When configuring a reverse proxy (like Nginx), what are the trade-offs of terminating SSL/TLS at the proxy level versus passing the encrypted traffic all the way down to the application server?</li>
+          </ul>
+        </div>
+
+        <div class="nav-buttons bottom">
+          <a href="Backend vs Frontend.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="../02-HTTP Protocol/01-Basics.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

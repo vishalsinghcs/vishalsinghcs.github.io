@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Status Codes and Caching</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="03-Methods and CORS.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="05-Advanced HTTP.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <h1>Status Codes and Caching</h1>
+        <p class="lead">
+          HTTP response codes universally communicate the result of a request. HTTP caching uses headers to store copies of responses, reducing server load and bandwidth.
+        </p>
+
+        <h2>Response Status Codes</h2>
+        <p>Status codes standardize communication across all web services, meaning clients can handle outcomes programmatically without parsing body content.</p>
+
+        <h3>1xx: Informational</h3>
+        <ul>
+          <li><strong>100 Continue:</strong> Server received headers and client can proceed to send the body (used in large uploads).</li>
+        </ul>
+
+        <h3>2xx: Success</h3>
+        <ul>
+          <li><strong>200 OK:</strong> Request successful (common for GET requests).</li>
+          <li><strong>201 Created:</strong> Request fulfilled and a new resource was created (common for POST requests).</li>
+          <li><strong>204 No Content:</strong> Request successful but no body is returned (often used for DELETE or OPTIONS pre-flight).</li>
+        </ul>
+
+        <h3>3xx: Redirection</h3>
+        <ul>
+          <li><strong>301 Moved Permanently:</strong> The resource has moved permanently to a new URL. Future requests should use the new URL.</li>
+          <li><strong>302 Found (Temporary Redirect):</strong> The resource has moved temporarily. Clients should keep using the original URL.</li>
+          <li><strong>304 Not Modified:</strong> The resource has not changed since the last request. The client should use its cached copy.</li>
+        </ul>
+
+        <h3>4xx: Client Errors</h3>
+        <p>These occur when the client sends invalid, illogical, or unauthorized data.</p>
+        <ul>
+          <li><strong>400 Bad Request:</strong> Invalid request format or illogical data (e.g., sending a string when a number was expected).</li>
+          <li><strong>401 Unauthorized:</strong> Missing, expired, or invalid authentication credentials (e.g., JWT token).</li>
+          <li><strong>403 Forbidden:</strong> The server understands the request, but refuses to authorize it (e.g., trying to access another user's data).</li>
+          <li><strong>404 Not Found:</strong> The requested resource does not exist.</li>
+          <li><strong>405 Method Not Allowed:</strong> Using the wrong HTTP method (e.g., trying to PUT to a route that only accepts POST).</li>
+          <li><strong>409 Conflict:</strong> The request conflicts with current server state (e.g., creating a folder with a name that already exists).</li>
+          <li><strong>429 Too Many Requests:</strong> Client has been rate-limited.</li>
+        </ul>
+
+        <h3>5xx: Server Errors</h3>
+        <p>These occur when something goes wrong on the server's end.</p>
+        <ul>
+          <li><strong>500 Internal Server Error:</strong> An unexpected condition or unhandled exception broke the process.</li>
+          <li><strong>501 Not Implemented:</strong> The server does not support the requested functionality (yet).</li>
+          <li><strong>502 Bad Gateway:</strong> Typically returned by reverse proxies (like Nginx) when the upstream server returns an invalid response.</li>
+          <li><strong>503 Service Unavailable:</strong> The server is down (e.g., undergoing maintenance or handling too much traffic).</li>
+          <li><strong>504 Gateway Timeout:</strong> The upstream server failed to respond within the allowed time.</li>
+        </ul>
+
+        <h2>HTTP Caching</h2>
+        <p>Caching stores a copy of a given response so that subsequent requests can use the stored copy, bypassing the need to fetch data from the server again.</p>
+
+        <h3>How it Works</h3>
+        <ol>
+          <li><strong>Initial Request:</strong> The server responds with the payload alongside three important headers:
+            <ul>
+              <li><code>Cache-Control</code>: Defines caching policies (e.g., <code>max-age=10</code>).</li>
+              <li><code>ETag</code>: A unique hash/identifier of the response object.</li>
+              <li><code>Last-Modified</code>: The timestamp when the resource was last altered.</li>
+            </ul>
+          </li>
+          <li><strong>Subsequent Request:</strong> The client sends a new request asking if the resource is still valid using:
+            <ul>
+              <li><code>If-None-Match</code>: Sends the <code>ETag</code> to verify.</li>
+              <li><code>If-Modified-Since</code>: Sends the <code>Last-Modified</code> timestamp.</li>
+            </ul>
+          </li>
+          <li><strong>Server Validation:</strong> If the hash matches or the timestamp hasn't changed, the server responds with a <strong>304 Not Modified</strong> and no body. The client reuses its cached copy.</li>
+        </ol>
+
+        <p><em>Note: While native HTTP caching is powerful, modern applications often rely on client-side libraries (like React Query) for more granular, programmable cache invalidation.</em></p>
+        <div class="nav-buttons bottom">
+          <a href="03-Methods and CORS.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="05-Advanced HTTP.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+      
+      <aside class="right-column">
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li><strong>2xx</strong> = Success</li>
+            <li><strong>3xx</strong> = Go elsewhere / Use cache</li>
+            <li><strong>4xx</strong> = You (the client) messed up</li>
+            <li><strong>5xx</strong> = We (the server) messed up</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li>Use <strong>201</strong> when POSTing new data successfully.</li>
+            <li>Use <strong>401</strong> for missing logins, <strong>403</strong> for lack of permissions.</li>
+            <li>Use <strong>400</strong> for validation errors.</li>
+            <li><strong>ETag</strong> acts as a unique hash. If the hash hasn't changed on the server, a 304 is returned.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

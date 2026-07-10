@@ -1,0 +1,101 @@
+======================================================
+ BACKEND CONCEPTS - DESIGN SYSTEM & UI GUIDELINES
+======================================================
+
+This document outlines the standard UI components found in `styles.css` 
+and explains how to use them to maintain a consistent, premium "Apple/Linear" 
+aesthetic across all notes in this repository.
+
+------------------------------------------------------
+ 1. PAGE LAYOUT (THE 2-COLUMN SYSTEM)
+------------------------------------------------------
+Every standard note file should use the sticky two-column layout to maximize 
+screen space and provide a great reading experience.
+
+Structure:
+<div class="page-wrapper">
+  <main class="left-column">
+    <!-- Main reading material, tables, and diagrams go here -->
+  </main>
+  
+  <aside class="right-column">
+    <!-- Summaries, terms, and mental models go here -->
+  </aside>
+</div>
+
+Behavior:
+- The left column takes up 55% of the width.
+- The right column takes the remaining space.
+- Both columns are "sticky" (position: sticky; top: 3rem;). If one column is shorter than the other, it will stick to the screen while the user continues to scroll the longer column.
+
+------------------------------------------------------
+ 2. LEFT COLUMN COMPONENTS (CORE CONTENT)
+------------------------------------------------------
+Use these classes inside the `<main class="left-column">`:
+
+* Back Button (.back-button)
+  Always use the circular SVG back button instead of raw text.
+  Usage: 
+  <a href="..." class="back-button" aria-label="Back">
+    <svg>...</svg>
+  </a>
+
+* Typography
+  - Use `<h1>` for the page title.
+  - Use `<p class="lead">` immediately under the `<h1>` for a larger, lighter summary text.
+  - Use `<h2>` for section dividers.
+
+* Tables
+  Standard HTML `<table>`, `<thead>`, `<tr>`, `<th>`, and `<td>` elements are automatically styled with rounded corners, subtle shadows, and crisp gray headers. Do not add inline styles to tables.
+
+* Interview Questions (.interview-box)
+  Use this for end-of-section tests or interview prep.
+  Usage:
+  <div class="interview-box">
+    <h3>Heading (Optional)</h3>
+    <ul>
+      <li>Question 1</li>
+    </ul>
+  </div>
+
+* Custom Diagrams (.custom-diagram, .diagram-node, .diagram-arrow)
+  Use this for flowcharts instead of Mermaid.js. It features staggered slide-in and pulsing arrow animations.
+  Usage:
+  <div class="custom-diagram">
+    <div class="diagram-node" style="animation-delay: 0s">...</div>
+    <div class="diagram-arrow">↓</div>
+  </div>
+
+------------------------------------------------------
+ 3. RIGHT COLUMN COMPONENTS (SIDEBAR CARDS)
+------------------------------------------------------
+Use these classes inside the `<aside class="right-column">`. They are heavily rounded, floating cards designed to summarize info.
+
+* Premium Boxes (.premium-box)
+  Standard white cards with a strong drop shadow and a colored top-bar.
+  
+  - .box-blue  => Use for "Mental Models" (Orange bar)
+  - .box-amber => Use for "Important Terms" (Green bar)
+  - .box-green => Use for "Key Takeaways" or "Getting Started" (Red/Gray bar)
+
+  Usage:
+  <div class="premium-box box-blue">
+    <h3>Mental Model</h3>
+    <p>Your content here...</p>
+  </div>
+
+* Quick Revision Box (.cloud-box)
+  Use this purely for "Quick Revision" sections. It uses a pure white background with a neumorphic (extruded) dual shadow and a very light frosted border.
+  Usage:
+  <div class="cloud-box">
+    <h3>Quick Revision</h3>
+    <ul>...</ul>
+  </div>
+
+------------------------------------------------------
+ 4. CONSISTENCY RULES
+------------------------------------------------------
+1. DO NOT use raw text for back links.
+2. DO NOT put `.premium-box` or `.cloud-box` in the left column. They belong strictly in the right column.
+3. DO NOT put `.interview-box` or `.custom-diagram` in the right column. They belong strictly in the left column.
+4. Stick to standard HTML tags inside the columns as much as possible; `styles.css` will handle the typography automatically.

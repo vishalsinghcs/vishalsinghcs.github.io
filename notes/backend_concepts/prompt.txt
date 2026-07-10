@@ -1,0 +1,513 @@
+You are an expert software engineer, technical educator, and technical writer.
+
+
+
+Your task is to convert the following lecture transcript into high-quality Markdown notes that can serve as my permanent knowledge base.
+
+
+
+The lecture transcript is the PRIMARY source of truth. However:
+
+
+
+- Correct factual mistakes if they exist.
+
+- Improve unclear explanations.
+
+- Fill small conceptual gaps only when necessary for understanding.
+
+- Do NOT introduce unrelated topics.
+
+- Keep the notes faithful to the lecture.
+
+
+
+# Goal
+
+
+
+The notes are NOT meant to replace a textbook.
+
+
+
+They are meant for:
+
+
+
+- Quick revision
+
+- Interview preparation
+
+- Long-term reference
+
+- Building deep conceptual understanding
+
+- Software engineering knowledge base
+
+
+
+Someone reading these notes should understand the concepts without watching the lecture again.
+
+
+
+------------------------------------
+
+
+
+# Writing Style
+
+
+
+- Use clean Markdown.
+
+- Use proper heading hierarchy (# ## ###).
+
+- Keep explanations concise.
+
+- Avoid long paragraphs.
+
+- Prefer bullet points.
+
+- Prefer tables.
+
+- Prefer comparison tables.
+
+- Prefer numbered lists.
+
+- One idea per bullet whenever possible.
+
+- Maximum paragraph length: 3-4 lines.
+
+- Break complex topics into multiple sections.
+
+- Do not write unnecessary filler.
+
+
+
+------------------------------------
+
+
+
+# Visual Learning
+
+
+
+Whenever possible, use Markdown diagrams or visuals such as images or other diagram making ways.
+
+
+
+Examples:
+
+
+
+Flowcharts
+
+
+
+```text
+
+Client
+
+   │
+
+   ▼
+
+Load Balancer
+
+   │
+
+   ▼
+
+Backend
+
+   │
+
+   ▼
+
+Database
+
+```
+
+
+
+Architecture diagrams
+
+
+
+```text
+
+Request
+
+   │
+
+Middleware
+
+   │
+
+Controller
+
+   │
+
+Service
+
+   │
+
+Repository
+
+   │
+
+Database
+
+```
+
+
+
+Request lifecycle
+
+
+
+```text
+
+Browser
+
+   ↓
+
+HTTP Request
+
+   ↓
+
+Server
+
+   ↓
+
+Business Logic
+
+   ↓
+
+Database
+
+   ↓
+
+HTTP Response
+
+```
+
+
+
+Use ASCII diagrams whenever they improve understanding.
+
+
+
+------------------------------------
+
+
+
+# Include these sections whenever applicable
+
+
+
+## Definition
+
+
+
+One or two concise sentences.
+
+
+
+## Why do we need it?
+
+
+
+Explain the problem it solves.
+
+
+
+## Mental Model
+
+
+
+Give an intuitive explanation.
+
+
+
+## How it works
+
+
+
+Explain the workflow.
+
+
+
+## Components
+
+
+
+List important parts.
+
+
+
+## Step-by-step Flow
+
+
+
+Explain execution order.
+
+
+
+## Advantages
+
+
+
+Bullet points.
+
+
+
+## Disadvantages
+
+
+
+Bullet points.
+
+
+
+## Real-world Example
+
+
+
+Small practical example.
+
+
+
+## Interview Notes
+
+
+
+Mention frequently asked interview concepts.
+
+
+
+## Common Mistakes
+
+
+
+Mention beginner mistakes.
+
+
+
+## Best Practices
+
+
+
+Only practical advice.
+
+
+
+------------------------------------
+
+
+
+# Code
+
+
+
+Whenever code is required:
+
+
+
+- Keep examples short.
+
+- Add comments only where useful.
+
+- Explain only the important parts.
+
+- Prefer realistic examples.
+
+
+
+------------------------------------
+
+
+
+# Comparisons
+
+
+
+Whenever two concepts are compared, use tables.
+
+
+
+Example:
+
+
+
+| Feature | JWT | Session |
+
+|---------|------|----------|
+
+| Stateful | No | Yes |
+
+| Storage | Client | Server |
+
+
+
+------------------------------------
+
+
+
+# Important Terms
+
+
+
+Whenever a new technical term appears:
+
+
+
+- Make it bold.
+
+- Give a one-line definition.
+
+
+
+Example:
+
+
+
+**Middleware** — Software executed between receiving a request and sending a response.
+
+
+
+------------------------------------
+
+
+
+# Key Takeaways
+
+
+
+At the end of every major topic include
+
+
+
+## Key Takeaways
+
+
+
+- ...
+
+- ...
+
+- ...
+
+- ...
+
+
+
+------------------------------------
+
+
+
+# Revision Section
+
+
+
+At the end create
+
+
+
+# Quick Revision
+
+
+
+Include only the most important facts.
+
+
+
+Maximum one page.
+
+
+
+Use only bullets.
+
+
+
+------------------------------------
+
+
+
+# Interview Revision
+
+
+
+Create
+
+
+
+# Interview Questions
+
+
+
+Include
+
+
+
+- Basic questions
+
+- Intermediate questions
+
+- Scenario-based questions
+
+
+
+Do NOT provide answers.
+
+
+
+------------------------------------
+
+
+
+# Output Requirements
+
+
+
+- Output only valid Markdown.
+
+- Do not include introductory text.
+
+- Do not mention the transcript.
+
+- Do not say "the instructor said".
+
+- Do not mention AI.
+
+- Do not repeat information.
+
+- Keep the notes compact but complete.
+
+- Optimize for readability and long-term revision.
+
+- Ensure the notes are suitable to store permanently in a knowledge base.
+
+
+- Also ensure that the Each Markdown file = one concept, not one lecture. If a lecture covers five concepts, split it into five files. And ensure structure like this for example:
+
+Backend/
+│
+├── 00-Index.md
+│
+├── HTTP/
+│   ├── HTTP Protocol.md
+│   ├── Headers.md
+│   ├── Cookies.md
+│   └── Status Codes.md
+│
+├── API Design/
+│   ├── Routing.md
+│   ├── REST.md
+│   ├── CRUD.md
+│   └── Serialization.md
+
+Now convert the following lecture transcript into the notes described above and write concepts taught in this lecture.
+
+
+paste transcript here

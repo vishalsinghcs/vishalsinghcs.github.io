@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interview Questions: Routing</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper" style="max-width: 900px; display: block; margin: 0 auto;">
+      <main>
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="mind-map.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="../04-Serialization and Deserialization/01-What is Serialization.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 03 - Routing &gt; Interview Questions</div>
+        
+        <h1>Interview Questions</h1>
+        <p class="lead">
+          03 - Routing: Dynamic Mapping & API Architecture
+        </p>
+
+        <p class="muted" style="margin-bottom: 3rem;">
+          These questions test engineering thinking, debugging ability, production experience, and trade-off analysis. Try to answer them thoroughly without looking up definitions.
+        </p>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">1. Scenario-based Questions (40%)</h3>
+          <ul style="color: #000;">
+            <li style="margin-bottom: 1rem;">You notice two API routes exist in your codebase: <code>GET /api/users/:id</code> and <code>GET /api/users/active</code>. However, requests to <code>/active</code> keep hitting the <code>:id</code> handler and throwing "Invalid ID" errors. Why is this happening, and how do you fix it?</li>
+            <li style="margin-bottom: 1rem;">Your team is building a search endpoint. A junior developer suggests using <code>POST /api/search</code> to send complex search criteria in the request body, while another suggests using <code>GET /api/search?q=...</code>. What are the caching and semantic trade-offs of each approach?</li>
+            <li style="margin-bottom: 1rem;">You need to deprecate an old endpoint <code>/api/v1/checkout</code> and migrate users to <code>/api/v2/checkout</code>. However, mobile apps cannot be updated instantly. Describe a safe, phased migration strategy using route versioning.</li>
+            <li style="margin-bottom: 1rem;">Your API server is receiving thousands of requests for <code>GET /api/products/null</code>. The client team insists they aren't explicitly sending the string "null". Where in the routing and frontend layer is this coming from and how do you handle it gracefully?</li>
+            <li style="margin-bottom: 1rem;">You deploy a new route <code>GET /dashboard/:userId/stats</code>. The next day, you discover users are manually changing the <code>userId</code> in the URL and viewing other users' private stats. How do you secure dynamic route parameters at the handler level?</li>
+            <li style="margin-bottom: 1rem;">An endpoint <code>GET /api/reports</code> returns a huge dataset and occasionally crashes the server. You decide to implement pagination via query parameters. How do you design the routing contract (URL and response structure) to inform the client about the next page?</li>
+            <li style="margin-bottom: 1rem;">A third-party webhook pushes data to your server via <code>POST /webhooks/payment</code>, but the URL sometimes includes query parameters like <code>?source=stripe</code>. Your server rejects it with a 404. How should the route matching be configured to ignore or accept query parameters during path matching?</li>
+            <li style="margin-bottom: 1rem;">Your team decides to split a monolithic backend into microservices. How do you configure a reverse proxy routing table to route <code>/api/users/*</code> to the User Service and <code>/api/orders/*</code> to the Order Service transparently?</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">2. "What if?" Questions (20%)</h3>
+          <ul style="color: #000;">
+            <li style="margin-bottom: 1rem;">What if a backend framework didn't support dynamic path parameters (like <code>:id</code>) and you could only use static strings? How would this impact your URL structure and database querying logic?</li>
+            <li style="margin-bottom: 1rem;">What if you forgot to include a catch-all wildcard route (<code>/*</code>) at the end of your server configuration? What exact HTTP response would the client receive, and what fingerprinting security risks might it expose?</li>
+            <li style="margin-bottom: 1rem;">What if REST conventions didn't exist and every action was routed through a single endpoint like <code>POST /api/action</code> with the intent specified in the body? What caching, monitoring, and infrastructure optimizations would you lose?</li>
+            <li style="margin-bottom: 1rem;">What if query parameters were strictly limited by the browser to a maximum length of 20 characters? How would you redesign complex filtering and sorting API endpoints?</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">3. Debugging Questions (15%)</h3>
+          <ul style="color: #000;">
+            <li style="margin-bottom: 1rem;">A client sends a request to <code>GET /api/users/123/posts/456</code>. The server logs show the request arrived, but it returned a 404. You verify that user 123 and post 456 both exist in the database. Where in the routing layer should you start debugging?</li>
+            <li style="margin-bottom: 1rem;">You have pagination implemented via query parameters (<code>?page=1&limit=50</code>). Suddenly, the database starts crashing due to heavy queries. Upon inspection, you realize a malicious actor sent <code>?limit=1000000</code>. How do you prevent this at the routing layer before it hits the database?</li>
+            <li style="margin-bottom: 1rem;">A developer adds a new route <code>GET /api/files/*</code> to serve static images. Suddenly, all other API routes like <code>GET /api/users</code> start returning static file routing errors instead of JSON. What is the execution order bug in the routing setup?</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">4. Design Questions (15%)</h3>
+          <ul style="color: #000;">
+            <li style="margin-bottom: 1rem;">Design a URL routing structure for an e-commerce platform that needs to filter products by category, sort them by price, and support pagination. Should these be path parameters or query parameters? Write out the example URLs.</li>
+            <li style="margin-bottom: 1rem;">Design a RESTful routing schema for a collaborative document editor where users can invite other users to edit specific documents. Detail the endpoints for inviting, removing, and listing collaborators on a document.</li>
+            <li style="margin-bottom: 1rem;">Design a routing strategy to support A/B testing on your backend. How would you route 10% of users to a new experimental handler without changing the endpoint URL on the frontend?</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">5. Architecture & Trade-off Questions (10%)</h3>
+          <ul style="color: #000;">
+            <li style="margin-bottom: 1rem;">When building a public API, what are the trade-offs between placing the version number in the route path (e.g., <code>/v1/users</code>) versus placing it in a custom HTTP header (e.g., <code>Accept-Version: v1</code>)?</li>
+            <li style="margin-bottom: 1rem;">Why might a company choose to use GraphQL (which typically routes everything through a single <code>/graphql</code> endpoint) over traditional RESTful routing? What network-level routing features do they sacrifice by doing this?</li>
+          </ul>
+        </div>
+
+        <div class="nav-buttons bottom">
+          <a href="mind-map.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="../04-Serialization and Deserialization/01-What is Serialization.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

@@ -3,23 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Introduction Mind Map</title>
+    <title>Mind Map: Serialization</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../styles.css">
-    <style>
-      /* Give mind map some breathing room */
-      .mermaid {
-        display: flex;
-        justify-content: center;
-        background: #f8fafc;
-        padding: 2rem;
-        border-radius: 8px;
-        border: 1px solid #e2e8f0;
-      }
-    </style>
   </head>
   <body>
-    <div class="page-wrapper" style="max-width: 1200px; display: block; margin: 0 auto;">
+    <div class="page-wrapper" style="max-width: 900px; display: block; margin: 0 auto;">
       <main>
         <div class="nav-buttons">
           <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
@@ -28,7 +17,7 @@
               <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
           </a>
-          <a href="Backend vs Frontend.html" class="nav-btn prev" aria-label="Previous">
+          <a href="03-Deep Dive into JSON.html" class="nav-btn prev" aria-label="Previous">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="15 18 9 12 15 6"></polyline>
             </svg>
@@ -39,28 +28,43 @@
             </svg>
           </a>
         </div>
-        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 01 - Introduction &gt; Mind Map</div>
-        <h1>Introduction Mind Map</h1>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 04 - Serialisation and deserialisation &gt; Mind Map</div>
+        
+        <h1>Serialization Mind Map</h1>
         <p class="lead">
-          A visual tree structured cheat sheet covering the core concepts of backends, frontends, and infrastructure basics.
+          A visual tree structured cheat sheet covering all concepts related to data serialization formats.
         </p>
 
         <div class="mermaid">
         flowchart LR
-            Root[Introduction]
+            Root((Serialization))
 
-            %% What is a Backend
-            Root --> Backend(What is a Backend)
-            Backend --> B1[Definition<br>Centralized server listening on ports]
-            Backend --> B2[Purpose<br>Data persistence, Source of truth]
-            Backend --> B3[Components<br>DNS, Firewall, Proxy, App Server]
+            %% The Problem
+            Root --> Problem{The Problem}
+            Problem --> P1[Language Barrier<br>e.g. JS vs Rust]
+            Problem --> P2[Incompatible Types<br>Memory structures don't match]
 
-            %% Frontend vs Backend
-            Root --> FvB(Frontend vs Backend)
-            FvB --> F1[Frontend Runtime<br>Client's Browser, Sandboxed]
-            FvB --> F2[Backend Runtime<br>Centralized Server, Trusted]
-            FvB --> F3[Limitations<br>Security, CORS, DB Connections]
-            FvB --> F4[Lifecycle<br>Fetch, Paint, Hydrate JS]
+            %% The Solution
+            Root --> Solution{The Solution}
+            Solution --> S1[/Common Standard<br>Universal data translation/]
+            Solution --> S2[/OSI App Layer<br>Handled before raw network packets/]
+
+            %% Format Categories
+            Root --> Formats{Format Types}
+            Formats --> F1([Text-Based<br>Human readable but heavier])
+            Formats --> F2([Binary<br>Machine optimized, tiny and fast])
+
+            %% Text Formats
+            Formats -.-> TextF{Text Formats}
+            TextF --> T1>JSON<br>Web APIs, JS Native]
+            TextF --> T2>XML<br>Legacy, highly structured]
+            TextF --> T3>YAML<br>Config files, indentation based]
+
+            %% JSON Deep Dive
+            Root --> JSON{JSON Details}
+            JSON --> J1{{Strict Syntax<br>Double quotes required for keys}}
+            JSON --> J2{{Data Types<br>String, Num, Bool, Array, Object}}
+            JSON --> J3{{No Trailing Commas<br>Parser will throw errors}}
 
             %% Styling
             classDef root fill:#475569,stroke:#1e293b,stroke-width:2px,color:#fff,font-weight:bold;
@@ -68,16 +72,28 @@
             classDef node1 fill:#dbeafe,stroke:#93c5fd,stroke-width:1px,color:#1e3a8a;
             classDef branch2 fill:#16a34a,stroke:#15803d,stroke-width:2px,color:#fff,font-weight:bold;
             classDef node2 fill:#dcfce7,stroke:#86efac,stroke-width:1px,color:#14532d;
+            classDef branch3 fill:#9333ea,stroke:#7e22ce,stroke-width:2px,color:#fff,font-weight:bold;
+            classDef node3 fill:#f3e8ff,stroke:#d8b4fe,stroke-width:1px,color:#581c87;
+            classDef branch4 fill:#ea580c,stroke:#c2410c,stroke-width:2px,color:#fff,font-weight:bold;
+            classDef node4 fill:#ffedd5,stroke:#fdba74,stroke-width:1px,color:#7c2d12;
+            classDef branch5 fill:#e11d48,stroke:#be123c,stroke-width:2px,color:#fff,font-weight:bold;
+            classDef node5 fill:#ffe4e6,stroke:#fda4af,stroke-width:1px,color:#881337;
 
             class Root root;
-            class Backend branch1;
-            class B1,B2,B3 node1;
-            class FvB branch2;
-            class F1,F2,F3,F4 node2;
+            class Problem branch1;
+            class P1,P2 node1;
+            class Solution branch2;
+            class S1,S2 node2;
+            class Formats branch3;
+            class F1,F2 node3;
+            class TextF branch4;
+            class T1,T2,T3 node4;
+            class JSON branch5;
+            class J1,J2,J3 node5;
         </div>
 
         <div class="nav-buttons bottom">
-          <a href="Backend vs Frontend.html" class="nav-btn prev" aria-label="Previous">
+          <a href="03-Deep Dive into JSON.html" class="nav-btn prev" aria-label="Previous">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="15 18 9 12 15 6"></polyline>
             </svg>

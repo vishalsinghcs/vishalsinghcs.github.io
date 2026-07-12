@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interview Questions: Serialization and Deserialization</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper" style="max-width: 900px; display: block; margin: 0 auto;">
+      <main>
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="mind-map.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="#" class="nav-btn next" aria-label="Next (Coming Soon)" style="opacity: 0.5; cursor: not-allowed;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 04 - Serialisation and deserialisation &gt; Interview Questions</div>
+        
+        <h1>Interview Questions</h1>
+        <p class="lead">
+          04 - Serialization & Deserialization: Translating Data Across the Network
+        </p>
+
+        <p class="muted" style="margin-bottom: 3rem;">
+          These questions test engineering thinking, debugging ability, production experience, and trade-off analysis regarding data parsing and formatting. Try to answer them thoroughly without looking up definitions.
+        </p>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">1. Scenario-based Questions (40%)</h3>
+          <ul style="color: #333;">
+            <li style="margin-bottom: 1rem;">You deploy a new microservice written in a strictly typed language (like Rust) that communicates with a legacy Node.js frontend via JSON. The frontend sends <code>{"user_id": "123"}</code> but the backend server panics and crashes when processing the request. How would you investigate and resolve this?</li>
+            <li style="margin-bottom: 1rem;">A high-throughput trading application is currently using JSON over HTTP for inter-service communication and is experiencing severe CPU bottlenecks primarily from parsing JSON strings. How would you approach solving this performance issue?</li>
+            <li style="margin-bottom: 1rem;">A mobile app team complains that the JSON responses from your API are too large and slow over 3G networks. Besides network-level compression (like Gzip), what serialization strategies could you use to shrink the payload size?</li>
+            <li style="margin-bottom: 1rem;">A frontend developer accidentally leaves a trailing comma in a JSON request body (e.g. <code>[1, 2,]</code>). Your API returns a 500 Internal Server Error, and the logs show a parsing failure deep in a framework library. How do you handle this gracefully to return a helpful 400 Bad Request instead?</li>
+            <li style="margin-bottom: 1rem;">Two internal services share a JSON schema. Service A adds a new field <code>is_active</code> to a model, but Service B suddenly crashes when it tries to deserialize the updated model, despite not needing the new field. What could be the root cause in Service B's deserialization logic?</li>
+            <li style="margin-bottom: 1rem;">You notice that a specific API endpoint that accepts heavily nested JSON payloads is vulnerable to memory exhaustion and CPU spiking attacks. How do you protect your deserialization layer?</li>
+            <li style="margin-bottom: 1rem;">Your team wants to migrate from JSON to Protobuf for all internal microservices to improve performance, but external public clients still need to consume JSON. How do you architect this transition without maintaining two completely separate codebases?</li>
+            <li style="margin-bottom: 1rem;">An API consumer reports that timestamps sent by your server (e.g., <code>"2024-05-12T10:00:00Z"</code>) are deserializing incorrectly on their client side depending on their local timezone. What is the likely problem with how the JSON is being parsed or generated?</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">2. "What if?" Questions (20%)</h3>
+          <ul style="color: #333;">
+            <li style="margin-bottom: 1rem;">What if JSON didn't rigidly enforce double quotes around keys and allowed single quotes or unquoted keys (like raw JavaScript)? How would that impact building cross-language parsers?</li>
+            <li style="margin-bottom: 1rem;">What if binary serialization formats (like Protobuf) were used for all public-facing REST APIs instead of JSON? What problems would third-party developers face?</li>
+            <li style="margin-bottom: 1rem;">What if serialization didn't exist at all, and we just sent raw memory buffers (like a C <code>struct</code> in RAM) directly over the network to other servers? Why wouldn't this work reliably?</li>
+            <li style="margin-bottom: 1rem;">What if JSON specifications allowed arbitrary functions or executable code to be serialized and passed across the wire? What are the architectural and security implications?</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">3. Debugging Questions (15%)</h3>
+          <ul style="color: #333;">
+            <li style="margin-bottom: 1rem;">A client sends a payload containing a monetary value <code>"price": 10.50</code>, but your backend database stores it as <code>10.49999999999</code>. Where could the serialization pipeline be failing, and how do you fix it?</li>
+            <li style="margin-bottom: 1rem;">Your web server receives a JSON payload, but when you try to access the data in your handler, the body is completely empty or <code>undefined</code> despite the network tab confirming the data was sent. What configuration is missing?</li>
+            <li style="margin-bottom: 1rem;">A backend serializes an object and sends it to another service. The receiving service throws a <code>TypeError: Object of type null is not JSON serializable</code>. If the payload looked fine over the network, where could the issue lie?</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">4. Design Questions (15%)</h3>
+          <ul style="color: #333;">
+            <li style="margin-bottom: 1rem;">Design an API schema for a complex analytics dashboard that needs to serialize and send millions of nested data points to the client efficiently without crashing the browser's parser.</li>
+            <li style="margin-bottom: 1rem;">Design a serialization strategy for a real-time multiplayer game server where the network payload size must be kept under 50 bytes per tick to reduce latency.</li>
+            <li style="margin-bottom: 1rem;">Design a system that receives legacy XML payloads from a bank partner and forwards them as modern JSON to an internal service, ensuring that strict schema validation is not lost in translation.</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">5. Architecture & Trade-off Questions (10%)</h3>
+          <ul style="color: #333;">
+            <li style="margin-bottom: 1rem;">Why might a company choose to use YAML extensively for configuration files (like CI/CD pipelines or Docker), but absolutely forbid its use for real-time network request payloads?</li>
+            <li style="margin-bottom: 1rem;">When deciding between JSON and Protobuf for a new microservice architecture, what specific trade-offs are you making regarding schema evolution and backwards compatibility?</li>
+          </ul>
+        </div>
+
+        <div class="nav-buttons bottom">
+          <a href="mind-map.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="#" class="nav-btn next" aria-label="Next (Coming Soon)" style="opacity: 0.5; cursor: not-allowed;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

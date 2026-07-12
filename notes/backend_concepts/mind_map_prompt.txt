@@ -10,6 +10,7 @@ Requirements:
 - Under each concept, add 1–3 short child nodes containing the most important facts (not just titles).
 - Do NOT write paragraphs.
 - Highlight relationships between concepts through the hierarchy.
+- Use different colours in mind map consistently.
 - Use different Mermaid node shapes (circle, square, cloud, hexagon, etc.) to visually distinguish concept types where appropriate. :contentReference[oaicite:0]{index=0}
 - Keep the diagram readable; if a topic becomes too large, split it into multiple major branches instead of making one huge branch.
 - Optimize for quick revision in under 5 minutes.

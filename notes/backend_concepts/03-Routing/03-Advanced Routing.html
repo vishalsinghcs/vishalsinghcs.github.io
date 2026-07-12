@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Advanced Routing</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="02-Path and Query Parameters.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="mind-map.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 03 - Routing &gt; Advanced Routing</div>
+        
+        <h1>Advanced Routing Concepts</h1>
+        <p class="lead">
+          As an API scales, simple flat routing isn't enough. We must employ nested routes, API versioning, and wildcard error handling to build a robust system.
+        </p>
+
+        <h2>Nested Routes</h2>
+        <p>A <strong>Nested Route</strong> chains multiple resource identifiers and relationships together in the URL path to convey a specific semantic meaning.</p>
+        <p>Consider the route:</p>
+        <pre style="background: #111; color: #4ade80; padding: 1rem; border-radius: 8px; font-family: monospace;">GET /api/users/123/posts/456</pre>
+        <p>This route has multiple layers of semantic expression:</p>
+        <ol>
+          <li><code>/api/users</code>: Identifies the root resource (Users).</li>
+          <li><code>/123</code>: A path parameter targeting a specific user.</li>
+          <li><code>/posts</code>: Identifies a sub-resource belonging to that user.</li>
+          <li><code>/456</code>: A path parameter targeting a specific post belonging to that user.</li>
+        </ol>
+        <p>Nesting is ubiquitous in REST APIs because it elegantly models hierarchical data structures directly within the routing layer.</p>
+
+        <div class="mermaid">
+        flowchart TD
+            Root((Root API)) --> Users[Users Collection]
+            Users --> U1(User 123)
+            Users --> U2(...)
+            
+            U1 --> Posts[Posts Collection]
+            Posts --> P1(Post 456)
+            Posts --> P2(...)
+            
+        </div>
+
+        <h2>Route Versioning & Deprecation</h2>
+        <p>If you have an existing mobile app relying on a specific JSON response format from <code>/api/products</code>, modifying that route's response logic for a new feature might break the mobile app.</p>
+        <p>To safely introduce breaking changes, backend engineers use <strong>Route Versioning</strong>.</p>
+        
+        <div class="mermaid">
+        flowchart LR
+            Client[Mobile App] --> |GET /api/v1/products| V1[V1 Handler]
+            Client2[New Web App] --> |GET /api/v2/products| V2[V2 Handler]
+            
+            V1 --> OldData[Returns: ID, Name, Price]
+            V2 --> NewData[Returns: ID, Title, Price]
+        </div>
+
+        <h3>The Deprecation Workflow</h3>
+        <p>Versioning creates a safe deprecation window:</p>
+        <ol>
+          <li><strong>Creation:</strong> A new <code>/v2/</code> route is launched alongside the existing <code>/v1/</code> route.</li>
+          <li><strong>Notice:</strong> Frontend engineers are notified that <code>/v1/</code> is deprecated.</li>
+          <li><strong>Migration:</strong> Clients gradually update their code to point to <code>/v2/</code>.</li>
+          <li><strong>Sunsetting:</strong> Once traffic drops, <code>/v1/</code> is safely removed.</li>
+        </ol>
+
+        <h2>Catch-All Routes</h2>
+        <p>What happens if a user requests a route that does not exist on your server (e.g., <code>/api/v3/products</code>)? Without a fallback, the server might hang or return an unhelpful default error.</p>
+        <p>A <strong>Catch-All Route</strong> (often denoted by a wildcard <code>/*</code>) is placed at the very bottom of the routing configuration. If a request falls through all defined route matching algorithms without a match, it hits the catch-all handler. This handler typically returns a user-friendly <code>404 Not Found</code> error response in the correct JSON format.</p>
+
+        <div class="mermaid">
+        flowchart TD
+            Req[Incoming Request] --> M1{Matches /api/users?}
+            M1 -->|Yes| H1[Users Handler]
+            M1 -->|No| M2{Matches /api/posts?}
+            M2 -->|Yes| H2[Posts Handler]
+            M2 -->|No| Fallback{Matches /*?}
+            Fallback -->|Yes| 404[Return 404 Not Found]
+            
+        </div>
+
+        <div class="nav-buttons bottom">
+          <a href="02-Path and Query Parameters.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="mind-map.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+      
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            <strong>Nesting</strong> is like opening folders on your computer: <code>C:/Users/John/Documents/file.txt</code>. <strong>Versioning</strong> is like saving a new file as <code>Project_v2.docx</code> instead of overwriting the original.
+          </p>
+        </div>
+
+        <div class="premium-box box-amber">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>Route Versioning:</strong> Prefixing routes with a version number (e.g. <code>v1</code>) to safely introduce breaking changes.</li>
+            <li><strong>Deprecation:</strong> Announcing that a feature (or route) is scheduled for removal, providing a window for migration.</li>
+            <li><strong>Catch-All / Wildcard Route:</strong> A fallback route that catches any unmatched requests, usually to return a 404 error.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li>Nested routes express relationships (e.g., fetching a post belonging to a specific user).</li>
+            <li>Versioning allows non-breaking schema updates alongside old APIs.</li>
+            <li>It enables a safe deprecation and migration workflow.</li>
+            <li>A catch-all route (<code>/*</code>) catches undefined routes at the end of the matching process.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+    
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+  </body>
+</html>

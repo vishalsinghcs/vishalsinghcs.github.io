@@ -18,7 +18,7 @@ If yes, ALWAYS add a visual along with text.
 
 Prefer visuals in this order:
 
-1. Mermaid diagrams (Flowcharts, Sequence diagrams, Mindmaps, ER diagrams, State diagrams)
+1. Mermaid diagrams (Flowcharts, Sequence diagrams, Mindmaps, ER diagrams, State diagrams), don't add extra colours to diagrams, keep them minimal.
 2. Architecture diagrams (ASCII if Mermaid isn't suitable)
 3. Timelines
 4. Images from trusted sources

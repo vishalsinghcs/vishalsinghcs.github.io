@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>What is Serialization</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <!-- The previous button will point to the routing module -->
+          <a href="../03-Routing/interview-questions.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="02-Types of Formats.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 04 - Serialisation and deserialisation &gt; What is Serialization</div>
+        
+        <h1>What is Serialization?</h1>
+        <p class="lead">
+          Serialization is the process of converting complex data structures from a specific programming language into a universal format for network transmission.
+        </p>
+
+        <h2>The Language Barrier Problem</h2>
+        <p>In modern web architecture, the client (frontend) and the server (backend) are often written in entirely different programming languages. They run in different environments and handle memory and types differently.</p>
+        
+        <p>For example, imagine a frontend built with a highly dynamic, uncompiled language like <strong>JavaScript</strong>, communicating with a backend built in a strict, memory-safe, compiled language like <strong>Rust</strong>.</p>
+        
+        <p>When JavaScript wants to send user data, it has a JavaScript Object in memory. If it sends this raw memory object over the internet, the Rust server will have absolutely no idea how to read it because Rust expects a strictly typed <code>struct</code>. They speak different languages.</p>
+
+        <h2>The Solution: A Common Standard</h2>
+        <p>To solve this, both machines agree on a <strong>common standard format</strong> for data transmission. This acts as a universal translator.</p>
+        
+        <ul>
+          <li><strong>Serialization:</strong> The client takes its language-specific data (e.g., JS Object) and converts it into the agreed-upon common standard format string before sending it over the network.</li>
+          <li><strong>Deserialization:</strong> The receiving server takes this standard string and reconstructs it back into its own language-specific data type (e.g., Rust Struct) so it can perform business logic.</li>
+        </ul>
+
+        <div class="mermaid">
+        flowchart LR
+            subgraph Client [Frontend App]
+                JS[JavaScript Object] --> |Serialize| Standard
+            end
+            
+            Standard([Common Standard Format]) --> |Network HTTP| Standard2
+            
+            subgraph Server [Backend App]
+                Standard2([Common Standard Format]) --> |Deserialize| Rust[Rust Struct]
+            end
+        </div>
+
+        <h2>The OSI Model Mental Model</h2>
+        <p>If you study networking via the <strong>OSI Model</strong>, you know that data transmission is incredibly complex. Data starts at the Application layer, breaks down into data frames, gets chunked into IP packets, hits the physical transmission layer, and turns into raw binary (1s and 0s) sent as voltage signals over optical fiber.</p>
+        
+        <p>As a backend engineer building APIs, you do not need to manually handle IP packets or optical voltage.</p>
+        <p>Your mental model sits entirely at the <strong>Application Layer</strong>. You only need to ensure your application can convert data to the common standard format, hand it off to the underlying networking libraries, and know that it will arrive on the other side in that exact same standard format.</p>
+        
+        <div class="mermaid">
+        flowchart TD
+            App[Application Layer: HTTP, JSON, Business Logic]
+            Lower[Lower Layers: TCP, IP, Frames, Physical Fiber]
+            
+            App -->|Delegates transmission| Lower
+            Lower -->|Delivers payload| App
+            
+            subgraph Backend Focus
+                App
+            end
+        </div>
+
+        <div class="nav-buttons bottom">
+          <a href="../03-Routing/interview-questions.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="02-Types of Formats.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+      
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            Think of a diplomat from Japan and a diplomat from Brazil trying to negotiate a treaty. Neither speaks the other's native language. So, they both agree to translate their documents into English (the common standard) before exchanging them. Once received, they translate the English documents back into their native tongues.
+          </p>
+        </div>
+
+        <div class="premium-box box-orange">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>Serialization:</strong> Converting in-memory data objects into a standard transmittable string/byte format.</li>
+            <li><strong>Deserialization:</strong> Reconstructing standard format strings/bytes back into native in-memory objects.</li>
+            <li><strong>Application Layer:</strong> The top OSI layer where data formats (like JSON) are parsed before hitting the network stack.</li>
+          </ul>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Frontend and backend often speak completely different programming languages.</li>
+            <li>Directly sending native objects over the network is impossible due to memory format mismatches.</li>
+            <li>A universal format acts as a translator between these systems.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li>Clients and servers often use completely different languages (e.g., JS vs Rust).</li>
+            <li>They cannot send native memory objects directly over the network.</li>
+            <li><strong>Serialization</strong>: Converting native data to a common format.</li>
+            <li><strong>Deserialization</strong>: Parsing a common format back into native data.</li>
+            <li>Backend devs operate at the Application layer and rarely manage raw network packets.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+    
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+  </body>
+</html>

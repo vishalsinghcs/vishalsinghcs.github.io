@@ -60,6 +60,89 @@
           <li><strong>Server:</strong> Hosts resources and waits for incoming requests. It processes the client's request and sends back a response (HTML, JSON, etc.).</li>
         </ul>
 
+        <h2>Example of an HTTP Request and Response</h2>
+        <p>Here is a real-world example of an HTTP request and its corresponding response. Notice the blank line separating the headers from the body.</p>
+        
+        <div style="display: flex; gap: 2rem; flex-wrap: wrap; margin-bottom: 2rem;">
+          <div style="flex: 1; min-width: 300px;">
+            <h3 style="color: #3b82f6;">REQUEST</h3>
+<pre style="background: #111; color: #4ade80; padding: 1rem; border-radius: 8px; overflow-x: auto; font-family: monospace; font-size: 0.9rem; line-height: 1.4;">
+PUT /api/users/12345 HTTP/1.1
+Host: example.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) 
+AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 
+Safari/537.36
+Content-Type: application/json
+Content-Length: 123
+Authorization: Bearer 
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+Accept: application/json
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: https://example.com/dashboard
+Cookie: sessionId=abc123xyz456; lang=en-US
+
+// a blank line here means, everything has been sent
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john.doe@example.com",
+  "age": 30
+}
+</pre>
+            <p><strong>Request Breakdown:</strong></p>
+            <ul style="font-size: 0.9rem;">
+              <li><strong>Start Line:</strong> <code>PUT</code> method to update user data at a specific URL.</li>
+              <li><strong>Host:</strong> The target domain name.</li>
+              <li><strong>User-Agent:</strong> Info about the client's browser and OS.</li>
+              <li><strong>Content-Type/Length:</strong> Tells the server the body is JSON and its exact size.</li>
+              <li><strong>Authorization:</strong> A Bearer token to prove the user's identity.</li>
+              <li><strong>Accept/Accept-Encoding:</strong> What formats and compression the client understands.</li>
+              <li><strong>Referer:</strong> The page that triggered this request.</li>
+              <li><strong>Cookie:</strong> Sends stored session data.</li>
+            </ul>
+          </div>
+          
+          <div style="flex: 1; min-width: 300px;">
+            <h3 style="color: #ec4899;">RESPONSE</h3>
+<pre style="background: #111; color: #fb923c; padding: 1rem; border-radius: 8px; overflow-x: auto; font-family: monospace; font-size: 0.9rem; line-height: 1.4;">
+HTTP/1.1 200 OK
+Date: Fri, 20 Sep 2024 12:00:00 GMT
+Content-Type: application/json
+Content-Length: 85
+Server: Apache/2.4.41 (Ubuntu)
+Cache-Control: no-store
+X-Request-ID: abcdef123456
+Strict-Transport-Security: max-age=31536000; 
+includeSubDomains; preload
+Set-Cookie: sessionId=abc123xyz456; Path=/; Secure; 
+HttpOnly
+Vary: Accept-Encoding
+Connection: keep-alive
+
+// a blank line here means, everything has been sent
+
+{
+  "message": "User updated successfully",
+  "userId": 12345,
+  "status": "success"
+}
+</pre>
+            <p><strong>Response Breakdown:</strong></p>
+            <ul style="font-size: 0.9rem;">
+              <li><strong>Status Line:</strong> <code>200 OK</code> indicating the update succeeded.</li>
+              <li><strong>Server:</strong> The web server software (Apache) processing the request.</li>
+              <li><strong>Cache-Control:</strong> <code>no-store</code> prevents caching this sensitive data.</li>
+              <li><strong>X-Request-ID:</strong> A custom header for internal tracing/logging.</li>
+              <li><strong>Strict-Transport-Security:</strong> Enforces HTTPS for future visits.</li>
+              <li><strong>Set-Cookie:</strong> Securely assigns a new session ID to the client.</li>
+              <li><strong>Vary:</strong> Tells caches that the response varies based on compression.</li>
+              <li><strong>Body:</strong> The JSON confirmation payload.</li>
+            </ul>
+          </div>
+        </div>
+
         <h2>Evolution of HTTP</h2>
         <p>Over the years, HTTP has evolved to become faster and more efficient:</p>
         <div class="mermaid">

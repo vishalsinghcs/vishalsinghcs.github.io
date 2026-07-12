@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Path and Query Parameters</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="01-Basics of Routing.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="03-Advanced Routing.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 03 - Routing &gt; Path and Query Parameters</div>
+        
+        <h1>Path and Query Parameters</h1>
+        <p class="lead">
+          Static routes are limiting. Dynamic parameters allow routes to act as templates, granting the ability to target specific resources or pass metadata to the server.
+        </p>
+
+        <h2>Dynamic Routes & Path Parameters</h2>
+        <p>Unlike static routes, a <strong>Dynamic Route</strong> contains variable sections. These variables are known as <strong>Path Parameters</strong> (or Route Parameters), because they are physically embedded within the forward slashes of the URL path.</p>
+        
+        <p>Consider the endpoint to fetch a single user's data. Hardcoding thousands of static routes like <code>/api/users/1</code>, <code>/api/users/2</code> is impossible. Instead, we use a dynamic route:</p>
+        
+        <pre style="background: #111; color: #4ade80; padding: 1rem; border-radius: 8px; font-family: monospace;">GET /api/users/:id</pre>
+
+        <p>The <code>:id</code> syntax is an industry-wide convention indicating a variable slot. When a request is made to <code>/api/users/123</code>, the server extracts the string "123" and binds it to the <code>id</code> variable. The server's handler can then use that ID to fetch the correct database record.</p>
+
+        <h3>Semantic Meaning</h3>
+        <p>REST APIs rely heavily on path parameters because they provide a human-readable, semantic construct. The route <code>/api/users/123</code> clearly reads as: <em>"Fetch the data belonging to the user resource whose ID is 123."</em></p>
+
+        <h2>Query Parameters</h2>
+        <p>In HTTP POST or PUT requests, you can send user-defined data inside the request body. However, GET requests traditionally do not have bodies. How do you pass complex data—like search queries or sorting filters—in a GET request?</p>
+
+        <p>While you <em>could</em> technically shove everything into path parameters (e.g., <code>/api/search/my+search+value</code>), doing so breaks semantic meaning and makes routing difficult to maintain. Instead, we use <strong>Query Parameters</strong>.</p>
+        
+        <pre style="background: #111; color: #fb923c; padding: 1rem; border-radius: 8px; font-family: monospace;">GET /api/books?sort=asc&limit=20&page=2</pre>
+
+        <h3>Anatomy of a Dynamic URL</h3>
+        <p>Here is how a complete URL breaks down into path and query parameters:</p>
+        <div class="custom-diagram" style="font-family: monospace; text-align: center; font-size: 1.1rem; padding: 1.5rem; background: #f8fafc; color: #333; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 2rem; overflow-x: auto;">
+          <div style="white-space: nowrap;">
+            <span>https://api.example.com</span><span>/api/users/</span><span style="font-weight: bold;">123</span><span>/posts</span><span style="font-weight: bold;">?limit=10&sort=desc</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-top: 1rem; font-size: 0.9rem; font-family: sans-serif; min-width: 600px; color: #666;">
+            <div style="flex: 1.5;">Host</div>
+            <div style="flex: 1;">Static Path</div>
+            <div style="flex: 1; font-weight: bold;">Path Param (:id)</div>
+            <div style="flex: 1;">Static Path</div>
+            <div style="flex: 1.5; font-weight: bold;">Query Params</div>
+          </div>
+        </div>
+
+        <h3>Characteristics of Query Parameters</h3>
+        <ul>
+          <li>They are appended to the very end of the URL, following a question mark (<code>?</code>).</li>
+          <li>They are formatted as key-value pairs (<code>key=value</code>).</li>
+          <li>Multiple parameters are separated by an ampersand (<code>&</code>).</li>
+        </ul>
+
+        <h3>Common Use Cases</h3>
+        <ul>
+          <li><strong>Pagination:</strong> Splitting large datasets into manageable chunks (e.g., <code>?page=2&limit=20</code>). The server returns a metadata object containing total items, current page, and the data slice.</li>
+          <li><strong>Filtering:</strong> Refining results (e.g., <code>?category=fiction</code>).</li>
+          <li><strong>Sorting:</strong> Ordering the response data (e.g., <code>?order=desc</code>).</li>
+          <li><strong>Searching:</strong> Passing a user's search string (e.g., <code>?query=harry+potter</code>).</li>
+        </ul>
+
+        <div class="mermaid">
+        flowchart TD
+            Request[URL Construction]
+            
+            subgraph Path [Path Parameters]
+                direction LR
+                P1[/api/users/]
+                P2[123]
+                P1 --> P2
+            end
+            
+            subgraph Query [Query Parameters]
+                direction LR
+                Q1[?page=]
+                Q2[2]
+                Q1 --> Q2
+            end
+            
+            Request --> Path
+            Request --> Query
+            Path -.-> |Identifies specific resource| DB
+            Query -.-> |Modifies/Filters results| DB
+        </div>
+
+        <div class="nav-buttons bottom">
+          <a href="01-Basics of Routing.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="03-Advanced Routing.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+      
+      <aside class="right-column">
+        <div class="premium-box box-amber">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>Path Parameter:</strong> Dynamic variables within the route path itself. Used to uniquely identify a resource. Conventionally denoted with a colon (e.g. <code>:id</code>).</li>
+            <li><strong>Query Parameter:</strong> Key-value metadata appended to the end of the URL after a <code>?</code>. Used to filter, sort, or paginate data.</li>
+          </ul>
+        </div>
+
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            Think of <strong>Path Parameters</strong> as the exact mailing address identifying a specific person's house. Think of <strong>Query Parameters</strong> as instructions given to the mail carrier on <em>how</em> to deliver the mail (e.g., "leave at front door", "fragile").
+          </p>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li>Dynamic routes use path parameters (e.g., <code>/users/:id</code>) as variable slots.</li>
+            <li>Path parameters identify specific resources semantically.</li>
+            <li>Query parameters follow a <code>?</code> as key-value pairs.</li>
+            <li>Query parameters are used for metadata like filtering, sorting, or pagination, especially in GET requests where bodies are absent.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+    
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+  </body>
+</html>

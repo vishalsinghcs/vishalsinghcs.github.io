@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Deep Dive into JSON</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="02-Types of Formats.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <!-- Pointing to next module or placeholder -->
+          <a href="mind-map.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 04 - Serialisation and deserialisation &gt; Deep Dive into JSON</div>
+        
+        <h1>Deep Dive into JSON</h1>
+        <p class="lead">
+          JSON is the dominant serialization standard for HTTP communication. Let's break down its rules, syntax, and capabilities.
+        </p>
+
+        <h2>What is JSON?</h2>
+        <p><strong>JSON</strong> stands for <strong>JavaScript Object Notation</strong>. As the name suggests, it was derived from JavaScript, meaning it looks and behaves very similarly to a native JavaScript object.</p>
+        <p>However, JSON is completely language-agnostic today. You will find it everywhere: in Python data processing, Rust servers, Go microservices, application logs, and configuration files.</p>
+
+        <h2>The Syntax Rules</h2>
+        <p>While JSON looks like JavaScript, it is much stricter. It relies on a few fundamental rules to ensure any parser (regardless of language) can read it predictably.</p>
+        
+        <ol>
+          <li><strong>Braces:</strong> A JSON object must start with an opening curly brace <code>{</code> and end with a closing curly brace <code>}</code>.</li>
+          <li><strong>Keys:</strong> All keys MUST be strings enclosed in exactly <strong>double quotes</strong> (<code>"</code>). You cannot use single quotes or leave keys unquoted.</li>
+          <li><strong>Values:</strong> Values can only be one of the following fundamental data types:</li>
+            <ul>
+              <li><strong>String:</strong> Enclosed in double quotes (e.g., <code>"Alice"</code>).</li>
+              <li><strong>Number:</strong> Integers or floats (e.g., <code>123</code> or <code>3.14</code>).</li>
+              <li><strong>Boolean:</strong> <code>true</code> or <code>false</code>.</li>
+              <li><strong>Array:</strong> A list of values inside brackets (e.g., <code>[1, 2, 3]</code>).</li>
+              <li><strong>Object:</strong> A nested JSON object.</li>
+              <li><strong>Null:</strong> Representing an empty value (<code>null</code>).</li>
+            </ul>
+        </ol>
+
+        <h2>Example Structure</h2>
+        <p>Here is an example demonstrating all valid JSON data types, including nesting:</p>
+        
+<pre style="background: #111; color: #fff; padding: 1.5rem; border-radius: 8px; font-family: monospace; overflow-x: auto;">
+{
+  <span style="color: #fbbf24;">"id"</span>: <span style="color: #4ade80;">101</span>,
+  <span style="color: #fbbf24;">"name"</span>: <span style="color: #38bdf8;">"John Doe"</span>,
+  <span style="color: #fbbf24;">"isActive"</span>: <span style="color: #f472b6;">true</span>,
+  <span style="color: #fbbf24;">"roles"</span>: [<span style="color: #38bdf8;">"admin"</span>, <span style="color: #38bdf8;">"editor"</span>],
+  <span style="color: #fbbf24;">"address"</span>: {
+    <span style="color: #fbbf24;">"country"</span>: <span style="color: #38bdf8;">"India"</span>,
+    <span style="color: #fbbf24;">"postalCode"</span>: <span style="color: #4ade80;">110001</span>
+  }
+}
+</pre>
+
+        <h2>The Lifecycle of JSON</h2>
+        <p>When a frontend client sends this data, it converts its native state into a raw string representing this JSON structure. This raw string is what travels across the wire.</p>
+        <p>When the backend server receives this raw string, its router passes it to a JSON parser. The parser reads the string, validates the double quotes and braces, and converts it into the backend's native data structure (like a Python Dictionary or Java Class instance) to execute business logic.</p>
+        
+        <div class="mermaid">
+        sequenceDiagram
+            participant Client as Frontend (JavaScript)
+            participant Network as HTTP / Internet
+            participant Server as Backend (e.g. Python)
+            
+            Client->>Client: Native Object in Memory
+            Client->>Client: JSON.stringify(object)
+            Client->>Network: Send raw string: `{"id": 101}`
+            Network->>Server: Deliver raw string
+            Server->>Server: json.loads(string)
+            Server->>Server: Validates braces & quotes
+            Server->>Server: Native Python Dictionary Created
+        </div>
+
+        <div class="nav-buttons bottom">
+          <a href="02-Types of Formats.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <!-- Pointing to next module or placeholder -->
+          <a href="mind-map.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+      
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            Think of JSON as a very strict clipboard. You can copy a complex data structure from one app, put it on this strict clipboard, and paste it perfectly into a completely different app without losing the structure.
+          </p>
+        </div>
+
+        <div class="premium-box box-orange">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>JSON:</strong> A text-based, language-agnostic data interchange format derived from JavaScript.</li>
+            <li><strong>Trailing Comma:</strong> A comma placed after the last element in an array or object. Strictly forbidden in JSON.</li>
+            <li><strong>JSON Parser:</strong> The engine built into backend languages (like Python's <code>json</code> module) that validates and converts JSON strings into native code objects.</li>
+          </ul>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>JSON enforces double quotes for all keys. Single quotes will break the parser.</li>
+            <li>JSON strictly forbids trailing commas, unlike native JavaScript.</li>
+            <li>JSON only supports fundamental types: strings, numbers, booleans, arrays, objects, and null.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li>JSON stands for JavaScript Object Notation.</li>
+            <li>It is used universally across Python, Rust, Java, etc.</li>
+            <li>Requires <code>{}</code> braces.</li>
+            <li>Keys MUST be double-quoted.</li>
+            <li>Network transmission sends JSON as a raw string.</li>
+            <li>Backend parsers read this string to recreate objects in RAM.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+  </body>
+</html>

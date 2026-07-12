@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Types of Formats</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="01-What is Serialization.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="03-Deep Dive into JSON.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 04 - Serialisation and deserialisation &gt; Types of Formats</div>
+        
+        <h1>Types of Serialization Formats</h1>
+        <p class="lead">
+          Just as there are many programming languages and databases, there are multiple standards for serialization depending on the use case.
+        </p>
+
+        <h2>Categorizing Formats</h2>
+        <p>Serialization formats broadly fall into two categories: <strong>Text-Based</strong> and <strong>Binary</strong>.</p>
+        
+        <div class="mermaid">
+        flowchart TD
+            Root[Serialization Standards]
+            
+            Root --> Text[Text-Based Formats]
+            Root --> Binary[Binary Formats]
+            
+            Text --> Json[JSON]
+            Text --> Yaml[YAML]
+            Text --> Xml[XML]
+            
+            Binary --> Proto[Protobuf]
+        </div>
+
+        <h3>1. Text-Based Formats</h3>
+        <p>These formats are designed to be human-readable. You can easily open them in a text editor, read the contents, and debug them manually. Because they prioritize readability, they are slightly larger in file size and require slightly more compute to parse.</p>
+        <ul>
+          <li><strong>JSON (JavaScript Object Notation):</strong> The undisputed king of modern web APIs. It is lightweight, widely supported, and native to JavaScript. We will dive deeper into this in the next lesson.</li>
+          <li><strong>XML (eXtensible Markup Language):</strong> Older and highly structured (looks like HTML). Still heavily used in legacy enterprise systems, SOAP APIs, and financial software.</li>
+          <li><strong>YAML (YAML Ain't Markup Language):</strong> Extremely readable due to its reliance on indentation rather than brackets. Mostly used for configuration files (like Docker or CI/CD pipelines) rather than real-time network requests.</li>
+        </ul>
+
+        <h3>2. Binary Formats</h3>
+        <p>These formats are not human-readable. They compile data directly into dense binary representations. Because they skip the human-readable text step, they are incredibly fast to parse and result in tiny payload sizes.</p>
+        <ul>
+          <li><strong>Protobuf (Protocol Buffers):</strong> Developed by Google, Protobuf is the primary serialization format used in high-performance microservice communication, particularly alongside frameworks like <strong>gRPC</strong>.</li>
+        </ul>
+
+        <h2>Choosing the Right Tool</h2>
+        <p>The backend engineering ecosystem is vast. You don't need to master every single technology on day one. When starting out, if you master <strong>HTTP Rest APIs</strong> communicating via <strong>JSON</strong> and storing data in a relational database like <strong>PostgreSQL</strong>, you are perfectly equipped for ~80% of modern backend roles.</p>
+        <p>You can always adopt Protobuf or YAML as your career demands it.</p>
+
+        <div class="nav-buttons bottom">
+          <a href="01-What is Serialization.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="03-Deep Dive into JSON.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+      
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            Text formats are like reading a well-formatted book—anyone can understand it, but it takes up a lot of space. Binary formats are like shorthand code—unintelligible to humans, but incredibly dense and fast for machines to process.
+          </p>
+        </div>
+
+        <div class="premium-box box-orange">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>JSON:</strong> JavaScript Object Notation; the default standard for HTTP REST APIs.</li>
+            <li><strong>Protobuf:</strong> Protocol Buffers; a dense binary format built by Google, often used in gRPC microservices.</li>
+            <li><strong>YAML:</strong> A human-readable text format heavily relying on indentation, used mostly for configuration.</li>
+          </ul>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>JSON is the king of web APIs. Master it first.</li>
+            <li>Text-based formats trade network efficiency for developer debugging ease.</li>
+            <li>Binary formats are used when nanosecond speed and minimum bandwidth are critical.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>Text-Based:</strong> Human-readable, heavier. (JSON, XML, YAML)</li>
+            <li><strong>Binary:</strong> Machine-optimized, extremely fast/small. (Protobuf)</li>
+            <li><strong>JSON</strong> is the most popular choice for HTTP REST APIs.</li>
+            <li><strong>YAML</strong> is the most popular choice for configuration files.</li>
+            <li><strong>Protobuf</strong> is popular for internal microservice communication (gRPC).</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+    
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+  </body>
+</html>

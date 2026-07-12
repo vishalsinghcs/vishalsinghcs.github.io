@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Basics of Routing</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="../02-HTTP Protocol/interview-questions.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="02-Path and Query Parameters.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 03 - Routing &gt; Basics of Routing</div>
+        
+        <h1>Basics of Routing</h1>
+        <p class="lead">
+          If HTTP methods describe the "what" of a request, routing describes the "where". Routing maps client intentions to specific server-side logic.
+        </p>
+
+        <h2>Understanding the Concept</h2>
+        <p>In backend architecture, a client request consists of two primary semantic components that determine how the server reacts:</p>
+        <ul>
+          <li><strong>The Method (The What):</strong> The HTTP method (GET, POST, PUT, DELETE) that expresses your intent or action (e.g., fetching data vs. creating data).</li>
+          <li><strong>The Route (The Where):</strong> The URL path (e.g., <code>/api/users</code>) specifying the target resource.</li>
+        </ul>
+        <p>Routing is simply the process of taking this combination—the method and the path—and mapping it to a specific set of instructions (a Handler) on the server. This handler then executes business logic, interacts with the database, and returns a response.</p>
+
+        <div class="mermaid">
+        flowchart LR
+            Client[Client Request] --> Mapping
+            
+            subgraph Mapping [Server Router]
+                direction TB
+                M[Method: GET]
+                R[Route: /api/books]
+                M & R --> H
+            end
+            
+            H[Handler Function] --> DB[(Database)]
+            DB --> Response[JSON Response]
+        </div>
+
+        <h2>Static Routes</h2>
+        <p>The simplest form of routing is the <strong>Static Route</strong>. As the name implies, these routes have no variable parameters; they are constant strings that never change.</p>
+        
+        <h3>Characteristics of Static Routes</h3>
+        <ul>
+          <li>They consist of fixed URL paths, such as <code>/api/books</code> or <code>/dashboard/stats</code>.</li>
+          <li>They don't contain dynamic placeholders.</li>
+          <li>They generally return or operate on a uniform structure or a bulk collection of data.</li>
+        </ul>
+
+        <h3>Example Workflow</h3>
+        <p>Consider the static route <code>/api/books</code>:</p>
+        <ol>
+          <li>A <strong>GET</strong> request to <code>/api/books</code> might map to a handler that fetches an array of all books from the database.</li>
+          <li>A <strong>POST</strong> request to the same <code>/api/books</code> route will map to an entirely different handler responsible for creating a new book resource.</li>
+        </ol>
+        <p>Even though the string <code>/api/books</code> is identical in both cases, the server combines the method and the route as a unique "key". These two combinations will never clash, allowing the server to confidently route the requests to two completely separate logic blocks.</p>
+
+        <div class="mermaid">
+        flowchart TD
+            Route[Route: /api/books]
+            
+            Route -->|Method: GET| H1(getBooksHandler)
+            Route -->|Method: POST| H2(createBookHandler)
+            
+            H1 -->|Returns| R1[Array of Books]
+            H2 -->|Returns| R2[New Book Object]
+        </div>
+
+        <div class="nav-buttons bottom">
+          <a href="../02-HTTP Protocol/interview-questions.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="02-Path and Query Parameters.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+      
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            Think of the server as a large office building. The <strong>Route</strong> is the room number, and the <strong>Method</strong> is the action you want to perform once you get there. Walking into Room 101 to pick up a document (GET) is completely different from walking into Room 101 to drop off a new document (POST).
+          </p>
+        </div>
+
+        <div class="premium-box box-amber">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>Handler:</strong> The specific server-side function or block of code that executes when a route and method are successfully matched.</li>
+            <li><strong>Resource:</strong> The object or data entity represented by the route (e.g., "books" in <code>/api/books</code>).</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li>Method = The Action/Intent (What).</li>
+            <li>Route = The Address (Where).</li>
+            <li>Routing maps Method + Route -> Handler.</li>
+            <li>Static routes are fixed strings with no variables.</li>
+            <li>Same routes with different methods map to entirely different handlers.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+    
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+  </body>
+</html>

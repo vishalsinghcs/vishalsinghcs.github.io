@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Middlewares</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="02-Services and Repositories.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="04-Request Context.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 07 - Request Lifecycle &gt; Middlewares</div>
+
+        <h1>Middlewares</h1>
+        <p class="lead">
+          Functions that execute in the middle of the request lifecycle — between the entry point, routing, handlers, and the final response — to handle cross-cutting concerns without code duplication.
+        </p>
+
+        <h2>What is Middleware?</h2>
+        <p>From the entry point of a server to the moment a response is sent back to the client, the request passes through multiple function boundaries. Functions placed at these boundaries are called <strong>middlewares</strong>.</p>
+
+        <p>Like regular handlers, a middleware receives the <strong>request</strong> and <strong>response</strong> objects from the runtime — but it also receives a third thing: a <strong><code>next</code> function</strong>.</p>
+
+        <ul>
+          <li><strong><code>next()</code>:</strong> Calling this function passes execution to the next middleware in the chain. Without calling <code>next()</code>, the request stops at the current middleware.</li>
+          <li>A middleware can also choose to <strong>terminate the request</strong> by sending a response directly (e.g., returning a <code>401 Unauthorized</code> from an auth middleware), preventing execution from ever reaching the handler.</li>
+        </ul>
+
+        <h2>Why Middlewares Exist</h2>
+        <p>The same reason we use functions in programming — to avoid repeating the same code in multiple places. A backend application may have hundreds of API endpoints. Without middlewares, common logic like authentication, logging, or CORS checks would need to be duplicated in every single handler. Middlewares allow this shared logic to run once per request, automatically, without polluting the handlers.</p>
+
+        <h2>The Middleware Chain</h2>
+
+        <div class="mermaid">
+        flowchart LR
+            Client([Client Request]) --> MW1[CORS Middleware]
+            MW1 -->|next| MW2[Logging Middleware]
+            MW2 -->|next| MW3[Auth Middleware]
+            MW3 -->|next| Router[Route Matching]
+            Router --> MW4[Rate Limit Middleware]
+            MW4 -->|next| Handler[Controller / Handler]
+            Handler --> MW5[Global Error Handler]
+            MW5 --> Response([Response to Client])
+            MW3 -- "401 Fail" --> Response
+            MW4 -- "429 Fail" --> Response
+        </div>
+
+        <h2>Ordering Matters</h2>
+        <p>The order in which middlewares are registered is the order in which they execute. This is critical. The typical production-grade ordering is:</p>
+        <ol>
+          <li><strong>CORS</strong> — Terminate unauthorized origins at the earliest possible point.</li>
+          <li><strong>Logging / Monitoring</strong> — Record each request before it proceeds.</li>
+          <li><strong>Authentication</strong> — Verify identity; reject unauthenticated requests early.</li>
+          <li><strong>Rate Limiting</strong> — Protect the server from abuse.</li>
+          <li><strong>Handler Logic</strong> — The actual controller/service/repository stack.</li>
+          <li><strong>Global Error Handler</strong> — Must be last so it can catch errors from all previous steps.</li>
+        </ol>
+
+        <h2>Common Middleware Examples</h2>
+
+        <h3>CORS</h3>
+        <p>Browsers enforce a Same-Origin Policy that blocks web apps from accessing resources on a different domain. The CORS middleware checks the <code>Origin</code> header of the incoming request. If the origin is on the allowed list, it adds <code>Access-Control-Allow-Origin</code> headers to the response and calls <code>next()</code>. If not, it does nothing and the browser blocks it by default.</p>
+
+        <h3>Authentication</h3>
+        <p>Extracts a token (JWT, session ID) from the request headers. Verifies it. If invalid → returns <code>401 Unauthorized</code> immediately. If valid → extracts user info (user ID, role) and stores it in the <strong>request context</strong> (covered in the next note), then calls <code>next()</code>.</p>
+
+        <h3>Rate Limiting</h3>
+        <p>Tracks how many requests a given IP address has made within a time window. If the client exceeds the threshold → returns <code>429 Too Many Requests</code>. If within limits → calls <code>next()</code>.</p>
+
+        <h3>Global Error Handling</h3>
+        <p>Placed last in the chain. Catches any unhandled error thrown anywhere in the entire request lifecycle (from any handler, service, or other middleware). Converts it into a properly structured JSON error response (<code>400</code> for client errors, <code>500</code> for server errors) and sends it back to the client. Placing this anywhere other than last means it misses errors from subsequent steps.</p>
+
+        <h3>Logging</h3>
+        <p>Runs early in the chain to record information about every incoming request: the path, method, query parameters, and request body. This data is invaluable for debugging and auditing.</p>
+
+        <div class="nav-buttons bottom">
+          <a href="02-Services and Repositories.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="04-Request Context.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            Think of middlewares as <strong>airport security checkpoints</strong>. Every passenger (request) must pass through identity check (auth), baggage scan (validation), boarding pass check (rate limit) before reaching the gate (handler). If any checkpoint fails, the passenger is turned away early — they never reach the gate.
+          </p>
+        </div>
+
+        <div class="premium-box box-orange">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>Middleware:</strong> A function that executes between two stages of the request lifecycle, with access to req, res, and next.</li>
+            <li><strong><code>next()</code>:</strong> A function that passes control to the next middleware in the chain.</li>
+            <li><strong>429:</strong> HTTP status for "Too Many Requests" — returned by rate limiting middleware.</li>
+            <li><strong>Cross-cutting concern:</strong> A feature needed by many parts of the app (auth, logging) — middleware's ideal use case.</li>
+          </ul>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Middleware = shared code that runs for every (or many) requests, without duplication.</li>
+            <li>A middleware can either call <code>next()</code> to continue or send a response to terminate the request.</li>
+            <li>Order is critical — CORS first, Global Error Handler last.</li>
+            <li>Authentication middleware stores user info in request context, not in global state.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>Middleware receives:</strong> req, res, next.</li>
+            <li><strong>CORS:</strong> Allow/block by origin.</li>
+            <li><strong>Auth:</strong> Verify token → 401 or next().</li>
+            <li><strong>Rate Limit:</strong> Too many requests → 429.</li>
+            <li><strong>Error Handler:</strong> Always last in chain.</li>
+            <li><strong>Logging:</strong> Always early in chain.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+  </body>
+</html>

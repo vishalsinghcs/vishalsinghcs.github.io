@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interview Questions: Authentication and Authorization</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper" style="max-width: 900px; display: block; margin: 0 auto;">
+      <main>
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="mind-map.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="../06-Validation and Transformation/01-Introduction and Architecture.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 05 - Authentication and authorisation &gt; Interview Questions</div>
+        
+        <h1>Interview Questions</h1>
+        <p class="lead">
+          05 - Authentication & Authorization: Security, Identity, and Access Control
+        </p>
+
+        <p class="muted" style="margin-bottom: 3rem;">
+          These questions test your ability to design secure systems, debug complex distributed identity issues, and evaluate architectural trade-offs in modern authentication flows.
+        </p>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">1. Scenario-based Questions (40%)</h3>
+          <ul style="color: #333;">
+            <li style="margin-bottom: 1rem;">Your frontend sends a JWT in the Authorization header, but the backend rejects it as "expired". The user just logged in 5 minutes ago, and the token expiration is set to 1 hour. What could be the issue?</li>
+            <li style="margin-bottom: 1rem;">Users report that when they log in to your web application from a new device, they are sometimes randomly logged out from their old device. How would you investigate this session handling behavior?</li>
+            <li style="margin-bottom: 1rem;">You are building an e-commerce site where users can add items to a cart as an anonymous "guest" before creating an account. How do you handle authentication and session merging when they finally click "Sign Up"?</li>
+            <li style="margin-bottom: 1rem;">An attacker steals a user's JWT from local storage via an XSS vulnerability. How can you detect or mitigate the impact since stateless JWTs cannot easily be revoked?</li>
+            <li style="margin-bottom: 1rem;">Your distributed Redis cluster holding stateful session IDs goes down completely. The web application starts failing all authenticated requests. How do you recover or design for this failure?</li>
+            <li style="margin-bottom: 1rem;">A user complains that they can see the "Admin Dashboard" button in the UI, but when they click it, the API returns a 403 Forbidden error. How do you debug the disconnect between the UI state and the backend RBAC?</li>
+            <li style="margin-bottom: 1rem;">Your API is rate-limited, but an attacker is spamming the /login endpoint. You notice they are trying to measure response times to guess valid emails (a timing attack). How do you implement a constant-time defense in your existing application?</li>
+            <li style="margin-bottom: 1rem;">A microservice architecture uses OAuth 2.0. Service A requests a token from the Auth Server and passes it to Service B. Service B trusts the token, but you suspect a "confused deputy" problem. How do you validate the token's audience securely?</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">2. "What if?" Questions (20%)</h3>
+          <ul style="color: #333;">
+            <li style="margin-bottom: 1rem;">What would happen to modern microservice architectures if JWTs didn't exist and every service had to validate stateful sessions with a central database?</li>
+            <li style="margin-bottom: 1rem;">What if HTTP cookies were entirely removed from browsers for privacy reasons? How would we implement automated stateful authentication?</li>
+            <li style="margin-bottom: 1rem;">What if you designed an RBAC system where permissions were tied directly to users instead of abstract roles? How would it scale as your company grows to 10,000 employees with changing job titles?</li>
+            <li style="margin-bottom: 1rem;">What if OAuth 2.0 didn't have the concept of "scopes"? What would be the security implications for third-party integrations like "Sign in with Google"?</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">3. Debugging Questions (15%)</h3>
+          <ul style="color: #333;">
+            <li style="margin-bottom: 1rem;">A user logs in successfully, but the browser does not attach the session cookie to subsequent API requests. The API and the frontend are hosted on different subdomains. What headers or cookie attributes are missing?</li>
+            <li style="margin-bottom: 1rem;">You implement a hybrid approach where you store blacklisted JWTs in Redis. However, users who were banned are still able to access the API for up to 5 minutes after the ban. Where is the bug in your invalidation logic?</li>
+            <li style="margin-bottom: 1rem;">An API endpoint checks <code>if (user.role === 'admin')</code> but the database stores roles as an array <code>[ 'editor', 'admin' ]</code>. A user with the admin role is getting a 403. How did this happen and how would you fix the authorization middleware?</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">4. Design Questions (15%)</h3>
+          <ul style="color: #333;">
+            <li style="margin-bottom: 1rem;">Design a secure "Password Reset" flow. Discuss how you generate the reset token, where you store it, how long it lives, and how you prevent abuse of the endpoint.</li>
+            <li style="margin-bottom: 1rem;">Design an authentication system for a smart TV application where typing a complex password via the remote control is difficult. How do you delegate the login flow to the user's smartphone?</li>
+            <li style="margin-bottom: 1rem;">Design a system that temporarily grants a third-party vendor access to upload a specific file to your secure S3 bucket without giving them permanent AWS IAM credentials.</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">5. Architecture & Trade-off Questions (10%)</h3>
+          <ul style="color: #333;">
+            <li style="margin-bottom: 1rem;">When would you choose to use opaque tokens (random strings validated via a database lookup) instead of structured tokens (JWTs) for your internal microservice authentication?</li>
+            <li style="margin-bottom: 1rem;">Why might an enterprise company choose to implement their own custom authentication service instead of using a robust managed provider like Auth0 or AWS Cognito?</li>
+          </ul>
+        </div>
+
+        <div class="nav-buttons bottom">
+          <a href="mind-map.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="../06-Validation and Transformation/01-Introduction and Architecture.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

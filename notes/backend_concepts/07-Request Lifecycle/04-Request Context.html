@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Request Context</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="03-Middlewares.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="mind-map.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 07 - Request Lifecycle &gt; Request Context</div>
+
+        <h1>Request Context</h1>
+        <p class="lead">
+          A shared, request-scoped state that allows middlewares and handlers to communicate data without being directly coupled to each other.
+        </p>
+
+        <h2>The Problem It Solves</h2>
+        <p>In the middleware chain, multiple functions execute sequentially for a single request. Consider the authentication middleware — it verifies the user's token and discovers the user's ID and role. Now the handler needs that user ID to insert a record correctly. How does the handler get it?</p>
+        <ul>
+          <li><strong>Wrong approach:</strong> Pass the user ID directly as a function parameter — this tightly couples the middleware and handler together.</li>
+          <li><strong>Wrong approach:</strong> Store it in a global variable — this causes race conditions when thousands of requests run concurrently.</li>
+          <li><strong>Correct approach:</strong> Store it in the <strong>request context</strong> — a shared state scoped to this single request only.</li>
+        </ul>
+
+        <h2>What is Request Context?</h2>
+        <p>Request context is a <strong>key-value store</strong> that is:</p>
+        <ul>
+          <li><strong>Scoped to one request:</strong> Created when a request arrives and destroyed when the response is sent. It is completely isolated from other concurrent requests.</li>
+          <li><strong>Accessible to all:</strong> Every middleware and handler in the chain for that request can read from and write to the context.</li>
+          <li><strong>Framework-provided:</strong> Every major backend runtime provides its own implementation — <code>context.Context</code> in Go, the <code>req</code> object's custom properties in Express, <code>request.state</code> in Python frameworks, etc.</li>
+        </ul>
+
+        <h2>Core Use Cases</h2>
+
+        <h3>1. Passing Authentication Data</h3>
+        <p>The auth middleware verifies a JWT, extracts <code>userId</code> and <code>userRole</code>, and stores them in the context. Any downstream handler then reads from context instead of trusting user-supplied data in the request body — which would be a security vulnerability (a malicious client could fake any user ID).</p>
+
+        <div class="mermaid">
+        sequenceDiagram
+            participant Client
+            participant AuthMW as Auth Middleware
+            participant Ctx as Request Context
+            participant Handler
+
+            Client->>AuthMW: POST /books (with JWT)
+            AuthMW->>AuthMW: Verify token
+            AuthMW->>Ctx: Set userId, userRole
+            AuthMW->>Handler: next()
+            Handler->>Ctx: Get userId
+            Ctx-->>Handler: "user_abc123"
+            Handler->>Handler: Insert book with userId from context
+        </div>
+
+        <h3>2. Request ID / Tracing</h3>
+        <p>An early middleware generates a unique ID (UUID) for the request and stores it in context. Every log line, every downstream service call, and every error message uses that same ID. This makes it possible to trace a single request's journey across dozens of microservices in a distributed system.</p>
+
+        <h3>3. Cancellation and Deadlines</h3>
+        <p>In Go (and similar languages), the context is also used to carry <strong>cancellation signals and deadlines</strong>. If a client disconnects before the server responds, the context is cancelled. Any downstream operation (database query, external API call) that respects the context will abort immediately, freeing up resources instead of hanging indefinitely.</p>
+
+        <h2>Security Implication</h2>
+        <p>Never use user-provided data from the request body to identify who the user is. Always read identity from the request context (where it was placed by the authentication middleware after token verification). This is a critical security boundary:</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Source</th>
+              <th>Trusted?</th>
+              <th>Why</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Request body <code>userId</code> field</td>
+              <td>❌ Never</td>
+              <td>Any client can send any value — easily spoofed</td>
+            </tr>
+            <tr>
+              <td>Request context <code>userId</code></td>
+              <td>✅ Yes</td>
+              <td>Set by auth middleware after cryptographic token verification</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="nav-buttons bottom">
+          <a href="03-Middlewares.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="mind-map.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            Think of request context as a <strong>boarding pass folder</strong> for each airline passenger (request). The check-in agent (auth middleware) puts the passenger's seat number and meal preference (userId, role) inside. Every flight attendant (subsequent handler/middleware) can open that folder and read the info — without the passenger having to repeat it every time. And critically, one passenger's folder never gets mixed up with another's.
+          </p>
+        </div>
+
+        <div class="premium-box box-orange">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>Request Context:</strong> A request-scoped key-value store accessible by all middlewares and handlers for that single request.</li>
+            <li><strong>Request Scoping:</strong> Data is isolated per request — concurrent requests cannot see each other's context.</li>
+            <li><strong>Cancellation Signal:</strong> A signal propagated through the context to abort downstream operations when a request is cancelled.</li>
+            <li><strong>Tracing / Request ID:</strong> A unique ID stored in context to track a request across services in logs.</li>
+          </ul>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Request context decouples middlewares from handlers — neither needs to know about the other directly.</li>
+            <li>Always read user identity (userId, role) from context, never from the request body.</li>
+            <li>Context is request-scoped — it is not a global store. Concurrent requests have separate contexts.</li>
+            <li>Context can carry deadlines and cancellation signals to prevent server hangs on slow downstream calls.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>What:</strong> Key-value store scoped to one HTTP request.</li>
+            <li><strong>Who sets it:</strong> Middlewares (e.g., auth middleware).</li>
+            <li><strong>Who reads it:</strong> Subsequent middlewares and handlers.</li>
+            <li><strong>Use case 1:</strong> Pass userId/role from auth to handler.</li>
+            <li><strong>Use case 2:</strong> Attach request ID for distributed tracing.</li>
+            <li><strong>Use case 3:</strong> Propagate cancellation/deadline signals.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+  </body>
+</html>

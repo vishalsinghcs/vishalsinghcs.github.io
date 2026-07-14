@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transformations</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="02-Types of Validation.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="04-Frontend vs Backend Validation.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 06 - Validation and transformation &gt; Transformations</div>
+        
+        <h1>Transformations</h1>
+        <p class="lead">
+          Converting and normalizing incoming data into desirable formats before or after validation occurs.
+        </p>
+
+        <h2>What is Transformation?</h2>
+        <p>While validation checks if data is correct, transformation modifies the data. This is usually done in the same pipeline as validation (The Validation and Transformation Pipeline) so that all data preparation logic stays in one unified place.</p>
+
+        <h2>1. Type Casting</h2>
+        <p>Type casting is the act of forcing one data type to convert into another data type. This is especially critical when dealing with HTTP components that do not natively support strict data types.</p>
+        
+        <ul>
+          <li><strong>Query Parameters:</strong> When a client sends a GET request to <code>/api/bookmarks?page=2&limit=20</code>, the values <code>2</code> and <code>20</code> are transmitted as Strings by the HTTP protocol.</li>
+          <li><strong>The Problem:</strong> If your validation pipeline strictly requires <code>page</code> and <code>limit</code> to be Numbers, it will fail and reject the request.</li>
+          <li><strong>The Solution:</strong> A transformation step intercepts the payload, recognizes that the fields are meant to be numeric, casts the strings <code>"2"</code> and <code>"20"</code> into integers <code>2</code> and <code>20</code>, and then passes them to the validation layer.</li>
+        </ul>
+
+        <h2>2. Data Normalization</h2>
+        <p>Normalization involves formatting string data consistently to prevent business logic errors later in the service layer.</p>
+
+        <ul>
+          <li><strong>Emails:</strong> A user might input their email as <code>User.Name@Example.com</code>. A transformation step will automatically convert this to lowercase: <code>user.name@example.com</code>, preventing duplicate account creations caused by case sensitivity in the database.</li>
+          <li><strong>Phone Numbers:</strong> The client sends a phone number like <code>1234567890</code>. The transformation pipeline detects this and prepends the required <code>+</code> character (e.g., <code>+1234567890</code>) so that the downstream SMS service layer does not crash.</li>
+        </ul>
+
+        <h2>The Pipeline Flow</h2>
+        <p>In practice, transformation and validation run sequentially. Often, data is transformed first (e.g., casting a string to a number) so that validation can run successfully against it.</p>
+
+        <div class="mermaid">
+        flowchart LR
+            Input([Raw Client Data]) --> T1[Transform: Type Cast]
+            T1 --> V1[Validate: Type Check]
+            V1 --> T2[Transform: Normalize]
+            T2 --> V2[Validate: Semantic Check]
+            V2 --> Output([Clean, Safe Data])
+        </div>
+
+        <div class="nav-buttons bottom">
+          <a href="02-Types of Validation.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="04-Frontend vs Backend Validation.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+      
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            Validation is the inspector; Transformation is the tailor. Validation checks if the suit fits. Transformation alters the suit so that it fits perfectly before the inspector even looks at it.
+          </p>
+        </div>
+
+        <div class="premium-box box-orange">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>Type Casting:</strong> Forcing data to convert from one primitive type to another (e.g., String to Number).</li>
+            <li><strong>Normalization:</strong> Standardizing data into a consistent format (e.g., lowercasing all emails).</li>
+          </ul>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Query parameters and path parameters are always Strings by default in HTTP. They must be cast to numbers or booleans if the API requires them to be.</li>
+            <li>Group validations and transformations together in a single pipeline so developers only have to look in one place to see data rules.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>Validation:</strong> Confirms data matches requirements.</li>
+            <li><strong>Transformation:</strong> Modifies data to match requirements.</li>
+            <li><strong>Casting Example:</strong> <code>"5"</code> -> <code>5</code>.</li>
+            <li><strong>Normalization Example:</strong> <code>"TEST@ME.com"</code> -> <code>"test@me.com"</code>.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+  </body>
+</html>

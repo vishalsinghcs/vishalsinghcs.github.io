@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Controllers and Handlers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="../06-Validation and Transformation/interview-questions.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="02-Services and Repositories.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 07 - Request Lifecycle &gt; Controllers and Handlers</div>
+
+        <h1>Controllers and Handlers</h1>
+        <p class="lead">
+          The entry point of every API call — the layer responsible for parsing requests, binding data, and orchestrating the response.
+        </p>
+
+        <h2>Where Do Controllers Fit?</h2>
+        <p>When a client sends an HTTP request, it reaches the server's entry point. The routing algorithm matches the URL and method, then passes the request to the associated <strong>controller</strong> (also called a <strong>handler</strong>). These terms are used interchangeably in most frameworks.</p>
+
+        <p>The controller is the first piece of code your request-specific logic touches. It sits between the raw HTTP world and your business logic.</p>
+
+        <div class="mermaid">
+        flowchart LR
+            Client([Client]) --> Entry[Server Entry Point]
+            Entry --> Router[Route Matching]
+            Router --> Controller{Controller / Handler}
+            Controller --> Service[Service Layer]
+            Service --> Repository[Repository Layer]
+            Repository --> DB[(Database)]
+            Controller --> Response([HTTP Response])
+        </div>
+
+        <h2>The Two Default Objects</h2>
+        <p>Every handler/controller always receives (at minimum) two objects from the runtime, regardless of language or framework:</p>
+        <ul>
+          <li><strong>Request Object (<code>req</code>):</strong> Contains all incoming data — path params, query params, request body, headers, and cookies.</li>
+          <li><strong>Response Object (<code>res</code>):</strong> Used to send data back to the client — set status codes, headers, and the response body.</li>
+        </ul>
+
+        <h2>Responsibilities of a Controller</h2>
+        <p>The controller's responsibilities are strictly about <strong>data input/output and HTTP logic</strong>. It should not run business logic itself. The standard flow inside a controller is:</p>
+
+        <ol>
+          <li>
+            <strong>Bind / Deserialize:</strong> Extract and convert incoming data (JSON body, query params, path params) into the server's native format. In Go this means binding to a <code>struct</code>; in Python, a dictionary or class. In Node.js (Express), a middleware like <code>express.json()</code> usually does this automatically upstream.
+            <br><em>Failure result: return <code>400 Bad Request</code> immediately.</em>
+          </li>
+          <li>
+            <strong>Validate and Transform:</strong> Run the validation and transformation pipeline against the bound data to ensure it meets the API's requirements before proceeding.
+            <br><em>Failure result: return <code>400 Bad Request</code> with a descriptive error.</em>
+          </li>
+          <li>
+            <strong>Call the Service Layer:</strong> Pass the validated, clean data down to the service method to execute business logic.
+          </li>
+          <li>
+            <strong>Format and Send Response:</strong> Based on the success or failure returned by the service, select the appropriate HTTP status code (<code>200</code>, <code>201</code>, <code>204</code>, <code>400</code>, <code>500</code>) and send the response body.
+          </li>
+        </ol>
+
+        <h2>Why Separate the Controller from Business Logic?</h2>
+        <p>The controller is intentionally kept "thin" — its job is to deal with the HTTP layer, not compute results. Business logic belongs in the Service layer. This separation provides:</p>
+        <ul>
+          <li><strong>Testability:</strong> You can unit test service methods without simulating HTTP requests.</li>
+          <li><strong>Reusability:</strong> The same service method can be called from a REST controller, a CLI command, or a WebSocket handler.</li>
+          <li><strong>Clarity:</strong> Looking at a service method, you should not be able to tell it is used in an HTTP server. It should read like plain logic.</li>
+        </ul>
+
+        <div class="nav-buttons bottom">
+          <a href="../06-Validation and Transformation/interview-questions.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="02-Services and Repositories.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            Think of the Controller as a <strong>hotel receptionist</strong>. They don't cook the food or clean the rooms (that's the service and repository). They greet the guest (parse the request), check if they have a reservation (validate), notify the right department (call the service), and then tell the guest their room number (send the response).
+          </p>
+        </div>
+
+        <div class="premium-box box-orange">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>Handler:</strong> A function that processes an HTTP request. "Handler" and "Controller" are used interchangeably.</li>
+            <li><strong>Binding:</strong> The process of deserializing an incoming JSON body into a language-native data structure (struct, class, dict).</li>
+            <li><strong>Request Object:</strong> Contains all incoming data from the client.</li>
+            <li><strong>Response Object:</strong> Used to set status codes and send data back to the client.</li>
+          </ul>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Controllers handle HTTP-specific logic only — parsing, validating, responding.</li>
+            <li>Business logic belongs in the Service layer, not the Controller.</li>
+            <li>A controller that is hard to read likely contains too much business logic.</li>
+            <li>If binding or validation fails, the controller returns 400 immediately without calling the service.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>Step 1:</strong> Bind and deserialize incoming data.</li>
+            <li><strong>Step 2:</strong> Validate and transform data.</li>
+            <li><strong>Step 3:</strong> Call service layer.</li>
+            <li><strong>Step 4:</strong> Send HTTP response (200/400/500).</li>
+            <li><strong>Rule:</strong> Keep controllers thin — no business logic.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+  </body>
+</html>

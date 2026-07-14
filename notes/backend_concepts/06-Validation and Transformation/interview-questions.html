@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interview Questions: Validation and Transformation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper" style="max-width: 900px; display: block; margin: 0 auto;">
+      <main>
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="mind-map.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="../07-Request Lifecycle/01-Controllers and Handlers.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 06 - Validation and Transformation &gt; Interview Questions</div>
+
+        <h1>Interview Questions</h1>
+        <p class="lead">
+          06 - Validation and Transformation: Data Integrity, Security, and API Robustness
+        </p>
+
+        <p class="muted" style="margin-bottom: 3rem;">
+          These questions test your ability to design bulletproof data pipelines, reason about edge cases in API contracts, debug subtle data corruption issues, and evaluate trade-offs in validation architectures.
+        </p>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">1. Scenario-based Questions (40%)</h3>
+          <ul style="color: #333;">
+            <li style="margin-bottom: 1rem;">Your API is receiving a <code>page</code> query parameter that your validation schema expects to be a positive integer. A client sends <code>?page=0</code> and it passes type validation (it is a number), but your database query returns an unexpected result set. Where exactly did the validation pipeline fail, and how would you fix it without breaking existing clients?</li>
+            <li style="margin-bottom: 1rem;">A payment API at your company randomly processes duplicate transactions. After investigation, the root cause is that clients retry failed requests with the same payload, including the same <code>transactionId</code>. Your validation pipeline currently only checks the format of the ID, not its uniqueness. How do you extend your validation strategy to prevent this without adding heavy database load on every request?</li>
+            <li style="margin-bottom: 1rem;">You deploy a new validation rule requiring all email fields to be stored in lowercase. Users who registered with emails like <code>John.Doe@Gmail.com</code> are now unable to log in even though their credentials are correct. How did this happen, and what is the proper sequence to roll out a data normalization change safely in production?</li>
+            <li style="margin-bottom: 1rem;">A partner company is calling your REST API and consistently getting <code>400 Bad Request</code> on a date field. They claim they are sending valid ISO 8601 dates like <code>2025-07-14T00:00:00Z</code>. Your schema validates for the format <code>YYYY-MM-DD</code> only. How do you handle this versioning conflict in your validation contract without breaking your existing clients?</li>
+            <li style="margin-bottom: 1rem;">Your user registration API rejects a valid phone number <code>+441234567890</code> from a UK user because your syntactic validation only accepts US phone formats. This bug was in production for three weeks before being reported. How would you have designed the validation and testing strategy to catch regional format differences earlier?</li>
+            <li style="margin-bottom: 1rem;">A senior engineer on your team argues that since the frontend already has full form validation with strong constraints, the backend validation layer is redundant for internal tools and adds unnecessary latency. How do you respond, and what specific production incident would you cite to make your case?</li>
+            <li style="margin-bottom: 1rem;">Your API accepts an order payload where <code>items</code> is an array of objects. Each object has a <code>quantity</code> field. Type validation passes because each element is an object, but the orders are being saved with a quantity of 0. Where is the validation gap, and how do you design nested object validation without making the schema overly complex?</li>
+            <li style="margin-bottom: 1rem;">Your validation pipeline runs synchronous regex checks on all incoming strings. Under extreme load (50k req/s), you notice CPU usage spikes specifically during validation. Upon investigation, one regex for URL validation has catastrophic backtracking behavior. How would you diagnose and fix a ReDoS (Regular Expression Denial of Service) vulnerability in a production validation pipeline?</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">2. "What if?" Questions (20%)</h3>
+          <ul style="color: #333;">
+            <li style="margin-bottom: 1rem;">What if you completely removed backend validation and trusted all incoming client data? Walk through the sequence of failures — from data corruption, to broken business logic, to security vulnerabilities — that would occur progressively over the following weeks.</li>
+            <li style="margin-bottom: 1rem;">What if HTTP query parameters supported native data types (numbers, booleans, arrays) instead of always being strings? How would this change the design and necessity of the transformation layer in modern backend frameworks?</li>
+            <li style="margin-bottom: 1rem;">What if your validation pipeline returned all errors in a single response instead of failing fast on the first error? How would this change the schema design, the error response structure, and the client-side experience?</li>
+            <li style="margin-bottom: 1rem;">What if you applied strict semantic validation everywhere — for example, validating that a user-submitted <code>city</code> field actually exists in a list of real cities? Where does validation become too expensive to run synchronously on every request, and how would you architect around that?</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">3. Debugging Questions (15%)</h3>
+          <ul style="color: #333;">
+            <li style="margin-bottom: 1rem;">A <code>createUser</code> API endpoint silently saves a user with a <code>null</code> email to the database even though your validation schema marks <code>email</code> as required. The validation middleware reports success. What are the three most likely root causes, and how would you trace which one is responsible?</li>
+            <li style="margin-bottom: 1rem;">Your transformation pipeline is supposed to lowercase all incoming email addresses before saving them. After a deploy, you notice the database now has both <code>user@example.com</code> and <code>USER@EXAMPLE.COM</code> for the same user. When and how could the transformation have been bypassed?</li>
+            <li style="margin-bottom: 1rem;">An API endpoint that accepts a JSON body is working correctly in your local environment and staging, but in production it randomly returns <code>400 Bad Request</code> for the same valid payload. No code changes were deployed. What infrastructure-level or configuration issue could cause a working validation to fail only in production?</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">4. Design Questions (15%)</h3>
+          <ul style="color: #333;">
+            <li style="margin-bottom: 1rem;">Design a validation pipeline for a file upload API that accepts CSVs with up to 10,000 rows. Each row must be validated for type, format, and cross-row uniqueness (e.g., no duplicate user IDs within the same file). How do you architect this to be fast, memory-efficient, and able to return precise per-row errors?</li>
+            <li style="margin-bottom: 1rem;">Design a centralized validation service for a microservice architecture where 12 different services share common validation rules for concepts like email, phone, and country codes. How do you avoid duplication while keeping each service independently deployable? What are the failure modes of your design?</li>
+            <li style="margin-bottom: 1rem;">Design an API contract versioning strategy for a public API where you need to gradually introduce stricter validation rules (e.g., making a previously optional field required) without breaking existing third-party integrations.</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">5. Architecture & Trade-off Questions (10%)</h3>
+          <ul style="color: #333;">
+            <li style="margin-bottom: 1rem;">Should validation logic live in the Controller Layer, be extracted into a dedicated middleware, or be pushed down into the Service Layer where business rules are? Argue for each position, then defend which you would choose for a high-scale API and why.</li>
+            <li style="margin-bottom: 1rem;">When designing a validation schema for a large API, there is a trade-off between being too strict (rejecting valid but unexpected formats) and too lenient (allowing bad data through). How do you calibrate this balance differently for a public consumer API versus an internal microservice-to-microservice API?</li>
+          </ul>
+        </div>
+
+        <div class="nav-buttons bottom">
+          <a href="mind-map.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="../07-Request Lifecycle/01-Controllers and Handlers.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

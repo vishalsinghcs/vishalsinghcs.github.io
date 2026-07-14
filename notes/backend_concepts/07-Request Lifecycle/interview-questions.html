@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interview Questions: Request Lifecycle</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper" style="max-width: 900px; display: block; margin: 0 auto;">
+      <main>
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="mind-map.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="#" class="nav-btn next" aria-label="Next (Coming Soon)" style="opacity: 0.5; cursor: not-allowed;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 07 - Request Lifecycle &gt; Interview Questions</div>
+
+        <h1>Interview Questions</h1>
+        <p class="lead">
+          07 - Request Lifecycle: Controllers, Services, Repositories, Middlewares, and Request Context
+        </p>
+
+        <p class="muted" style="margin-bottom: 3rem;">
+          These questions test your ability to design scalable layered architectures, reason about middleware ordering, debug production request-handling failures, and evaluate trade-offs in how responsibility is divided across your backend layers.
+        </p>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">1. Scenario-based Questions (40%)</h3>
+          <ul style="color: #333;">
+            <li style="margin-bottom: 1rem;">Your team's controller method has grown to 300 lines. It calls the database directly, sends emails, formats response payloads, and also validates input. A new engineer is struggling to write a unit test for the email-sending logic. What architectural problem caused this and how would you refactor the code to fix it without breaking anything?</li>
+            <li style="margin-bottom: 1rem;">A production API is intermittently returning <code>500 Internal Server Error</code> on a <code>POST /orders</code> endpoint. The logs show the error originates inside a repository method. Your middleware chain runs authentication, logging, and rate limiting. The global error handler is registered but the client is still receiving an unstructured stack trace instead of a clean JSON error. What is wrong with your middleware setup and how do you fix it?</li>
+            <li style="margin-bottom: 1rem;">You have an authentication middleware that sets <code>userId</code> in the request context. A junior engineer on your team instead reads the <code>userId</code> directly from the request body in the handler (<code>req.body.userId</code>) to insert a new record. The feature works in testing. Explain precisely what security vulnerability this introduces and what an attacker could do to exploit it in production.</li>
+            <li style="margin-bottom: 1rem;">Your application has a CORS middleware, a logging middleware, a body-parsing middleware, and an authentication middleware. After a deploy, authenticated users with valid tokens are receiving <code>401 Unauthorized</code> for every request. No code in the auth middleware changed. What could have caused this and where in the middleware ordering would you investigate first?</li>
+            <li style="margin-bottom: 1rem;">A service method in your codebase is working correctly for single users, but during a flash sale where 50,000 concurrent requests hit your API simultaneously, some users are receiving another user's cart data in the response. You suspect the bug is in how request-scoped state is being managed. What is the most likely root cause and how do you reproduce and fix it?</li>
+            <li style="margin-bottom: 1rem;">You are onboarding a new backend service that needs to call three different repository methods, make an external payment gateway API call, and send a confirmation email — all as part of processing a single <code>POST /checkout</code> request. How do you structure this across your controller, service, and repository layers? What happens if the email service is down — where does the failure surface and how do you handle it gracefully?</li>
+            <li style="margin-bottom: 1rem;">Your rate limiting middleware is configured to allow 100 requests per minute per IP. A legitimate enterprise client is hitting your API from a single corporate NAT IP on behalf of 500 employees, and they keep getting <code>429 Too Many Requests</code>. How do you redesign the rate limiting strategy without removing the protection entirely?</li>
+            <li style="margin-bottom: 1rem;">In a microservice architecture, a request originates in Service A, passes through Service B, and finally hits Service C where an error occurs. Your logs across the three services show no shared identifier, making it impossible to trace the full journey of that one request. What should have been implemented at the beginning of the request lifecycle in Service A, and how would it propagate through the other services?</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">2. "What if?" Questions (20%)</h3>
+          <ul style="color: #333;">
+            <li style="margin-bottom: 1rem;">What if every backend application put all logic — validation, business rules, database queries, and response formatting — directly inside a single handler function with no layers? Walk through how this design degrades as the application grows from 5 endpoints to 500 endpoints over two years.</li>
+            <li style="margin-bottom: 1rem;">What if middlewares didn't have access to a <code>next()</code> function and could only read the request but not pass it forward? How would you implement authentication, logging, and CORS without the ability to chain execution?</li>
+            <li style="margin-bottom: 1rem;">What if request context didn't exist and the only way to pass data between middlewares and handlers was through global variables? What concurrency problems would emerge in a server handling 10,000 simultaneous requests?</li>
+            <li style="margin-bottom: 1rem;">What if the service layer was allowed to directly access the request and response objects? How would this erode the boundary between layers and make it progressively harder to test, reuse, or migrate your business logic?</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">3. Debugging Questions (15%)</h3>
+          <ul style="color: #333;">
+            <li style="margin-bottom: 1rem;">A <code>GET /books</code> endpoint works perfectly for all users, but for one specific user it consistently returns an empty array even though their books exist in the database. The repository method receives the correct <code>userId</code> when tested in isolation. The auth middleware runs before the handler. Where would you look to find the bug and what are the three most likely causes?</li>
+            <li style="margin-bottom: 1rem;">Your logging middleware is supposed to log the HTTP method, path, and response status code for every request. After deploying a change to the global error handler, the log entries for failed requests no longer include a status code — they just show <code>undefined</code>. What does this tell you about the order of your middleware and how do you fix it?</li>
+            <li style="margin-bottom: 1rem;">A service method that worked fine in your local environment starts throwing <code>Cannot read properties of undefined</code> errors in production, specifically on the line where it reads data returned from the repository. The repository method runs successfully and returns data. What could explain this discrepancy between environments and how do you isolate the cause?</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">4. Design Questions (15%)</h3>
+          <ul style="color: #333;">
+            <li style="margin-bottom: 1rem;">Design the middleware chain for a production-grade REST API that serves both a public-facing web app and a private machine-to-machine internal service on the same server. The two types of clients require different authentication mechanisms, different rate limits, and different logging verbosity. How do you structure the middleware chain to handle both without duplicating code?</li>
+            <li style="margin-bottom: 1rem;">Design a repository layer for a social media platform where the same underlying data (posts, users, likes) needs to be queried in 15 different ways across 40 API endpoints. How do you prevent the repository from becoming a tangled mess of optional parameters and conditional query branches while keeping it single-responsibility?</li>
+            <li style="margin-bottom: 1rem;">Design a request tracing system for a backend with 8 microservices. A single user action triggers a chain of calls across all 8 services. How do you propagate a unique trace ID end-to-end, store it in request context within each service, and ensure it appears in logs, error reports, and external API calls without manually passing it as a parameter in every function signature?</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">5. Architecture & Trade-off Questions (10%)</h3>
+          <ul style="color: #333;">
+            <li style="margin-bottom: 1rem;">Some teams choose to put database calls directly in the service layer, skipping the repository layer entirely, arguing it reduces boilerplate. Others strictly enforce the repository pattern. Argue both positions — when is the overhead of a repository layer genuinely worth it, and when does it become an unnecessary abstraction that slows development?</li>
+            <li style="margin-bottom: 1rem;">In a high-throughput API, every middleware adds latency to every request. A performance review shows that your authentication middleware — which performs a database lookup to verify session tokens — is adding 12ms of latency per request. How do you redesign the authentication strategy to reduce this latency without compromising security?</li>
+          </ul>
+        </div>
+
+        <div class="nav-buttons bottom">
+          <a href="mind-map.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="#" class="nav-btn next" aria-label="Next (Coming Soon)" style="opacity: 0.5; cursor: not-allowed;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

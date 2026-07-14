@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Request Lifecycle Mind Map</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper" style="max-width: 1200px; display: block; margin: 0 auto;">
+      <main>
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="04-Request Context.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="interview-questions.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 07 - Request Lifecycle &gt; Mind Map</div>
+
+        <h1 style="text-align: center;">Request Lifecycle Mind Map</h1>
+        <p class="lead" style="text-align: center; margin-bottom: 2rem;">
+          A visual cheat sheet of controllers, services, repositories, middlewares, and request context.
+        </p>
+
+        <div class="mermaid">
+        flowchart LR
+            Root((Request<br/>Lifecycle))
+
+            %% Controller / Handler
+            Root --> Ctrl{Controller / Handler}
+            Ctrl --> C1[Bind & Deserialize<br/>JSON → native struct]
+            Ctrl --> C2[Validate & Transform<br/>Check all incoming data]
+            Ctrl --> C3[Call Service Layer<br/>Delegate processing]
+            Ctrl --> C4[/Send HTTP Response<br/>200, 400, 500/]
+
+            %% Service Layer
+            Root --> Svc{Service Layer}
+            Svc --> S1([Business Logic<br/>Emails, calculations, rules])
+            Svc --> S2([Orchestration<br/>Calls multiple repositories])
+            Svc --> S3([No HTTP code<br/>Pure functions only])
+
+            %% Repository Layer
+            Root --> Repo{Repository Layer}
+            Repo --> R1{{Single Responsibility<br/>One method, one DB operation}}
+            Repo --> R2{{Constructs DB queries<br/>No business logic here}}
+
+            %% Middleware
+            Root --> MW{Middlewares}
+            MW --> MW1[CORS<br/>Block unauthorized origins]
+            MW --> MW2[Auth<br/>Verify token → 401 or next]
+            MW --> MW3[Rate Limit<br/>Exceed threshold → 429]
+            MW --> MW4[Logging<br/>Log each request early]
+            MW --> MW5[/Error Handler<br/>Must be last in chain/]
+
+            %% Request Context
+            Root --> Ctx{Request Context}
+            Ctx --> X1([Request-scoped store<br/>Key-value, isolated per request])
+            Ctx --> X2([Set by middleware<br/>e.g., userId after auth])
+            Ctx --> X3([Read by handlers<br/>Never trust req body for identity])
+            Ctx -.- X4([Tracing: request ID<br/>Track across microservices])
+
+            %% Styling
+            classDef root fill:#475569,stroke:#1e293b,stroke-width:2px,color:#fff,font-weight:bold;
+            classDef branch1 fill:#2563eb,stroke:#1d4ed8,stroke-width:2px,color:#fff,font-weight:bold;
+            classDef node1 fill:#dbeafe,stroke:#93c5fd,stroke-width:1px,color:#1e3a8a;
+            classDef branch2 fill:#16a34a,stroke:#15803d,stroke-width:2px,color:#fff,font-weight:bold;
+            classDef node2 fill:#dcfce7,stroke:#86efac,stroke-width:1px,color:#14532d;
+            classDef branch3 fill:#ea580c,stroke:#c2410c,stroke-width:2px,color:#fff,font-weight:bold;
+            classDef node3 fill:#ffedd5,stroke:#fdba74,stroke-width:1px,color:#7c2d12;
+            classDef branch4 fill:#9333ea,stroke:#7e22ce,stroke-width:2px,color:#fff,font-weight:bold;
+            classDef node4 fill:#f3e8ff,stroke:#d8b4fe,stroke-width:1px,color:#581c87;
+            classDef branch5 fill:#e11d48,stroke:#be123c,stroke-width:2px,color:#fff,font-weight:bold;
+            classDef node5 fill:#ffe4e6,stroke:#fda4af,stroke-width:1px,color:#881337;
+
+            class Root root;
+            class Ctrl branch1;
+            class C1,C2,C3,C4 node1;
+            class Svc branch2;
+            class S1,S2,S3 node2;
+            class Repo branch3;
+            class R1,R2 node3;
+            class MW branch4;
+            class MW1,MW2,MW3,MW4,MW5 node4;
+            class Ctx branch5;
+            class X1,X2,X3,X4 node5;
+        </div>
+
+        <div class="nav-buttons bottom">
+          <a href="04-Request Context.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <!-- Next module disabled -->
+          <a href="#" class="nav-btn next" aria-label="Next (Coming Soon)" style="opacity: 0.5; cursor: not-allowed;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+    </div>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+  </body>
+</html>

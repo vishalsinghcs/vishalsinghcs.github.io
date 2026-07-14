@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Services and Repositories</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="01-Controllers and Handlers.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="03-Middlewares.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 07 - Request Lifecycle &gt; Services and Repositories</div>
+
+        <h1>Services and Repositories</h1>
+        <p class="lead">
+          The two layers below the controller that execute all business logic and database operations, keeping each concern cleanly isolated.
+        </p>
+
+        <h2>The Service Layer</h2>
+        <p>After the controller validates and binds the request data, it calls the appropriate <strong>service method</strong>. The service layer is where all the actual processing of your API happens.</p>
+
+        <p>A key rule: <strong>looking at a service method, you should not be able to tell it is used in an HTTP server.</strong> It should read like a plain function that takes some data, does work, and returns a result — no HTTP status codes, no request/response objects.</p>
+
+        <h3>What a Service Does</h3>
+        <ul>
+          <li><strong>Orchestrates business logic:</strong> Sending emails, calling external APIs, computing results, applying business rules.</li>
+          <li><strong>Calls repository methods:</strong> When data needs to be read from or written to the database, the service delegates to the repository.</li>
+          <li><strong>Merges data:</strong> A single service method can call multiple repository methods and combine their results into one response.</li>
+          <li><strong>No HTTP concerns:</strong> The service never decides what status code to return — that is the controller's responsibility.</li>
+        </ul>
+
+        <h2>The Repository Layer</h2>
+        <p>The repository layer has a single, narrow responsibility: <strong>database operations</strong>. It receives data from the service, constructs the database query, executes it, and returns the raw result.</p>
+
+        <h3>Design Rules for Repositories</h3>
+        <ul>
+          <li><strong>One responsibility per method:</strong> A method to fetch all books should only fetch all books. A method to fetch one book by ID should only do that. Never use an optional parameter to change the fundamental behavior of a repository method.</li>
+          <li><strong>No business logic:</strong> The repository constructs queries. It does not apply rules, send emails, or make external calls.</li>
+          <li><strong>Returns raw data:</strong> It returns whatever the database gives back, and the service layer decides what to do with it.</li>
+        </ul>
+
+        <h2>Layer Interaction Pattern</h2>
+
+        <div class="mermaid">
+        flowchart TD
+            Controller[Controller / Handler] -->|"Validated data"| Service[Service Layer]
+            Service -->|"Query params, filters"| Repo1[Repository: Get All Books]
+            Service -->|"User ID"| Repo2[Repository: Get User by ID]
+            Repo1 --> DB[(Database)]
+            Repo2 --> DB
+            DB -->|"Raw results"| Service
+            Service -->|"Merged, processed data"| Controller
+            Controller -->|"HTTP Response 200"| Client([Client])
+        </div>
+
+        <h2>Why This Three-Layer Split?</h2>
+        <p>There is no hard requirement to use three layers — you technically could put everything in a single handler function. But as an application scales, mixing all three concerns causes serious problems:</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Layer</th>
+              <th>Concern</th>
+              <th>If Missing</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Controller</strong></td>
+              <td>HTTP I/O — parsing, validating, responding</td>
+              <td>Business logic becomes untestable in isolation</td>
+            </tr>
+            <tr>
+              <td><strong>Service</strong></td>
+              <td>Business logic — orchestration, rules, external calls</td>
+              <td>Logic is scattered across handlers, causing duplication</td>
+            </tr>
+            <tr>
+              <td><strong>Repository</strong></td>
+              <td>Database queries only</td>
+              <td>Changing databases or query logic requires touching business logic</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="nav-buttons bottom">
+          <a href="01-Controllers and Handlers.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="03-Middlewares.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            <strong>Service = Kitchen Chef.</strong> The chef (service) receives an order (from the controller), decides what to cook and how, calls on the pantry (repository) for ingredients (database data), and returns the prepared dish. The chef doesn't care about how the order arrived — that's the receptionist's (controller's) problem.
+          </p>
+        </div>
+
+        <div class="premium-box box-orange">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>Service Layer:</strong> The layer that executes all business logic, orchestrating calls to repositories and external services.</li>
+            <li><strong>Repository Layer:</strong> The layer that exclusively handles database query construction and execution.</li>
+            <li><strong>Orchestration:</strong> A service method calling multiple repositories and combining their results.</li>
+          </ul>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Service methods should not contain any HTTP-specific code (no status codes, no req/res).</li>
+            <li>Repository methods have one job — one method, one type of database operation.</li>
+            <li>A service can use many repositories; a repository should do one thing.</li>
+            <li>Swapping a database only requires changing the repository, not the service or controller.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>Controller calls:</strong> Service layer.</li>
+            <li><strong>Service calls:</strong> Repository (+ external APIs, emails, etc.).</li>
+            <li><strong>Repository calls:</strong> Database only.</li>
+            <li><strong>Service:</strong> Can use many repos; knows business rules.</li>
+            <li><strong>Repository:</strong> One operation per method; no logic.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+  </body>
+</html>

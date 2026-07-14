@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Core Concepts and History</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="../04-Serialization and Deserialization/interview-questions.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="02-The Building Blocks.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 05 - Authentication and authorisation &gt; Core Concepts and History</div>
+        
+        <h1>Core Concepts and History</h1>
+        <p class="lead">
+          Authentication and authorization are the foundational pillars of digital security, answering "Who are you?" and "What can you do?".
+        </p>
+
+        <h2>Authentication vs Authorization</h2>
+        <p>In technical terms, authentication is a mechanism to assign an identity to a subject. It answers the question: <strong>Who are you in a given context?</strong> The context could be an operating system, a platform, or your phone.</p>
+        
+        <p>On the other hand, the process of finding the answer to <strong>what you can do in a particular context</strong> (your capabilities and permissions) is called authorization.</p>
+
+        <div class="mermaid">
+        flowchart LR
+            User[User] -->|Who are you?| AuthN(Authentication)
+            AuthN -->|Identity Confirmed| AuthZ(Authorization)
+            AuthZ -->|What can you do?| Access[Resource Access]
+        </div>
+
+        <h2>Historical Evolution of Authentication</h2>
+        <p>The methods we use to authenticate have evolved drastically over centuries, shifting from implicit human trust to explicit cryptographic mathematics.</p>
+
+        <h3>1. Pre-Industrial Societies (Implicit Trust)</h3>
+        <p>Authentication was intrinsic. A village elder could vouch for a person, and deals were sealed with a handshake. It relied entirely on human contextual trust but failed to scale beyond familiar circles.</p>
+
+        <h3>2. The Medieval Period (Physical Tokens)</h3>
+        <p>Society needed explicit authentication. This led to wax seals on documents—the first widely adopted authentication tokens based on the principle of "something you possess". However, they were vulnerable to forgery (bypass attacks).</p>
+
+        <h3>3. Industrial Revolution (Shared Secrets)</h3>
+        <p>With the telegraph came the need for secure message validation. Operators used pre-agreed passphrases (static passwords), shifting the principle to "something you know".</p>
+
+        <h3>4. The Digital Phase (Computation)</h3>
+        <p>In 1961, MIT researchers introduced passwords for multi-user systems. A vulnerability incident where a password file was printed in plain text sparked the genesis of secure password storage, leading to hashing algorithms.</p>
+        
+        <h3>5. The Cryptographic Era</h3>
+        <p>In the 1970s, asymmetric cryptography (Diffie-Hellman) enabled shared secrets over untrusted mediums. Protocols like Kerberos introduced ticket-based authentication, a precursor to modern token systems.</p>
+
+        <h3>6. The Modern Era</h3>
+        <p>To combat brute-force attacks, <strong>Multi-Factor Authentication (MFA)</strong> was born, combining:</p>
+        <ul>
+          <li>Something you know (Password)</li>
+          <li>Something you have (Smart card, OTP)</li>
+          <li>Something you are (Biometrics like fingerprints)</li>
+        </ul>
+        <p>Today, cloud computing demands advanced frameworks like OAuth 2.0, JWTs, and passwordless authentication.</p>
+
+        <div class="nav-buttons bottom">
+          <a href="../04-Serialization and Deserialization/interview-questions.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="02-The Building Blocks.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+      
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            Think of a secure office building. Showing your ID badge to the front desk guard to prove you are an employee is <strong>Authentication</strong>. The guard checking the system to see if you are allowed to enter the top-secret server room is <strong>Authorization</strong>.
+          </p>
+        </div>
+
+        <div class="premium-box box-orange">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>Authentication:</strong> The process of verifying a subject's identity (Who are you?).</li>
+            <li><strong>Authorization:</strong> The process of verifying a subject's permissions (What can you do?).</li>
+            <li><strong>MFA:</strong> Multi-Factor Authentication; combining multiple verification principles (know, have, are) for higher security.</li>
+          </ul>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Authentication mechanisms evolved specifically because previous methods failed to scale securely.</li>
+            <li>Modern security relies on asymmetric cryptography, meaning secrets can be shared over untrusted mediums like the internet.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>Implicit Trust:</strong> Handshakes and vouching.</li>
+            <li><strong>Physical Tokens:</strong> Wax seals (Possession).</li>
+            <li><strong>Shared Secrets:</strong> Passphrases (Knowledge).</li>
+            <li><strong>Digital:</strong> Hashing prevents plain text vulnerabilities.</li>
+            <li><strong>Modern:</strong> MFA and OAuth.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+  </body>
+</html>

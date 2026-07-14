@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Introduction and Architecture</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="../05-Authentication and Authorization/interview-questions.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="02-Types of Validation.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 06 - Validation and transformation &gt; Introduction and Architecture</div>
+        
+        <h1>Introduction and Architecture</h1>
+        <p class="lead">
+          Understanding the role of validations and transformations in maintaining data integrity, security, and a reliable backend architecture.
+        </p>
+
+        <h2>Where Does Validation Happen?</h2>
+        <p>In a typical backend architecture, execution is broken down into three main layers:</p>
+        
+        <ol>
+          <li><strong>Controller Layer:</strong> Deals with HTTP logic—parsing requests, matching routes, handling HTTP status codes, and formatting responses.</li>
+          <li><strong>Service Layer:</strong> Executes the core business logic (e.g., sending emails, performing calculations, making external API calls).</li>
+          <li><strong>Repository Layer:</strong> Manages persistent storage and database query execution.</li>
+        </ol>
+
+        <p>Validations and transformations occur at the very beginning of the <strong>Controller Layer</strong>, immediately after the route is matched but <em>before</em> any significant business logic or database interaction happens.</p>
+
+        <div class="mermaid">
+        flowchart TD
+            Client([Client Request]) --> Router[Route Matching]
+            Router --> Val[Validation & Transformation Pipeline]
+            
+            subgraph "Controller Layer"
+                Val --> Controller[Controller Methods]
+            end
+            
+            subgraph "Service Layer"
+                Controller --> Service[Business Logic Execution]
+            end
+            
+            subgraph "Repository Layer"
+                Service --> DB[Database Operations]
+            end
+            
+            Val -- Invalid Data --> Err([Return 400 Bad Request])
+        </div>
+
+        <h2>Why Do We Validate at the Entry Point?</h2>
+        <p>Before any data (JSON payloads, query parameters, path parameters, headers) enters the service layer, we must ensure it strictly conforms to the expected format.</p>
+        
+        <ul>
+          <li><strong>Preventing Unexpected System States:</strong> If an API expects a string (like a username) but receives a number, executing business logic on it could cause the server to crash.</li>
+          <li><strong>Protecting the Database:</strong> If unvalidated data reaches the Repository layer, it will violate database constraints (e.g., Postgres expecting a <code>TEXT</code> column but receiving an integer). This causes a database failure.</li>
+          <li><strong>Better User Experience:</strong> A database failure results in a generic <code>500 Internal Server Error</code>. By validating at the entry point, we can immediately return a precise <code>400 Bad Request</code> explaining exactly which fields were missing or incorrectly formatted.</li>
+        </ul>
+
+        <div class="nav-buttons bottom">
+          <a href="../05-Authentication and Authorization/interview-questions.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="02-Types of Validation.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+      
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            Think of the Validation Pipeline like a highly strict bouncer at the front door of an exclusive club. Before you're allowed to interact with anyone inside (Service Layer) or use the facilities (Database), the bouncer checks your ID, dress code, and ticket. If anything is wrong, you are turned away immediately at the door, preventing chaos inside.
+          </p>
+        </div>
+
+        <div class="premium-box box-orange">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>Controller Layer:</strong> The layer responsible for dealing with incoming HTTP requests and outgoing HTTP responses.</li>
+            <li><strong>400 Bad Request:</strong> An HTTP status code sent when the client's input fails validation constraints.</li>
+            <li><strong>500 Internal Server Error:</strong> A generic server failure that often happens when unvalidated data crashes the database or business logic.</li>
+          </ul>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Never trust client data. Validate every payload, query, and path parameter.</li>
+            <li>Validation must happen before the Service Layer to prevent executing heavy business logic on malformed data.</li>
+            <li>Proper validation converts ugly 500 Database errors into clean, actionable 400 Bad Request errors.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>Repository Layer:</strong> DB connections, queries.</li>
+            <li><strong>Service Layer:</strong> Core business logic.</li>
+            <li><strong>Controller Layer:</strong> HTTP logic & Data entry point.</li>
+            <li><strong>Validation Timing:</strong> Immediately after route matching.</li>
+            <li><strong>Goal:</strong> Ensure data integrity and server security before execution.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+  </body>
+</html>

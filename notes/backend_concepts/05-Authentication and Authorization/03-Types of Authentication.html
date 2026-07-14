@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Types of Authentication</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="02-The Building Blocks.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="04-Authorization and Security.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 05 - Authentication and authorisation &gt; Types of Authentication</div>
+        
+        <h1>Types of Authentication</h1>
+        <p class="lead">
+          Understanding the four major types of authentication flows used by modern backend engineers.
+        </p>
+
+        <h2>1. Stateful Authentication</h2>
+        <p>In stateful authentication, the server maintains an active record of all logged-in users in a fast persistent store (like Redis). The client simply holds a meaningless reference (the Session ID) in a cookie.</p>
+        
+        <p><strong>Use Cases:</strong> Ideal for standard web applications like banking portals or administrative dashboards where security is paramount, and administrators need the ability to instantly revoke a session or forcefully log a user out.</p>
+        
+        <div class="mermaid">
+        sequenceDiagram
+            participant Client
+            participant Server
+            participant Redis
+            
+            Client->>Server: 1. Send Username/Password
+            Server->>Server: 2. Validate Credentials
+            Server->>Redis: 3. Generate & Store Session ID + User Data
+            Server->>Client: 4. Send Session ID via Cookie
+            Client->>Server: 5. Subsequent Requests (Includes Cookie)
+            Server->>Redis: 6. Lookup Session ID
+            Server->>Client: 7. Allow API Access
+        </div>
+
+        <h2>2. Stateless Authentication</h2>
+        <p>In stateless authentication, the server stores nothing about the login session. It generates a signed JWT and hands it completely over to the client. The server relies solely on its secret key to verify the token on subsequent requests.</p>
+
+        <p><strong>Use Cases:</strong> Perfect for highly scalable, distributed microservice architectures where routing every request through a centralized session database would cause a major bottleneck. Also very common for mobile application APIs.</p>
+
+        <div class="mermaid">
+        sequenceDiagram
+            participant Client
+            participant Server
+            
+            Client->>Server: 1. Send Username/Password
+            Server->>Server: 2. Validate & Sign JWT using Secret Key
+            Server->>Client: 3. Send JWT to Client
+            Client->>Server: 4. Subsequent Requests (Sends JWT in Header)
+            Server->>Server: 5. Verify Signature using Secret Key
+            Server->>Client: 6. Allow API Access
+        </div>
+
+        <h2>3. API Key Authentication</h2>
+        <p>API Keys are used almost exclusively for <strong>machine-to-machine</strong> communication. Unlike humans using web browsers, a server communicating with another server (e.g., your backend calling OpenAI's chat API) cannot fill out a login form or interact with a UI.</p>
+        <p>Instead, a developer generates a cryptographically safe string (an API key) from the platform's UI, saves it on their own server, and attaches it programmatically to every request.</p>
+
+        <p><strong>Use Cases:</strong> Used when a backend server needs to communicate with another service behind the scenes, such as calling Stripe's API to process a payment, or calling OpenAI's API to generate text.</p>
+
+        <h2>4. OAuth 2.0 and OpenID Connect (OIDC)</h2>
+        <p>Historically, if a new travel app wanted to read your Gmail to find flight tickets, it had to ask for your Google password. This was a massive security flaw—it gave the travel app <strong>total</strong> access to your account.</p>
+        
+        <p><strong>OAuth 2.0</strong> solved this "Delegation Problem" by sharing <strong>Tokens</strong> instead of passwords. It allows you to grant specific, limited permissions (e.g., "Read Emails only") to a third-party app. A standard OAuth workflow involves four key components:</p>
+        <ul>
+          <li><strong>Resource Owner:</strong> The user who owns the data (You).</li>
+          <li><strong>Client:</strong> The app requesting access (The travel app).</li>
+          <li><strong>Resource Server:</strong> The server holding the data (Google's Gmail server).</li>
+          <li><strong>Authorization Server:</strong> The server that authenticates the user and issues the token (Google's Auth server).</li>
+        </ul>
+
+        <div class="mermaid">
+        sequenceDiagram
+            participant User as Resource Owner
+            participant Client as Client (Travel App)
+            participant Auth as Authorization Server
+            participant Resource as Resource Server
+
+            Client->>Auth: 1. Redirect user to Auth Server
+            Auth->>User: 2. Prompt for login & consent
+            User->>Auth: 3. Authenticate & Grant "Read Email"
+            Auth->>Client: 4. Issue Access Token (Bearer Token)
+            Client->>Resource: 5. Request emails + Access Token
+            Resource->>Client: 6. Validate token & Return emails
+        </div>
+        
+        <p>To support different types of applications, OAuth 2.0 introduced various <strong>Flows</strong> (e.g., Authorization Code Flow for backend servers, and Client Credentials for M2M).</p>
+        
+        <p>While OAuth solved authorization (access), <strong>OpenID Connect (OIDC)</strong> was built on top of it to solve authentication (identity). It introduced the <strong>ID Token</strong> (a JWT), allowing platforms to securely implement "Sign in with Google" by passing your profile data.</p>
+
+        <div class="nav-buttons bottom">
+          <a href="02-The Building Blocks.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="04-Authorization and Security.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+      
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            <strong>OAuth 2.0</strong> is like giving a valet key to a parking attendant. The key can start the car and drive it a short distance (specific permission), but it cannot open the trunk or glovebox (limited access), and you never gave them your master house keys (password).
+          </p>
+        </div>
+
+        <div class="premium-box box-orange">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>Machine-to-Machine (M2M):</strong> Servers communicating with other servers without human interaction.</li>
+            <li><strong>Delegation Problem:</strong> The challenge of securely allowing a third-party application to access a user's resources on another server.</li>
+            <li><strong>OIDC:</strong> OpenID Connect; adds identity verification on top of OAuth 2.0.</li>
+          </ul>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Stateful auth is ideal for most standard web applications because it allows instant session revocation.</li>
+            <li>Stateless auth is ideal for highly scalable, distributed microservice architectures.</li>
+            <li>API Keys are for servers; OAuth is for delegating permissions to third parties.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>Stateful:</strong> Requires a database/Redis lookup per request.</li>
+            <li><strong>Stateless:</strong> Uses self-verifying JWTs.</li>
+            <li><strong>API Keys:</strong> Used for M2M (e.g., calling OpenAI APIs).</li>
+            <li><strong>OAuth 2.0:</strong> Solves delegation; grants scoped access without sharing passwords.</li>
+            <li><strong>OIDC:</strong> Solves identity sharing (e.g., "Sign in with Google").</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+  </body>
+</html>

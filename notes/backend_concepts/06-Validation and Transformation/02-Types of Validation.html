@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Types of Validation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="01-Introduction and Architecture.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="03-Transformations.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 06 - Validation and transformation &gt; Types of Validation</div>
+        
+        <h1>Types of Validation</h1>
+        <p class="lead">
+          Understanding the four primary categories of validation constraints you can apply to incoming client data.
+        </p>
+
+        <p>While validation rules can be as loose or as strict as your application demands, they generally fall into one of four primary categories.</p>
+
+        <h2>1. Type Validation</h2>
+        <p>The most fundamental validation. It simply checks if the provided data matches the expected primitive data type (String, Number, Boolean, Array, or Object/JSON).</p>
+        <ul>
+          <li><strong>Example:</strong> An API expects an <code>age</code> field to be a Number. If the client sends the string <code>"twenty"</code> or a Boolean <code>true</code>, the validation fails.</li>
+          <li><strong>Array Example:</strong> If an API expects an array of tags, it checks both that the payload is an array and that every element inside that array is of the expected type (e.g., strings).</li>
+        </ul>
+
+        <h2>2. Syntactic Validation</h2>
+        <p>Checks whether the provided data follows a specific structure or format. It assumes the Type Validation has already passed (e.g., it is indeed a string).</p>
+        <ul>
+          <li><strong>Emails:</strong> Checking if a string follows the standard email structure (contains an <code>@</code> symbol, a domain, and a top-level domain like <code>.com</code>).</li>
+          <li><strong>Phone Numbers:</strong> Checking if a string contains a valid country code followed by a 10-digit number.</li>
+          <li><strong>Dates:</strong> Checking if a string is formatted in the expected ISO pattern (e.g., <code>YYYY-MM-DD</code>).</li>
+        </ul>
+
+        <h2>3. Semantic Validation</h2>
+        <p>Checks whether the provided data actually makes logical sense in the context of the real world or the specific business logic.</p>
+        <ul>
+          <li><strong>Dates in Time:</strong> A user provides a perfectly formatted date string (passes syntactic validation), but the date is in the future. If the field is <code>DateOfBirth</code>, a future date makes no semantic sense and should be rejected.</li>
+          <li><strong>Logical Boundaries:</strong> A user provides an age of <code>430</code>. While it passes Type Validation (it is a number), a human cannot be 430 years old, so it fails semantic validation.</li>
+        </ul>
+
+        <h2>4. Complex (Cross-Field) Validation</h2>
+        <p>Validations where the rules of one field depend entirely on the value of another field in the same payload.</p>
+        <ul>
+          <li><strong>Matching Fields:</strong> Ensuring that the <code>passwordConfirmation</code> field is strictly equal to the <code>password</code> field.</li>
+          <li><strong>Conditional Requirements:</strong> If a user sets a field <code>isMarried</code> to <code>true</code>, then a secondary field <code>partnerName</code> becomes strictly required. If <code>isMarried</code> is <code>false</code>, <code>partnerName</code> is optional or ignored.</li>
+        </ul>
+
+        <h2>Validation Types Comparison</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>What it Checks</th>
+              <th>Example Failure</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Type</strong></td>
+              <td>Primitive data type matches (String, Number)</td>
+              <td>Sending <code>"true"</code> instead of boolean <code>true</code></td>
+            </tr>
+            <tr>
+              <td><strong>Syntactic</strong></td>
+              <td>Follows structural format (Regex patterns)</td>
+              <td>Sending <code>user#domain.com</code> instead of <code>@</code></td>
+            </tr>
+            <tr>
+              <td><strong>Semantic</strong></td>
+              <td>Logical/Real-world sense</td>
+              <td>Date of birth in the year 2050</td>
+            </tr>
+            <tr>
+              <td><strong>Complex</strong></td>
+              <td>Cross-field dependencies</td>
+              <td>Passwords do not match</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="nav-buttons bottom">
+          <a href="01-Introduction and Architecture.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="03-Transformations.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+      
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            Think of it like filtering water: <strong>Type</strong> validation removes the large rocks (rejects wrong objects). <strong>Syntactic</strong> validation removes the sand (checks shape/format). <strong>Semantic</strong> validation removes the microscopic bacteria (checks if it actually makes sense to drink).
+          </p>
+        </div>
+
+        <div class="premium-box box-orange">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>Syntactic:</strong> Pertaining to syntax, rules, and formatting structure.</li>
+            <li><strong>Semantic:</strong> Pertaining to meaning, logic, and context.</li>
+          </ul>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Validations execute in a hierarchy. You cannot run a semantic check (like age &lt; 120) until you've run a type check to ensure the input is actually a number.</li>
+            <li>Error messages act as passive documentation for developers trying to integrate with your API.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>Type:</strong> Is it a string/number/boolean?</li>
+            <li><strong>Syntactic:</strong> Is the string formatted like an email?</li>
+            <li><strong>Semantic:</strong> Does this email domain actually exist? Is this birth date in the past?</li>
+            <li><strong>Complex:</strong> Do these two password fields match?</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

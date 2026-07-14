@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Validation and Transformation Mind Map</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper" style="max-width: 1200px; display: block; margin: 0 auto;">
+      <main>
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="04-Frontend vs Backend Validation.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="interview-questions.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 06 - Validation and transformation &gt; Mind Map</div>
+        
+        <h1 style="text-align: center;">Validation and Transformation Mind Map</h1>
+        <p class="lead" style="text-align: center; margin-bottom: 2rem;">
+          A visual hierarchy of validation constraints, data transformations, and architectural placement.
+        </p>
+
+        <div class="mermaid">
+        flowchart LR
+            Root((Validation &<br/>Transformation))
+
+            %% Architecture Placement
+            Root --> Arch{Architecture Placement}
+            Arch --> A1[Controller Layer<br/>Entry point for all data]
+            Arch --> A2[Before Service Logic<br/>Validate before any DB calls]
+            Arch --> A3[/Returns 400 Bad Request<br/>Clean errors, not 500 crashes/]
+
+            %% Validation Types
+            Root --> VTypes{Validation Types}
+            VTypes --> VT1([Type<br/>Primitives: String, Number, Bool])
+            VTypes --> VT2([Syntactic<br/>Follows format: email, date, phone])
+            VTypes --> VT3([Semantic<br/>Makes logical sense in real world])
+            VTypes --> VT4([Complex<br/>Cross-field: passwords must match])
+
+            %% Semantic Examples
+            VTypes -.- Sem{Semantic Examples}
+            Sem --> S1>Date of birth not in future]
+            Sem --> S2>Age must be less than 120]
+
+            %% Transformations
+            Root --> Trans{Transformations}
+            Trans --> TR1{{Casting<br/>String to Number for query params}}
+            Trans --> TR2{{Normalization<br/>Lowercase emails, format phones}}
+
+            %% Frontend vs Backend
+            Root --> Envs{Validation Environments}
+            Envs --> E1[/Frontend<br/>UX only — easily bypassed/]
+            Envs --> E2[/Backend<br/>Security & Integrity — mandatory/]
+
+            %% Styling
+            classDef root fill:#475569,stroke:#1e293b,stroke-width:2px,color:#fff,font-weight:bold;
+            classDef branch1 fill:#2563eb,stroke:#1d4ed8,stroke-width:2px,color:#fff,font-weight:bold;
+            classDef node1 fill:#dbeafe,stroke:#93c5fd,stroke-width:1px,color:#1e3a8a;
+            classDef branch2 fill:#16a34a,stroke:#15803d,stroke-width:2px,color:#fff,font-weight:bold;
+            classDef node2 fill:#dcfce7,stroke:#86efac,stroke-width:1px,color:#14532d;
+            classDef branch3 fill:#ea580c,stroke:#c2410c,stroke-width:2px,color:#fff,font-weight:bold;
+            classDef node3 fill:#ffedd5,stroke:#fdba74,stroke-width:1px,color:#7c2d12;
+            classDef branch4 fill:#9333ea,stroke:#7e22ce,stroke-width:2px,color:#fff,font-weight:bold;
+            classDef node4 fill:#f3e8ff,stroke:#d8b4fe,stroke-width:1px,color:#581c87;
+            classDef branch5 fill:#e11d48,stroke:#be123c,stroke-width:2px,color:#fff,font-weight:bold;
+            classDef node5 fill:#ffe4e6,stroke:#fda4af,stroke-width:1px,color:#881337;
+
+            class Root root;
+            class Arch branch1;
+            class A1,A2,A3 node1;
+            class VTypes branch2;
+            class VT1,VT2,VT3,VT4 node2;
+            class Sem branch3;
+            class S1,S2 node3;
+            class Trans branch4;
+            class TR1,TR2 node4;
+            class Envs branch5;
+            class E1,E2 node5;
+        </div>
+        
+        <div class="nav-buttons bottom">
+          <a href="04-Frontend vs Backend Validation.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="interview-questions.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+    </div>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+  </body>
+</html>

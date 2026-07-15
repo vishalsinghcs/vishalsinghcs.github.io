@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Resources and URL Design</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="01-What is REST.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="03-HTTP Methods and Idempotency.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 08 - REST API Design &gt; Resources and URL Design</div>
+
+        <h1>Resources and URL Design</h1>
+        <p class="lead">
+          Resources are the nouns of REST — everything your API exposes is a resource. URL design is how you give those resources a clean, hierarchical, and consistent address.
+        </p>
+
+        <h2>Identifying Resources</h2>
+        <p>The starting point for any API design is identifying your resources. The practical rule: <strong>look at your wireframes and requirements, and pull out all the nouns</strong>. For a project management platform similar to Jira or Linear, the nouns are immediately visible:</p>
+
+        <ul>
+          <li><strong>Organizations</strong> — top-level entity; users belong to organizations</li>
+          <li><strong>Projects</strong> — scoped under an organization</li>
+          <li><strong>Tasks</strong> — scoped under a project</li>
+          <li><strong>Users</strong> — accounts that can belong to organizations</li>
+          <li><strong>Tags</strong> — applied to tasks for categorization</li>
+        </ul>
+
+        <p>Once you have identified your resources, each one will have its own set of API endpoints. The patterns for those endpoints are repeatable — which is exactly what makes REST APIs learnable and predictable.</p>
+
+        <h2>Anatomy of an API URL</h2>
+        <p>A production-grade REST API URL has a specific structure:</p>
+
+        <div class="mermaid">
+        flowchart LR
+            S["https://"] --> D["api.example.com"]
+            D --> V["/v1"]
+            V --> R["/organizations"]
+            R --> I["/:id"]
+            I --> A["/archive"]
+
+            style S fill:#f0fdf4,stroke:#86efac
+            style D fill:#eff6ff,stroke:#93c5fd
+            style V fill:#fefce8,stroke:#fde047
+            style R fill:#fff7ed,stroke:#fdba74
+            style I fill:#fdf4ff,stroke:#e879f9
+            style A fill:#fef2f2,stroke:#fca5a5
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Part</th>
+              <th>Example</th>
+              <th>Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Scheme</td>
+              <td><code>https://</code></td>
+              <td>Protocol. Always HTTPS in production.</td>
+            </tr>
+            <tr>
+              <td>Subdomain</td>
+              <td><code>api.</code></td>
+              <td>Industry standard — separates API from the main web app.</td>
+            </tr>
+            <tr>
+              <td>Domain</td>
+              <td><code>example.com</code></td>
+              <td>Your organization's main domain.</td>
+            </tr>
+            <tr>
+              <td>Version</td>
+              <td><code>/v1</code></td>
+              <td>API versioning — allows breaking changes without breaking existing clients.</td>
+            </tr>
+            <tr>
+              <td>Resource</td>
+              <td><code>/organizations</code></td>
+              <td>The plural noun of the resource type. Always plural.</td>
+            </tr>
+            <tr>
+              <td>Dynamic Param</td>
+              <td><code>/:id</code></td>
+              <td>The ID of a specific resource instance.</td>
+            </tr>
+            <tr>
+              <td>Action (optional)</td>
+              <td><code>/archive</code></td>
+              <td>Only for custom actions — not standard CRUD.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Rules for Path Segments</h2>
+
+        <h3>Rule 1: Always Use Plural Nouns</h3>
+        <p>Even when fetching a single resource, the path segment representing the resource type must be plural. This is non-negotiable in REST standards. The resource <em>type</em> refers to the collection, not the single instance.</p>
+
+        <table>
+          <thead>
+            <tr><th>Wrong</th><th>Correct</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>/organization</code></td><td><code>/organizations</code></td></tr>
+            <tr><td><code>/book/123</code></td><td><code>/books/123</code></td></tr>
+            <tr><td><code>/user/profile</code></td><td><code>/users/profile</code></td></tr>
+          </tbody>
+        </table>
+
+        <h3>Rule 2: Always Lowercase</h3>
+        <p>URLs travel across different environments — different operating systems, servers, and clients may handle case differently. Always use lowercase in path segments to eliminate case-mismatch bugs entirely.</p>
+
+        <h3>Rule 3: Use Hyphens, Not Spaces or Underscores</h3>
+        <p>If a path segment is a multi-word phrase, replace spaces with hyphens (<code>-</code>). Never use spaces (they are URL-encoded to <code>%20</code>) or underscores (some environments treat them as invisible in links).</p>
+
+        <table>
+          <thead>
+            <tr><th>Input</th><th>Slug</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>Harry Potter</code></td><td><code>harry-potter</code></td></tr>
+            <tr><td><code>Active Tasks</code></td><td><code>active-tasks</code></td></tr>
+          </tbody>
+        </table>
+
+        <h3>Rule 4: Forward Slash = Hierarchy</h3>
+        <p>Every <code>/</code> in a URL path represents a hierarchical parent-child relationship. Reading a URL left to right should tell a clear story:</p>
+        <ul>
+          <li><code>/organizations</code> → The collection of all organizations</li>
+          <li><code>/organizations/abc123</code> → A specific organization</li>
+          <li><code>/organizations/abc123/archive</code> → An action performed on that specific organization</li>
+        </ul>
+        <p>This hierarchical clarity is what makes RESTful URLs intuitive — a reader can understand the relationship structure without documentation.</p>
+
+        <h3>Rule 5: Use camelCase in JSON Fields</h3>
+        <p>When it comes to the JSON payloads you send and receive, always use <strong>camelCase</strong> for field names. This is the universal JSON standard:</p>
+
+        <table>
+          <thead>
+            <tr><th>Wrong</th><th>Correct</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>organization_id</code></td><td><code>organizationId</code></td></tr>
+            <tr><td><code>created-at</code></td><td><code>createdAt</code></td></tr>
+            <tr><td><code>DSC</code> (abbreviation)</td><td><code>description</code></td></tr>
+          </tbody>
+        </table>
+
+        <h2>Resource Identification and Design Process</h2>
+        <p>For each resource you've identified, the following workflow produces the full API surface:</p>
+
+        <ol>
+          <li>Name the resource as a plural noun (e.g., <code>organizations</code>)</li>
+          <li>List the CRUD actions needed: create, list, get-one, update, delete</li>
+          <li>Identify any custom actions that cannot be expressed as CRUD (e.g., archive, clone, send)</li>
+          <li>Assign HTTP methods to each action (covered in the next note)</li>
+          <li>Decide the request body fields, excluding server-generated fields (ID, createdAt, updatedAt)</li>
+        </ol>
+
+        <div class="nav-buttons bottom">
+          <a href="01-What is REST.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="03-HTTP Methods and Idempotency.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            Think of resources as <strong>physical file folders</strong> in a filing cabinet. The cabinet label is <code>/organizations</code> (plural — always). A specific folder inside is <code>/organizations/abc123</code>. A sticky note action attached to that folder is <code>/organizations/abc123/archive</code>. You read the path like reading a filing system — and the hierarchy is self-evident.
+          </p>
+        </div>
+
+        <div class="premium-box box-orange">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>Resource:</strong> A noun — any identifiable data entity your API manages (user, order, project).</li>
+            <li><strong>Path Segment:</strong> The portion of a URL between two forward slashes.</li>
+            <li><strong>Dynamic Parameter:</strong> A variable in the URL that represents a specific resource ID (e.g., <code>:id</code>).</li>
+            <li><strong>Slug:</strong> A human-readable, URL-safe version of a resource name (lowercased, hyphenated).</li>
+            <li><strong>API Versioning:</strong> Adding <code>/v1</code> to the URL path to allow breaking changes to be deployed without affecting existing integrations.</li>
+          </ul>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Resources = nouns extracted from your wireframes and requirements.</li>
+            <li>Path segments are always plural, lowercase, and hyphenated for multi-word phrases.</li>
+            <li>Forward slashes represent a hierarchical relationship between resources.</li>
+            <li>JSON fields always use camelCase. Never use abbreviations.</li>
+            <li>IDs, createdAt, updatedAt are server-generated and should never be accepted from client payloads.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>Resource extraction:</strong> Nouns from wireframes.</li>
+            <li><strong>Always plural:</strong> <code>/books</code> not <code>/book</code>.</li>
+            <li><strong>Always lowercase:</strong> <code>/organizations</code> not <code>/Organizations</code>.</li>
+            <li><strong>Hyphens:</strong> <code>/active-tasks</code> not <code>/active_tasks</code>.</li>
+            <li><strong>Hierarchy:</strong> / = parent-child relationship.</li>
+            <li><strong>JSON keys:</strong> camelCase, no abbreviations.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+  </body>
+</html>

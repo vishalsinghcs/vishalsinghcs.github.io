@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CRUD Operations in Practice</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="03-HTTP Methods and Idempotency.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="05-Pagination, Sorting and Filtering.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 08 - REST API Design &gt; CRUD Operations in Practice</div>
+
+        <h1>CRUD Operations in Practice</h1>
+        <p class="lead">
+          CRUD — Create, Read, Update, Delete — maps onto HTTP methods and URL patterns in a consistent, predictable way. Once you understand the pattern for one resource, you can apply it to every resource in your system.
+        </p>
+
+        <h2>The Full CRUD Pattern</h2>
+        <p>For any resource (let's use <code>organizations</code> as the example), the five standard CRUD endpoints follow this exact pattern:</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Operation</th>
+              <th>Method</th>
+              <th>URL</th>
+              <th>Body?</th>
+              <th>Success Code</th>
+              <th>Response</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>List all</td>
+              <td><code>GET</code></td>
+              <td><code>/organizations</code></td>
+              <td>No</td>
+              <td>200</td>
+              <td>Paginated list</td>
+            </tr>
+            <tr>
+              <td>Create</td>
+              <td><code>POST</code></td>
+              <td><code>/organizations</code></td>
+              <td>Yes</td>
+              <td>201</td>
+              <td>Newly created object</td>
+            </tr>
+            <tr>
+              <td>Get one</td>
+              <td><code>GET</code></td>
+              <td><code>/organizations/:id</code></td>
+              <td>No</td>
+              <td>200</td>
+              <td>The resource object</td>
+            </tr>
+            <tr>
+              <td>Update</td>
+              <td><code>PATCH</code></td>
+              <td><code>/organizations/:id</code></td>
+              <td>Yes (partial)</td>
+              <td>200</td>
+              <td>Updated resource object</td>
+            </tr>
+            <tr>
+              <td>Delete</td>
+              <td><code>DELETE</code></td>
+              <td><code>/organizations/:id</code></td>
+              <td>No</td>
+              <td>204</td>
+              <td>Empty (no content)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p><strong>Key pattern:</strong> List and Create share the same URL (<code>/organizations</code>) — differentiated only by HTTP method. Get-one, Update, and Delete all share the same URL (<code>/organizations/:id</code>) — also differentiated only by HTTP method. The server uses the method as the differentiator, not a different URL.</p>
+
+        <h2>Create — POST</h2>
+        <p>The client sends a JSON body with only the fields the server requires. Server-managed fields (<code>id</code>, <code>createdAt</code>, <code>updatedAt</code>) must never be accepted from the client — these are always generated on the server side.</p>
+        <ul>
+          <li><strong>Client sends:</strong> <code>{"name": "Acme Corp", "status": "active", "description": "Our org"}</code></li>
+          <li><strong>Server responds:</strong> <code>201 Created</code> with the full newly created object including the server-generated <code>id</code> and <code>createdAt</code>.</li>
+        </ul>
+
+        <h2>List — GET</h2>
+        <p>Returns a collection of resources. For a well-designed list API, the response always includes pagination metadata (covered in the next note). The status code is <strong>always 200</strong>, even if the list is empty.</p>
+        <ul>
+          <li><strong>Never return 404</strong> on a list API just because there is no data. An empty list is a valid result — return <code>[]</code> with a 200 status. 404 is for when a specific requested resource doesn't exist.</li>
+        </ul>
+
+        <h2>Get One — GET with ID</h2>
+        <p>Fetches a single resource by ID. The ID is passed as a dynamic parameter in the URL path (<code>/organizations/abc123</code>), never in the request body.</p>
+        <ul>
+          <li><strong>If found:</strong> Returns <code>200</code> with the resource object.</li>
+          <li><strong>If not found:</strong> Returns <code>404 Not Found</code>. This is the correct use case for 404 — a specific resource was requested but does not exist.</li>
+        </ul>
+
+        <h2>Update — PATCH with ID</h2>
+        <p>Sends only the fields that need to change. The server merges the partial payload with the existing resource.</p>
+        <ul>
+          <li><strong>Client sends:</strong> <code>{"status": "active"}</code> — only the field being updated.</li>
+          <li><strong>Server responds:</strong> <code>200 OK</code> with the full updated resource object.</li>
+        </ul>
+
+        <h2>Delete — DELETE with ID</h2>
+        <p>No request body is needed. The ID in the URL is sufficient to identify the resource to delete.</p>
+        <ul>
+          <li><strong>Server responds:</strong> <code>204 No Content</code> — the operation was successful (200-series) but there is no data to return because the resource was just deleted.</li>
+          <li><strong>Response body:</strong> Empty. Nothing to serialize back.</li>
+        </ul>
+
+        <h2>HTTP Status Code Reference</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Name</th>
+              <th>When to Use</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>200</code></td>
+              <td>OK</td>
+              <td>Successful GET, PATCH, or custom action response</td>
+            </tr>
+            <tr>
+              <td><code>201</code></td>
+              <td>Created</td>
+              <td>Successful POST that created a new resource</td>
+            </tr>
+            <tr>
+              <td><code>204</code></td>
+              <td>No Content</td>
+              <td>Successful DELETE — no response body</td>
+            </tr>
+            <tr>
+              <td><code>400</code></td>
+              <td>Bad Request</td>
+              <td>Validation error — client sent invalid data</td>
+            </tr>
+            <tr>
+              <td><code>401</code></td>
+              <td>Unauthorized</td>
+              <td>Missing or invalid authentication token</td>
+            </tr>
+            <tr>
+              <td><code>403</code></td>
+              <td>Forbidden</td>
+              <td>Authenticated but not authorized for this resource</td>
+            </tr>
+            <tr>
+              <td><code>404</code></td>
+              <td>Not Found</td>
+              <td>Specific resource requested by ID does not exist</td>
+            </tr>
+            <tr>
+              <td><code>409</code></td>
+              <td>Conflict</td>
+              <td>Duplicate resource (e.g., unique constraint violation)</td>
+            </tr>
+            <tr>
+              <td><code>429</code></td>
+              <td>Too Many Requests</td>
+              <td>Rate limit exceeded</td>
+            </tr>
+            <tr>
+              <td><code>500</code></td>
+              <td>Internal Server Error</td>
+              <td>Unhandled server-side error</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>The Pattern Is Reusable</h2>
+        <p>This is the key insight from the lecture. Once you've designed CRUD for <code>organizations</code>, you apply the exact same pattern to <code>projects</code>, <code>tasks</code>, and every other resource. The URL structure changes (the resource name changes), but the method-to-operation mapping, the request body rules, and the status codes remain identical. Consistency is the goal — and this pattern is the tool.</p>
+
+        <div class="nav-buttons bottom">
+          <a href="03-HTTP Methods and Idempotency.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="05-Pagination, Sorting and Filtering.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            The URL is like a <strong>noun</strong> and the HTTP method is the <strong>verb</strong>. <code>/organizations</code> (noun). GET it (verb), POST to it (verb), DELETE from it (verb). Combining the same noun with different verbs produces completely different operations — without any ambiguity.
+          </p>
+        </div>
+
+        <div class="premium-box box-orange">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>201 Created:</strong> Returned when a POST creates a new resource.</li>
+            <li><strong>204 No Content:</strong> Returned by DELETE — success but no body to send.</li>
+            <li><strong>404 Not Found:</strong> Only for specific resource lookups — never for empty lists.</li>
+            <li><strong>Dynamic Parameter (<code>:id</code>):</strong> Variable in the URL representing a specific resource instance.</li>
+            <li><strong>Server-Managed Fields:</strong> id, createdAt, updatedAt — generated by the server, never accepted from client.</li>
+          </ul>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>List + Create share the same URL. Get-one + Update + Delete share the same URL. Method is the differentiator.</li>
+            <li>POST → 201. PATCH → 200. DELETE → 204. GET → 200.</li>
+            <li>An empty list returns 200 (not 404). 404 is only for specific resource lookups by ID.</li>
+            <li>The CRUD pattern is the same for every resource — only the resource name changes.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>GET /resources</strong> → 200, list (with pagination)</li>
+            <li><strong>POST /resources</strong> → 201, returns new object</li>
+            <li><strong>GET /resources/:id</strong> → 200 or 404</li>
+            <li><strong>PATCH /resources/:id</strong> → 200, returns updated object</li>
+            <li><strong>DELETE /resources/:id</strong> → 204, empty body</li>
+            <li><strong>Empty list:</strong> Return [] with 200, not 404</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

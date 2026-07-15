@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Custom Actions and Best Practices</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="05-Pagination, Sorting and Filtering.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="mind-map.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 08 - REST API Design &gt; Custom Actions and Best Practices</div>
+
+        <h1>Custom Actions and Best Practices</h1>
+        <p class="lead">
+          Not every operation fits neatly into CRUD. Custom actions handle complex server-side operations that go beyond a simple database write. Best practices ensure your API remains intuitive, consistent, and pleasant to integrate — long after you've written it.
+        </p>
+
+        <h2>What is a Custom Action?</h2>
+        <p>A custom action is any operation that:</p>
+        <ul>
+          <li>Is not simply creating a new resource</li>
+          <li>Is not a fetch, update, or delete operation</li>
+          <li>Triggers a complex, multi-step process on the server side</li>
+        </ul>
+
+        <p><strong>Example 1 — Archive an Organization:</strong> At first glance, archiving looks like updating the <code>status</code> field to <code>"archived"</code>. But in reality, archiving an organization might need to:</p>
+        <ul>
+          <li>Delete or deactivate all projects under that organization</li>
+          <li>Cancel all active tasks under those projects</li>
+          <li>Send notification emails to all members</li>
+          <li>Revoke API keys associated with the organization</li>
+        </ul>
+        <p>A <code>PATCH /organizations/:id</code> with <code>{"status": "archived"}</code> cannot express this richness. Archiving is a <em>custom action</em>.</p>
+
+        <p><strong>Example 2 — Clone a Project:</strong> Cloning a project involves creating a new project, copying all its tasks, potentially cloning sub-resources, and maybe sending an email to the project owner. A standard <code>POST /projects</code> with a copied payload doesn't capture the "clone" semantics, and doesn't trigger the server-side logic that makes cloning meaningful.</p>
+
+        <h2>Custom Action URL Pattern</h2>
+        <p>All custom actions follow this URL structure:</p>
+
+        <pre><code>POST /resource-name/:id/action-name</code></pre>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Segment</th>
+              <th>Example</th>
+              <th>Meaning</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Resource (plural)</td>
+              <td><code>/organizations</code></td>
+              <td>The resource type this action applies to</td>
+            </tr>
+            <tr>
+              <td>Dynamic parameter</td>
+              <td><code>/:id</code></td>
+              <td>Which specific resource to act on</td>
+            </tr>
+            <tr>
+              <td>Action name</td>
+              <td><code>/archive</code></td>
+              <td>The name of the action — a verb that describes what happens</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>Full examples:</p>
+        <ul>
+          <li><code>POST /organizations/abc123/archive</code></li>
+          <li><code>POST /projects/xyz789/clone</code></li>
+          <li><code>POST /users/me/send-verification-email</code></li>
+        </ul>
+
+        <h2>Response Codes for Custom Actions</h2>
+        <p>Do not blindly assume a POST always returns 201. The response code for a custom action depends on what the server actually does:</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Server Action</th>
+              <th>Response Code</th>
+              <th>Example</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>No new resource created</td>
+              <td>200</td>
+              <td><code>POST .../archive</code> — updates status, no new resource</td>
+            </tr>
+            <tr>
+              <td>A new resource created</td>
+              <td>201</td>
+              <td><code>POST .../clone</code> — creates a new cloned project</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>API Design Best Practices</h2>
+        <p>The lecture concludes with a definitive list of principles for building APIs that people enjoy using:</p>
+
+        <h3>1. Provide Interactive Documentation (Swagger / OpenAPI)</h3>
+        <p>Before your API goes into production, integrate an OpenAPI-compatible documentation tool (Swagger UI is the most popular). This gives consumers an interactive playground where they can discover, read about, and test your endpoints without reading source code. Maintaining your Swagger documentation up to date is one of the most distinguishing marks of a senior backend engineer.</p>
+
+        <h3>2. Be Consistent Across All Resources</h3>
+        <p>Every decision you make about your API design becomes a pattern. If you use <code>description</code> as a field name in one endpoint, use <code>description</code> everywhere. If you use plural URLs for <code>organizations</code>, use plural URLs for <code>projects</code>. Never rename the same concept differently across resources. Inconsistency forces API consumers to read your docs for every single endpoint instead of making safe assumptions from the first one they integrated.</p>
+
+        <h3>3. Provide Sensible Defaults</h3>
+        <p>Never require a client to send information that has an obvious default. Common examples:</p>
+        <ul>
+          <li>If <code>page</code> is not sent → default to <code>1</code></li>
+          <li>If <code>limit</code> is not sent → default to <code>10</code></li>
+          <li>If a new organization is created without a <code>status</code> → default to <code>"active"</code></li>
+          <li>If <code>sortOrder</code> is not sent → default to <code>desc</code></li>
+        </ul>
+        <p>The goal is to make the most common use case require the least amount of effort from the client.</p>
+
+        <h3>4. Never Use Abbreviations</h3>
+        <p>The person who created the API has full context about what <code>DSC</code> or <code>orgId</code> means. The person integrating it does not. Always use full, readable names: <code>description</code>, <code>organizationId</code>. Abbreviations are a false shortcut that cause confusion and bugs downstream.</p>
+
+        <h3>5. Design the Interface Before Writing Code</h3>
+        <p>Your API interface is a contract. Once clients depend on it, changing it breaks them. Designing the interface first — using tools like Insomnia or Postman — forces you to think from the consumer's perspective rather than the implementation perspective. Decisions made at the interface level are far cheaper than refactoring code after the fact.</p>
+
+        <h2>Summary: REST API Design Cheat Sheet</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Rule</th>
+              <th>Do This</th>
+              <th>Not This</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Resource names</td>
+              <td><code>/organizations</code> (plural)</td>
+              <td><code>/organization</code></td>
+            </tr>
+            <tr>
+              <td>URL casing</td>
+              <td>lowercase, hyphens</td>
+              <td>CamelCase, underscores</td>
+            </tr>
+            <tr>
+              <td>JSON fields</td>
+              <td>camelCase, full words</td>
+              <td>snake_case, abbreviations</td>
+            </tr>
+            <tr>
+              <td>Create → status</td>
+              <td>201 Created</td>
+              <td>200</td>
+            </tr>
+            <tr>
+              <td>Delete → status</td>
+              <td>204 No Content</td>
+              <td>200, 201</td>
+            </tr>
+            <tr>
+              <td>Empty list</td>
+              <td>200 + <code>[]</code></td>
+              <td>404</td>
+            </tr>
+            <tr>
+              <td>Custom actions</td>
+              <td><code>POST /:id/action</code></td>
+              <td>GET or inventing new URLs</td>
+            </tr>
+            <tr>
+              <td>Partial update</td>
+              <td>PATCH</td>
+              <td>PUT (for partial fields)</td>
+            </tr>
+            <tr>
+              <td>Pagination defaults</td>
+              <td>Server provides them</td>
+              <td>Require client to always send</td>
+            </tr>
+            <tr>
+              <td>Documentation</td>
+              <td>Swagger/OpenAPI maintained</td>
+              <td>Undocumented or stale docs</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="nav-buttons bottom">
+          <a href="05-Pagination, Sorting and Filtering.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="mind-map.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            A custom action is like a <strong>vending machine button</strong> that dispenses coffee — it doesn't just "add coffee" (CRUD), it triggers a whole chain: heat water, grind beans, extract espresso, steam milk. You push one button (<code>POST .../make-coffee</code>) and the machine handles the complexity. From the outside, it is a single action. On the inside, it's a coordinated sequence.
+          </p>
+        </div>
+
+        <div class="premium-box box-orange">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>Custom Action:</strong> A verb operation that doesn't fit CRUD, expressed as <code>POST /resource/:id/action</code>.</li>
+            <li><strong>OpenAPI / Swagger:</strong> Standard for describing REST API interfaces. Enables interactive documentation.</li>
+            <li><strong>Sensible Default:</strong> A server-provided fallback value for an optional parameter (e.g., page=1 if not sent).</li>
+            <li><strong>API Contract:</strong> The agreed-upon interface between producer (server) and consumer (client). Changing it breaks existing consumers.</li>
+          </ul>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Custom actions use <code>POST /resource/:id/action-name</code> — when the operation triggers complex server-side logic beyond a simple update.</li>
+            <li>Custom action response codes depend on what the server does — not always 201.</li>
+            <li>The most important practices: consistency, sensible defaults, no abbreviations, and maintaining Swagger docs.</li>
+            <li>Design the interface first with API clients (Insomnia, Postman) — before writing any server code.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>Custom action pattern:</strong> POST /resource/:id/verb</li>
+            <li><strong>Archive (no new resource):</strong> → 200</li>
+            <li><strong>Clone (new resource created):</strong> → 201</li>
+            <li><strong>Swagger:</strong> Interactive docs, must stay updated.</li>
+            <li><strong>No abbreviations:</strong> description not DSC.</li>
+            <li><strong>Defaults:</strong> Server, not client, is responsible.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interview Questions: REST API Design</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper" style="max-width: 900px; display: block; margin: 0 auto;">
+      <main>
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="mind-map.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="#" class="nav-btn next" aria-label="Next (Coming Soon)" style="opacity: 0.5; cursor: not-allowed;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 08 - REST API Design &gt; Interview Questions</div>
+
+        <h1>Interview Questions</h1>
+        <p class="lead">
+          08 - REST API Design: Resources, URLs, HTTP Methods, CRUD Patterns, Pagination, Custom Actions, and Best Practices
+        </p>
+
+        <p class="muted" style="margin-bottom: 3rem;">
+          These questions test your ability to design intuitive, consistent, and scalable REST APIs — reasoning about URL structure, status codes, idempotency, pagination strategies, and trade-offs between PATCH and PUT. The goal is engineering thinking, not memorization.
+        </p>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">1. Scenario-based Questions (40%)</h3>
+          <ul style="color: #333;">
+            <li style="margin-bottom: 1rem;">Your team has built an API for a SaaS platform with 30 endpoints. A new frontend engineer joins and immediately asks why the user creation endpoint uses <code>description</code> but the project creation endpoint uses <code>desc</code> for the same concept. She also notices that some list endpoints return a 404 when no results match a filter, while others return an empty array with 200. How did the codebase get into this state, and what is the process and technical debt cost of fixing it in a live system with production clients?</li>
+            <li style="margin-bottom: 1rem;">You are designing a REST API for a subscription billing system. When a user's trial period ends, the system needs to: lock their account, cancel all active scheduled jobs, archive their data, send a billing email, and log a compliance event. A junior engineer proposes handling this by having the client call <code>PATCH /users/:id</code> with <code>{"status": "trial_expired"}</code>. What is wrong with this approach and how would you design the API endpoint instead?</li>
+            <li style="margin-bottom: 1rem;">Your mobile app is calling <code>GET /notifications</code> without any pagination parameters. In development (100 records) everything works fine. After six months in production with 500,000 users, this endpoint is timing out and taking down the API server. Walk through the exact changes you would make — at the API interface level and at the server implementation level — to fix this without breaking existing mobile clients that cannot be force-updated immediately.</li>
+            <li style="margin-bottom: 1rem;">A third-party integrator is building against your public API. They report that after calling <code>POST /invoices</code> and receiving a network timeout (no response received), they are now unsure whether the invoice was actually created in your system or not. They are afraid to retry because they don't want to create a duplicate invoice. How does the concept of idempotency apply here, and how would you redesign the endpoint or the client retry strategy to make this safe?</li>
+            <li style="margin-bottom: 1rem;">Your API has a <code>GET /products</code> list endpoint. A customer wants to filter by both <code>category=electronics</code> and <code>priceRange=100-500</code> simultaneously, sort by <code>rating</code> in descending order, and get the second page of 20 results. Write out the exact URL the client should send. Then explain what the server's paginated response object should look like and what each field in it means.</li>
+            <li style="margin-bottom: 1rem;">You are designing a REST API for a healthcare platform. A HIPAA compliance requirement states that all data access must be logged with the reason for access. A clinical system calls <code>GET /patients/:id/records</code> to fetch a patient's records. How do you pass the reason for access in a GET request without violating REST conventions (no body in GET), and without polluting the URL with sensitive data that might appear in server access logs?</li>
+            <li style="margin-bottom: 1rem;">Your REST API has been deployed to production for 18 months. You need to introduce a breaking change — an existing field <code>phone</code> (which returns an unformatted string like <code>"9876543210"</code>) needs to be replaced with a structured <code>phoneNumber</code> object (<code>{"countryCode": "+91", "number": "9876543210"}</code>). Hundreds of clients depend on the old format. How do you handle this transition at the API design level without breaking existing integrations?</li>
+            <li style="margin-bottom: 1rem;">Your team is building a multi-tenant SaaS platform. An API endpoint <code>GET /projects</code> should return only the projects belonging to the currently authenticated user's organization — not all projects in the database. A junior engineer implements this by requiring the client to pass <code>?organizationId=abc123</code> as a query parameter. What is the security and design problem with this approach, and how should it be implemented correctly?</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">2. "What if?" Questions (20%)</h3>
+          <ul style="color: #333;">
+            <li style="margin-bottom: 1rem;">What if a REST API had no versioning at all (<code>/organizations</code> instead of <code>/v1/organizations</code>)? The company has 50 active third-party integrators. The backend team needs to make a breaking change to the <code>POST /organizations</code> response shape. Walk through every consequence this causes and how you would resolve the situation retroactively.</li>
+            <li style="margin-bottom: 1rem;">What if a list API returned all resources with no pagination, no filtering, and no sorting? The system starts with 100 records and everything seems fine. Trace the exact sequence of events over 2 years — as records grow to 1 million — showing where performance degrades, what breaks first, and what the cascading effects are on the rest of the infrastructure.</li>
+            <li style="margin-bottom: 1rem;">What if every operation in your REST API — including fetches, updates, and deletes — used only POST, because the original developer thought it was "simpler"? A new team member joins and needs to integrate the API. What specific problems do they encounter, and how does violating the HTTP method semantics affect tooling, caching layers, and security middleware?</li>
+            <li style="margin-bottom: 1rem;">What if a DELETE endpoint returned the deleted object in the response body with a 200 status code instead of 204 with an empty body? Some integrators begin relying on this behavior to avoid an extra GET call. Six months later you want to fix it to the standard 204. What has your earlier decision cost you and how do you fix it?</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">3. Debugging Questions (15%)</h3>
+          <ul style="color: #333;">
+            <li style="margin-bottom: 1rem;">A client is calling <code>GET /orders?status=pending</code> and sometimes receiving a 404, but sometimes receiving a 200 with an empty array — from the same codebase, depending on which server instance handles the request. No database changes are happening between calls. What are the three most likely root causes of this inconsistency and how would you confirm each one?</li>
+            <li style="margin-bottom: 1rem;">An iOS client calls <code>PATCH /users/me</code> to update a user's profile photo URL. The endpoint works correctly in Postman but returns 400 on the mobile app. The request body is identical. What are the most likely differences between the Postman and mobile app requests that could cause this, and how do you isolate the issue?</li>
+            <li style="margin-bottom: 1rem;">Your <code>GET /reports</code> list endpoint is returning the correct data for small datasets but is skipping records when paginated with <code>page=2&limit=10</code>. Users report seeing the same records on page 1 and page 2, and some records never appear. You haven't changed the query logic. What pagination implementation bug is most likely responsible for this and how do you fix it?</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">4. Design Questions (15%)</h3>
+          <ul style="color: #333;">
+            <li style="margin-bottom: 1rem;">Design the complete REST API surface for a simplified e-commerce platform with three resources: <code>products</code>, <code>orders</code>, and <code>reviews</code>. For each resource, list all endpoints (method + URL), the request body fields (excluding server-managed fields), the success response codes, and any custom actions you would add. Include the pagination, sorting, and filtering parameters you would support on each list endpoint.</li>
+            <li style="margin-bottom: 1rem;">Design an API for a real-time collaborative document editor (similar to Google Docs) where multiple users edit simultaneously. The system needs endpoints for creating documents, fetching document content, saving changes, sharing with collaborators, and managing permissions. Which operations would you model as custom actions rather than standard CRUD and why? What status codes apply to each?</li>
+            <li style="margin-bottom: 1rem;">Design a public REST API for a weather service that serves 10 million requests per day. The API must support: current weather by city, 7-day forecast by coordinates, historical data by date range, and a webhook subscription for real-time alerts. For each of these, design the URL structure, the query parameters, the response shape, and any caching strategy you would embed in the API contract itself.</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">5. Architecture & Trade-off Questions (10%)</h3>
+          <ul style="color: #333;">
+            <li style="margin-bottom: 1rem;">REST APIs are "stateless" by constraint — the server stores no session information between requests. Some applications work around this by embedding state in JWTs or by using sticky sessions at the load balancer. Explain the exact trade-offs between true statelessness and these workarounds in terms of: horizontal scalability, session revocation, and the complexity of your infrastructure.</li>
+            <li style="margin-bottom: 1rem;">A product manager asks you to add a bulk delete endpoint — the client should be able to send a list of up to 1,000 IDs and delete all of them in one call. The REST specification doesn't have a clean standard for this. Discuss at least three different API designs you could use to implement this, with the trade-offs of each in terms of RESTfulness, safety, and client complexity.</li>
+          </ul>
+        </div>
+
+        <div class="nav-buttons bottom">
+          <a href="mind-map.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="#" class="nav-btn next" aria-label="Next (Coming Soon)" style="opacity: 0.5; cursor: not-allowed;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

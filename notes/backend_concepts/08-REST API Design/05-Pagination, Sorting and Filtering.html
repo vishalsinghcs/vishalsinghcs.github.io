@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pagination, Sorting and Filtering</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="04-CRUD Operations in Practice.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="06-Custom Actions and Best Practices.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 08 - REST API Design &gt; Pagination, Sorting and Filtering</div>
+
+        <h1>Pagination, Sorting and Filtering</h1>
+        <p class="lead">
+          Every list API should support three capabilities: limiting how many results come back at once (pagination), controlling the order of results (sorting), and narrowing results to a specific subset (filtering). Without these, list APIs become a performance liability at scale.
+        </p>
+
+        <h2>Why Pagination Exists</h2>
+        <p>Consider a database with 100,000 organizations. If a client calls <code>GET /organizations</code> and the server returns all 100,000 records in a single response:</p>
+        <ul>
+          <li><strong>JSON serialization</strong> of 100,000 records is a CPU-intensive operation on the server.</li>
+          <li><strong>Network transfer</strong> of that payload causes significant latency.</li>
+          <li><strong>The client</strong> (browser or mobile app) cannot display 100,000 records at once — users will only see the first 10-20 on screen anyway.</li>
+        </ul>
+        <p>Pagination solves this by returning data in fixed-size chunks (pages). The client fetches the first page, and requests subsequent pages only when the user scrolls or clicks "next".</p>
+
+        <h2>Pagination Parameters</h2>
+        <p>Since list APIs use GET, data must be sent from client to server as <strong>query parameters</strong> (not a request body). The two standard pagination parameters are:</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Parameter</th>
+              <th>Meaning</th>
+              <th>Default (if not sent)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>page</code></td>
+              <td>Which chunk of data to return (1-indexed)</td>
+              <td><code>1</code> (first page)</td>
+            </tr>
+            <tr>
+              <td><code>limit</code></td>
+              <td>How many records per page</td>
+              <td><code>10</code> or <code>20</code> (server-defined)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p><strong>Important:</strong> If the client does not send these parameters, the server must apply sensible defaults. Never return a validation error for missing pagination params — they are optional and have defaults.</p>
+
+        <h2>Pagination Response Structure</h2>
+        <p>A paginated list response should always include metadata so the client can determine how to navigate further:</p>
+
+        <pre><code>{
+  "data": [ ... ],          // The actual records for this page
+  "total": 50,              // Total count of ALL records in the database (ignoring pagination)
+  "page": 2,                // Which page this response is for
+  "totalPages": 5           // Total number of pages (ceil(total / limit))
+}</code></pre>
+
+        <p>The <code>total</code> and <code>totalPages</code> fields allow the frontend to:</p>
+        <ul>
+          <li>Display "Showing 10 of 50 results" UI</li>
+          <li>Render page number buttons (1, 2, 3, 4, 5)</li>
+          <li>Stop making API calls for infinite scroll when <code>page === totalPages</code></li>
+        </ul>
+
+        <h2>Sorting</h2>
+        <p>Without explicit sorting, a database returns records in an indeterminate order — this order can change between calls, causing flickering and inconsistent UIs. The server should always sort data before returning it, and should support client-controlled sorting via query parameters.</p>
+
+        <h3>Default Sort Behaviour</h3>
+        <p>The server should always sort by <code>createdAt</code> in <strong>descending</strong> order by default. This is the most natural order for most list views — the user expects to see the newest entries first.</p>
+
+        <h3>Sorting Parameters</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Parameter</th>
+              <th>Meaning</th>
+              <th>Default</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>sortBy</code></td>
+              <td>Which field of the resource to sort by</td>
+              <td><code>createdAt</code></td>
+            </tr>
+            <tr>
+              <td><code>sortOrder</code></td>
+              <td>Ascending or descending</td>
+              <td><code>desc</code> (descending)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>Example: <code>GET /organizations?sortBy=name&sortOrder=asc</code> returns all organizations sorted alphabetically A→Z.</p>
+        <p>Even if the client only sends <code>sortBy=name</code> without <code>sortOrder</code>, the server should default <code>sortOrder</code> to <code>desc</code>.</p>
+
+        <h2>Filtering</h2>
+        <p>Filtering allows clients to narrow the result set to entries that match a specific condition. Like pagination and sorting, filters are passed as query parameters.</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Example Request</th>
+              <th>What it Returns</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>GET /organizations?status=active</code></td>
+              <td>Only organizations with <code>status = "active"</code></td>
+            </tr>
+            <tr>
+              <td><code>GET /organizations?status=archived</code></td>
+              <td>Only organizations with <code>status = "archived"</code></td>
+            </tr>
+            <tr>
+              <td><code>GET /organizations?name=Acme</code></td>
+              <td>Only organizations where name matches "Acme"</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>Filters, pagination, and sorting can all be combined in a single request: <code>GET /organizations?status=active&sortBy=name&sortOrder=asc&page=2&limit=10</code></p>
+
+        <h2>The "Sensible Defaults" Principle</h2>
+        <p>This is one of the most important API design rules in the lecture: <strong>the server should not demand that clients send obvious information</strong>. If it is obvious what the default behaviour should be, the server should implement it as a default and make the parameter optional. This reduces client-side complexity and makes the API feel intuitive to use.</p>
+
+        <div class="mermaid">
+        flowchart TD
+            Request["GET /organizations"] --> HasLimit{limit param<br/>provided?}
+            HasLimit -->|Yes| UseLimit[Use client limit]
+            HasLimit -->|No| DefaultLimit[Default: limit = 10]
+            Request --> HasPage{page param<br/>provided?}
+            HasPage -->|Yes| UsePage[Use client page]
+            HasPage -->|No| DefaultPage[Default: page = 1]
+            Request --> HasSort{sortBy param<br/>provided?}
+            HasSort -->|Yes| UseSort[Use client sortBy]
+            HasSort -->|No| DefaultSort[Default: sortBy = createdAt DESC]
+        </div>
+
+        <div class="nav-buttons bottom">
+          <a href="04-CRUD Operations in Practice.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="06-Custom Actions and Best Practices.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            Pagination is like a <strong>library catalogue</strong>. You don't carry all 100,000 books home at once — you flip through a catalogue (paginated list) and request only the books you need. The catalogue shows you "Page 3 of 50, 1,000 total books" — that's your <code>page</code>, <code>totalPages</code>, and <code>total</code> metadata.
+          </p>
+        </div>
+
+        <div class="premium-box box-orange">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>Pagination:</strong> Splitting large list results into smaller, fixed-size chunks fetched one at a time.</li>
+            <li><strong><code>page</code>:</strong> Which chunk to return (1-indexed).</li>
+            <li><strong><code>limit</code>:</strong> How many records per chunk.</li>
+            <li><strong><code>total</code>:</strong> Total count of all matching records in the database.</li>
+            <li><strong><code>totalPages</code>:</strong> <code>Math.ceil(total / limit)</code></li>
+            <li><strong>Default Sort:</strong> <code>createdAt DESC</code> — most recent first.</li>
+          </ul>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>All list APIs should support pagination, sorting, and filtering via query parameters.</li>
+            <li>If client doesn't send <code>page</code> or <code>limit</code>, server provides sensible defaults (page=1, limit=10).</li>
+            <li>Default sort is always <code>createdAt DESC</code>. Without explicit sorting, DB results are non-deterministic.</li>
+            <li>A paginated response always includes: <code>data</code>, <code>total</code>, <code>page</code>, <code>totalPages</code>.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>page:</strong> Which page, default 1.</li>
+            <li><strong>limit:</strong> Records per page, default 10/20.</li>
+            <li><strong>sortBy:</strong> Field to sort by, default createdAt.</li>
+            <li><strong>sortOrder:</strong> asc or desc, default desc.</li>
+            <li><strong>Filter params:</strong> Pass field name + value as query param.</li>
+            <li><strong>Empty result:</strong> Return <code>{ data: [], total: 0 }</code> with 200.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HTTP Methods and Idempotency</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="02-Resources and URL Design.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="04-CRUD Operations in Practice.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 08 - REST API Design &gt; HTTP Methods and Idempotency</div>
+
+        <h1>HTTP Methods and Idempotency</h1>
+        <p class="lead">
+          HTTP methods are the verbs of REST. Each method carries a semantic meaning that tells the server — and any API consumer — what kind of operation is being performed. Idempotency defines whether calling the same operation multiple times is safe.
+        </p>
+
+        <h2>The Five Core HTTP Methods</h2>
+        <p>While HTTP defines many methods (HEAD, OPTIONS, CONNECT, TRACE…), five are used in everyday REST API design:</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Operation</th>
+              <th>Idempotent?</th>
+              <th>Request Body?</th>
+              <th>Typical Status Codes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>GET</code></td>
+              <td>Fetch / Read</td>
+              <td>✅ Yes</td>
+              <td>No</td>
+              <td>200, 404</td>
+            </tr>
+            <tr>
+              <td><code>POST</code></td>
+              <td>Create / Custom Action</td>
+              <td>❌ No</td>
+              <td>Yes</td>
+              <td>201, 200</td>
+            </tr>
+            <tr>
+              <td><code>PUT</code></td>
+              <td>Full Replace</td>
+              <td>✅ Yes</td>
+              <td>Yes (full resource)</td>
+              <td>200</td>
+            </tr>
+            <tr>
+              <td><code>PATCH</code></td>
+              <td>Partial Update</td>
+              <td>✅ Yes</td>
+              <td>Yes (partial fields)</td>
+              <td>200</td>
+            </tr>
+            <tr>
+              <td><code>DELETE</code></td>
+              <td>Delete</td>
+              <td>✅ Yes</td>
+              <td>No</td>
+              <td>204</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Idempotency Explained</h2>
+        <p>Idempotency means: <strong>performing the same operation multiple times produces the same effect as performing it once.</strong> The key word is "side effect" — what changes in the server environment as a result of the call.</p>
+
+        <h3>GET — Idempotent</h3>
+        <p>Calling <code>GET /books</code> one time or a thousand times makes no change to the server. You are only reading data. The server state is unaffected by your calls. Idempotent by definition.</p>
+
+        <h3>PATCH and PUT — Idempotent</h3>
+        <p>You send <code>PATCH /users/1</code> with <code>{"name": "Alice"}</code>. On the first call, the name changes from "Bob" to "Alice". On the second, third, and millionth call with the same payload, the name is still "Alice" — no additional change occurs. The side effect (name = Alice) is identical every time. Idempotent.</p>
+
+        <h3>DELETE — Idempotent</h3>
+        <p>You send <code>DELETE /users/1</code>. First call: user is deleted. Second call: the server returns a 404 because the user no longer exists. But crucially — no new side effect occurred. The state of the system (user doesn't exist) is the same whether you called it once or a thousand times. Idempotent.</p>
+
+        <h3>POST — Non-Idempotent</h3>
+        <p>You send <code>POST /books</code> with <code>{"name": "Dune"}</code>. First call: creates book with ID 1. Second call with same payload: creates another book with ID 2. Third call: ID 3. Each call produces a new and different side effect. This is why POST is the only non-idempotent method.</p>
+
+        <h2>PUT vs. PATCH — When to Use Which</h2>
+        <p>This is one of the most commonly confused distinctions in REST:</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Payload Required</th>
+              <th>Behaviour</th>
+              <th>Use When</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>PUT</code></td>
+              <td>All fields of the resource</td>
+              <td>Completely replaces the resource with the provided payload</td>
+              <td>Replacing a full resource (rare in modern SPAs)</td>
+            </tr>
+            <tr>
+              <td><code>PATCH</code></td>
+              <td>Only the fields you want to change</td>
+              <td>Merges changes into the existing resource</td>
+              <td>Updating specific fields (preferred in modern JSON-heavy APIs)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>In practice, modern single-page applications almost always use <strong>PATCH</strong> for updates. You rarely want to send an entire resource back just to change one field. The lecturer's guidance: <em>"Stick to PATCH for partial updates. PUT is more relevant to the multi-page application era."</em></p>
+
+        <h2>POST for Custom Actions</h2>
+        <p>REST defines GET, PUT, PATCH, DELETE for structured data operations. But what happens when you need to perform an action that doesn't map cleanly to any of these — like <em>archiving</em> an organization, <em>cloning</em> a project, or <em>sending an email</em>?</p>
+        <p>The REST specification makes POST <strong>open-ended</strong> for exactly this reason. When an operation:</p>
+        <ul>
+          <li>Is not a fetch (not GET)</li>
+          <li>Is not a standard create</li>
+          <li>Is not an update or delete</li>
+          <li>Is a <em>verb action</em> you want the server to perform</li>
+        </ul>
+        <p>...use <code>POST</code> with the action name appended to the URL (e.g., <code>POST /organizations/abc123/archive</code>). The response code will depend on what the server does — it won't always be 201.</p>
+
+        <h2>The "Other" Methods</h2>
+        <ul>
+          <li><strong>HEAD:</strong> Like GET but only retrieves headers, not the body. Used to check if a resource exists or get its metadata cheaply.</li>
+          <li><strong>OPTIONS:</strong> Used by browsers during the CORS preflight process. The browser asks: "Is my origin allowed to make this request?" The CORS middleware responds with the allowed origins and methods.</li>
+        </ul>
+
+        <div class="nav-buttons bottom">
+          <a href="02-Resources and URL Design.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="04-CRUD Operations in Practice.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            Think of idempotency like a <strong>light switch</strong>. Flipping it ON once or ten times — the light is still ON. That's idempotent. Now think of POST like pressing a <strong>doorbell</strong>. Press it once and one chime plays. Press it ten times and ten chimes play. Each press produces a new event. Not idempotent.
+          </p>
+        </div>
+
+        <div class="premium-box box-orange">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>Idempotency:</strong> Performing the same operation N times produces the same side effects as performing it once.</li>
+            <li><strong>Side Effect:</strong> Any change made to server state as a result of an API call.</li>
+            <li><strong>PATCH:</strong> Partial update — only fields you send are changed.</li>
+            <li><strong>PUT:</strong> Full replace — the entire resource is replaced with the payload.</li>
+            <li><strong>Custom Action:</strong> A verb operation (archive, clone, send) expressed as <code>POST /resource/:id/action</code>.</li>
+          </ul>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>GET, PATCH, PUT, DELETE are all idempotent. POST is the only non-idempotent method.</li>
+            <li>Use PATCH (not PUT) for partial updates in modern JSON-based APIs.</li>
+            <li>When an operation doesn't fit CRUD, use POST with a named action in the URL.</li>
+            <li>POST response codes are not always 201 — custom actions can return 200 if no new resource is created.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>GET:</strong> Read, idempotent, no body.</li>
+            <li><strong>POST:</strong> Create or custom action, NOT idempotent, has body.</li>
+            <li><strong>PUT:</strong> Full replace, idempotent, full body required.</li>
+            <li><strong>PATCH:</strong> Partial update, idempotent, partial body.</li>
+            <li><strong>DELETE:</strong> Delete, idempotent, no body.</li>
+            <li><strong>HEAD:</strong> Metadata only.</li>
+            <li><strong>OPTIONS:</strong> CORS preflight.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

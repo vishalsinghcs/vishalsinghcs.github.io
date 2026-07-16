@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PostgreSQL and Data Types</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="01-What is a Database and DBMS.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="03-Database Migrations.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 09 - Databases with Postgres &gt; PostgreSQL and Data Types</div>
+
+        <h1>PostgreSQL and Data Types</h1>
+        <p class="lead">
+          PostgreSQL (Postgres) is the industry's preferred open-source relational database — and for good reason. Understanding why it wins and which data types to use for which fields will prevent an entire class of performance and consistency bugs.
+        </p>
+
+        <h2>Why PostgreSQL?</h2>
+        <p>When choosing a relational database, the field narrows to MySQL, PostgreSQL, and SQL Server. PostgreSQL wins in most modern backend projects for five concrete reasons:</p>
+
+        <ol>
+          <li>
+            <strong>Open source and free</strong> — No licensing cost. Companies can host it on their own servers without depending on a vendor. A huge number of startups and large companies choose Postgres for exactly this reason.
+          </li>
+          <li>
+            <strong>Adheres strictly to the SQL standard</strong> — Any SQL query written for Postgres runs correctly on MySQL or SQL Server with minimal changes. Migrating to a different database system in the future is not a significant rewrite.
+          </li>
+          <li>
+            <strong>Highly extensible</strong> — The official Postgres documentation is approximately 1,400 pages and covers practically every use case a SaaS product will ever encounter. It has a rich extension ecosystem for further customization.
+          </li>
+          <li>
+            <strong>Proven reliability and scalability</strong> — Postgres is used in production by companies at massive scale and has decades of battle-testing behind it.
+          </li>
+          <li>
+            <strong>Native JSON support</strong> — This is the most important differentiator. One reason developers choose MongoDB (non-relational) is the ability to store any arbitrary JSON. Postgres provides a native <code>jsonb</code> data type with full indexing and query support. You get relational data integrity and flexible JSON storage in the same database — eliminating the need to choose between them.
+          </li>
+        </ol>
+
+        <p>
+          The common claim that MySQL has significant performance advantages over Postgres is only relevant at massive scale for very specific bottlenecks. Until you are serving millions of users and have identified a concrete bottleneck, Postgres is the correct default choice.
+        </p>
+
+        <h2>Data Types in PostgreSQL</h2>
+        <p>Choosing the right data type for each column is one of the most important database design decisions. It directly affects data integrity, storage efficiency, and query performance.</p>
+
+        <h3>Integer Types</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Storage</th>
+              <th>Use Case</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>smallint</code></td>
+              <td>2 bytes (−32,768 to 32,767)</td>
+              <td>Small counters, lookup codes</td>
+            </tr>
+            <tr>
+              <td><code>integer</code></td>
+              <td>4 bytes</td>
+              <td>General whole numbers</td>
+            </tr>
+            <tr>
+              <td><code>bigint</code></td>
+              <td>8 bytes (very large range)</td>
+              <td>Row counts, large IDs in production</td>
+            </tr>
+            <tr>
+              <td><code>serial</code></td>
+              <td>Auto-incrementing integer</td>
+              <td>Simple auto-increment IDs</td>
+            </tr>
+            <tr>
+              <td><code>bigserial</code></td>
+              <td>Auto-incrementing bigint</td>
+              <td>Production primary keys (preferred)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Decimal / Floating Point Types</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Accuracy</th>
+              <th>Use Case</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>decimal(p, s)</code> / <code>numeric(p, s)</code></td>
+              <td>Exact (no rounding)</td>
+              <td>Price, currency, financial calculations</td>
+            </tr>
+            <tr>
+              <td><code>real</code></td>
+              <td>Approximate (6 decimal digits)</td>
+              <td>Scientific values where small drift is acceptable</td>
+            </tr>
+            <tr>
+              <td><code>double precision</code></td>
+              <td>Approximate (15 decimal digits)</td>
+              <td>Same as real, higher precision</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+          <strong>Critical rule:</strong> For any field where accuracy matters — especially <code>price</code> or any monetary value — always use <code>decimal</code> or <code>numeric</code>. Floating point types store values in a binary format that can produce slightly different representations across different systems. For a value like area size (5.67891) where tiny discrepancies are acceptable, floating point is fine and also faster to process.
+        </p>
+        <p>The <code>decimal(10, 2)</code> syntax means: maximum 10 total digits, with 2 digits after the decimal point. For example: <code>12345678.90</code>.</p>
+
+        <h3>String / Text Types</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Behaviour</th>
+              <th>Recommendation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>char(n)</code></td>
+              <td>Fixed length — pads with spaces if shorter</td>
+              <td>Only use when all values always have identical length (e.g., day codes: "Mo", "Tu")</td>
+            </tr>
+            <tr>
+              <td><code>varchar(n)</code></td>
+              <td>Variable length — max <code>n</code> chars</td>
+              <td>Avoid; the "255" limit is a MySQL convention with no meaning in Postgres</td>
+            </tr>
+            <tr>
+              <td><code>text</code></td>
+              <td>Unlimited length (up to ~250 MB)</td>
+              <td><strong>Always prefer this.</strong> No performance difference from varchar in Postgres.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+          The Postgres documentation itself recommends using <code>text</code> instead of <code>varchar(255)</code>. The 255 limit is a habit carried over from MySQL, where it has a specific meaning. In Postgres, using <code>varchar(255)</code> is misleading — a new team member seeing it will assume the 255 has some intentional business meaning when it does not. Using <code>text</code> is cleaner, more honest, and eliminates the need for migrations later if you ever need to extend the "length limit."
+        </p>
+        <p>
+          Since backend engineers interact with the database through a driver (not raw SQL), enforce any character length constraints in the application layer instead, keeping migration files simpler.
+        </p>
+
+        <h3>Boolean</h3>
+        <p><code>boolean</code> — stores <code>true</code> or <code>false</code>. Standard and self-explanatory.</p>
+
+        <h3>Date and Time Types</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Stores</th>
+              <th>Example</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>date</code></td>
+              <td>Date only (no time)</td>
+              <td>Due dates, birthdays</td>
+            </tr>
+            <tr>
+              <td><code>time</code></td>
+              <td>Time only (HH:MM:SS)</td>
+              <td>Daily schedule slots</td>
+            </tr>
+            <tr>
+              <td><code>timestamp</code></td>
+              <td>Date + time</td>
+              <td>Event timestamps without timezone</td>
+            </tr>
+            <tr>
+              <td><code>timestamptz</code></td>
+              <td>Date + time + timezone</td>
+              <td><strong>Use this for created_at / updated_at.</strong></td>
+            </tr>
+            <tr>
+              <td><code>interval</code></td>
+              <td>Duration (e.g., "10 days")</td>
+              <td>Subscription durations, retry windows</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>UUID</h3>
+        <p>
+          <code>uuid</code> — Universally Unique Identifier. A native type in Postgres. Highly preferred for primary keys in production systems because UUIDs are globally unique and unpredictable — unlike sequential integers which expose record counts and can be guessed. Postgres can auto-generate UUIDs using <code>gen_random_uuid()</code>.
+        </p>
+
+        <h3>JSON Types</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Storage Format</th>
+              <th>When to Use</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>json</code></td>
+              <td>Plain text (key-value string)</td>
+              <td>Rarely; <code>jsonb</code> is almost always better</td>
+            </tr>
+            <tr>
+              <td><code>jsonb</code></td>
+              <td>Binary (serialized by Postgres)</td>
+              <td><strong>Preferred.</strong> Faster queries, supports full indexing, richer operator support.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+          <code>jsonb</code> is a Postgres-specific type (not standard SQL) that converts JSON into a native binary format for faster processing and retrieval. This is what eliminates the need for a separate MongoDB instance to handle dynamic or unstructured data.
+        </p>
+
+        <h3>Arrays</h3>
+        <p>Postgres allows you to store an array of any data type — <code>integer[]</code>, <code>text[]</code>, <code>uuid[]</code>, <code>jsonb[]</code>. Useful for storing tags, permissions lists, or multi-valued fields without a join table.</p>
+
+        <h3>Other Types</h3>
+        <p>Postgres also supports <code>inet</code> (IP addresses), <code>macaddr</code> (MAC addresses), geometric types (points, lines), and <code>xml</code> — rarely needed by backend engineers but available.</p>
+
+        <div class="nav-buttons bottom">
+          <a href="01-What is a Database and DBMS.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="03-Database Migrations.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            Think of data types as <strong>column contracts</strong>. When you declare a column as <code>decimal(10,2)</code>, you are making a promise to every future query: "the value in this field will always be a number with exactly 2 decimal places, no exceptions." The DBMS enforces this contract on every single insert and update — so your application never has to guard against invalid data arriving from the database.
+          </p>
+        </div>
+
+        <div class="premium-box box-orange">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>UUID:</strong> Universally Unique Identifier — a 128-bit, globally unique value. Preferred over sequential integers for production primary keys.</li>
+            <li><strong>jsonb:</strong> Binary JSON storage in Postgres. Faster to query than plain <code>json</code>, supports indexing.</li>
+            <li><strong>decimal(p, s):</strong> Exact-precision number: <code>p</code> total digits, <code>s</code> after the decimal point.</li>
+            <li><strong>timestamptz:</strong> Timestamp with timezone information — use for all audit fields.</li>
+            <li><strong>text:</strong> Unlimited character storage. Postgres's recommended alternative to <code>varchar</code>.</li>
+          </ul>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Postgres wins for most projects: open source, SQL-standard, extensible, JSON support.</li>
+            <li>For monetary values: always <code>decimal</code>, never <code>float</code>.</li>
+            <li>For strings: always <code>text</code>, never <code>varchar(255)</code> (Postgres docs agree).</li>
+            <li>For primary keys: prefer <code>uuid</code> over serial integers in production.</li>
+            <li>For timestamps: use <code>timestamptz</code> (includes timezone).</li>
+            <li>For dynamic/unstructured data: use <code>jsonb</code> — eliminates the need for MongoDB.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>Postgres advantages:</strong> Open source, SQL-standard, extensible, reliable, native jsonb.</li>
+            <li><strong>decimal vs float:</strong> Use decimal for prices; float for non-critical measurements.</li>
+            <li><strong>char vs varchar vs text:</strong> char = fixed, varchar = limited, text = unlimited. Use text.</li>
+            <li><strong>uuid:</strong> Globally unique, unpredictable, preferred for PKs.</li>
+            <li><strong>jsonb:</strong> Binary JSON — indexable, faster than json type.</li>
+            <li><strong>timestamptz:</strong> Always use this for created_at / updated_at.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

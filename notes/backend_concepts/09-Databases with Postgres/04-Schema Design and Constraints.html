@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Schema Design and Constraints</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="03-Database Migrations.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="05-Writing Queries — JOINs and CRUD.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 09 - Databases with Postgres &gt; Schema Design and Constraints</div>
+
+        <h1>Schema Design and Constraints</h1>
+        <p class="lead">
+          Schema design is where you translate business requirements into tables, columns, and relationships. Constraints are the rules that protect those tables from bad data — enforced at the database level, not the application level.
+        </p>
+
+        <h2>Naming Conventions</h2>
+        <p>Before writing any schema, establish consistent naming rules. In Postgres:</p>
+        <ul>
+          <li><strong>Table names:</strong> plural, snake_case (e.g., <code>users</code>, <code>project_members</code>)</li>
+          <li><strong>Column names:</strong> lowercase, snake_case (e.g., <code>full_name</code>, <code>created_at</code>)</li>
+          <li><strong>Never use camelCase</strong> — Postgres is case-insensitive by default. If you write <code>fullName</code>, Postgres silently converts it to <code>fullname</code>. To preserve case you must wrap identifiers in double quotes every time — which is tedious and error-prone in application code.</li>
+        </ul>
+
+        <h2>Constraints</h2>
+        <p>A constraint is a rule applied to a column that Postgres enforces on every insert and update. Violating a constraint produces a database-level error, preventing bad data from ever reaching storage.</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Constraint</th>
+              <th>Effect</th>
+              <th>Example</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>NOT NULL</code></td>
+              <td>Column cannot contain NULL</td>
+              <td><code>email TEXT NOT NULL</code></td>
+            </tr>
+            <tr>
+              <td><code>UNIQUE</code></td>
+              <td>All values in the column must be distinct</td>
+              <td><code>email TEXT NOT NULL UNIQUE</code></td>
+            </tr>
+            <tr>
+              <td><code>PRIMARY KEY</code></td>
+              <td>NOT NULL + UNIQUE; uniquely identifies the row</td>
+              <td><code>id UUID PRIMARY KEY</code></td>
+            </tr>
+            <tr>
+              <td><code>FOREIGN KEY</code> / <code>REFERENCES</code></td>
+              <td>Value must match an existing value in another table's primary key</td>
+              <td><code>owner_id UUID REFERENCES users</code></td>
+            </tr>
+            <tr>
+              <td><code>CHECK</code></td>
+              <td>Custom boolean condition must be true for the row to be accepted</td>
+              <td><code>CHECK (priority BETWEEN 1 AND 5)</code></td>
+            </tr>
+            <tr>
+              <td><code>DEFAULT</code></td>
+              <td>Provides a fallback value when none is supplied on insert</td>
+              <td><code>status project_status NOT NULL DEFAULT 'active'</code></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+          <strong>Important rule:</strong> By default in Postgres, every column accepts NULL unless you explicitly write <code>NOT NULL</code>. For the vast majority of columns — more than 70% — you should add <code>NOT NULL</code>. Omitting it allows application bugs or automated scripts to silently insert NULL values, which corrupts the database over time.
+        </p>
+
+        <h2>Enums — Custom Data Types</h2>
+        <p>
+          When a field has a fixed, predefined set of allowed string values, use a custom <code>ENUM</code> type rather than a plain <code>text</code> column. This provides two benefits: <strong>data integrity</strong> (the database rejects any value not in the list) and <strong>documentation</strong> (anyone reading the migration immediately understands all valid states of the field).
+        </p>
+
+        <pre><code>-- Creating custom enum types
+CREATE TYPE project_status AS ENUM ('active', 'completed', 'archived');
+CREATE TYPE task_status AS ENUM ('pending', 'in_progress', 'completed', 'cancelled');
+CREATE TYPE member_role AS ENUM ('owner', 'admin', 'member');
+
+-- Using a custom enum type on a column
+status project_status NOT NULL DEFAULT 'active'</code></pre>
+
+        <p>
+          Without enums, enforcing "status must be one of these three values" must be done in application code. But application code changes constantly — a developer refactoring a handler might accidentally remove or break the validation, silently allowing invalid data into the table. The enum enforces this at the database level no matter what.
+        </p>
+
+        <h2>Relationships Between Tables</h2>
+        <p>Relational databases represent relationships between entities through keys. There are three types of relationships:</p>
+
+        <h3>One-to-One (1:1)</h3>
+        <p>
+          Each row in Table A corresponds to exactly one row in Table B, and vice versa. Example: <code>users</code> → <code>user_profiles</code>. A user has exactly one profile; a profile belongs to exactly one user.
+        </p>
+        <p>
+          <strong>Why separate tables?</strong> Storing all profile fields in the <code>users</code> table forces migrations to that table every time you add a new profile field. Separating them isolates concerns — the <code>users</code> table stays stable, while <code>user_profiles</code> can grow independently.
+        </p>
+        <p>
+          <strong>Implementation:</strong> The secondary table uses the foreign key of the primary table as its own primary key.
+        </p>
+        <pre><code>CREATE TABLE user_profiles (
+  user_id UUID PRIMARY KEY REFERENCES users,  -- PK + FK
+  avatar_url TEXT,
+  bio TEXT,
+  phone TEXT
+);</code></pre>
+
+        <h3>One-to-Many (1:M)</h3>
+        <p>
+          One row in Table A corresponds to many rows in Table B. Example: one <code>project</code> has many <code>tasks</code>. A task belongs to exactly one project.
+        </p>
+        <p>
+          <strong>Implementation:</strong> Add a foreign key column to the "many" table referencing the "one" table's primary key.
+        </p>
+        <pre><code>CREATE TABLE tasks (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  project_id UUID NOT NULL REFERENCES projects ON DELETE CASCADE,
+  title TEXT NOT NULL,
+  ...
+);</code></pre>
+
+        <h3>Many-to-Many (M:M)</h3>
+        <p>
+          Many rows in Table A relate to many rows in Table B. Example: a user can be part of many projects; a project can have many users. You cannot express this with a single foreign key in either table.
+        </p>
+        <p>
+          <strong>Implementation:</strong> Create a <strong>linking table</strong> (also called a join table or junction table) that holds foreign keys to both tables. The primary key of the linking table is a <strong>composite primary key</strong> — the combination of both foreign keys.
+        </p>
+        <pre><code>CREATE TABLE project_members (
+  project_id UUID NOT NULL REFERENCES projects ON DELETE CASCADE,
+  user_id    UUID NOT NULL REFERENCES users    ON DELETE CASCADE,
+  role       member_role NOT NULL DEFAULT 'member',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (project_id, user_id)  -- Composite PK
+);</code></pre>
+        <p>
+          The composite primary key guarantees that a user can only be added to the same project once — it enforces uniqueness of the <em>combination</em> of the two keys.
+        </p>
+
+        <h2>Referential Integrity — ON DELETE Behaviour</h2>
+        <p>When a foreign key relationship exists and a parent row is deleted, the database must decide what to do with the child rows. This is configured with the <code>ON DELETE</code> clause:</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Option</th>
+              <th>Behaviour on Parent Delete</th>
+              <th>When to Use</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>RESTRICT</code></td>
+              <td>Fails with error — cannot delete parent if children exist</td>
+              <td>When children must not be orphaned. E.g., cannot delete a user who owns projects.</td>
+            </tr>
+            <tr>
+              <td><code>CASCADE</code></td>
+              <td>Automatically deletes all child rows</td>
+              <td>When children are meaningless without the parent. E.g., deleting a project deletes all its tasks.</td>
+            </tr>
+            <tr>
+              <td><code>SET NULL</code></td>
+              <td>Sets the FK column to NULL in child rows</td>
+              <td>When the relationship is optional. E.g., deleting a user unassigns their tasks (sets <code>assigned_to = NULL</code>).</td>
+            </tr>
+            <tr>
+              <td><code>SET DEFAULT</code></td>
+              <td>Sets the FK column to its DEFAULT value</td>
+              <td>Rare — only when a meaningful default reassignment exists.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="nav-buttons bottom">
+          <a href="03-Database Migrations.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="05-Writing Queries — JOINs and CRUD.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            Think of constraints as <strong>bouncers at a nightclub door</strong>. The <code>NOT NULL</code> bouncer doesn't let anyone in without an ID. The <code>UNIQUE</code> bouncer won't let the same person in twice. The <code>FOREIGN KEY</code> bouncer checks your name against the VIP list (another table). The <code>CHECK</code> bouncer verifies your age (custom condition). They don't care which part of the application is sending data — the bouncer enforces the rules for everyone, always.
+          </p>
+        </div>
+
+        <div class="premium-box box-orange">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>Primary Key:</strong> A column (or set of columns) that uniquely identifies every row. Implicitly NOT NULL and UNIQUE.</li>
+            <li><strong>Foreign Key:</strong> A column that references the primary key of another table, enforcing the relationship.</li>
+            <li><strong>Enum:</strong> A custom Postgres type with a fixed set of allowed string values.</li>
+            <li><strong>Composite Primary Key:</strong> A primary key made of two or more columns combined — used in linking tables for M:M relationships.</li>
+            <li><strong>Linking Table:</strong> An intermediary table used to model many-to-many relationships.</li>
+            <li><strong>Referential Integrity:</strong> The guarantee that all foreign key values have corresponding rows in the referenced table.</li>
+          </ul>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Use snake_case for all table and column names in Postgres — camelCase causes silent case-folding bugs.</li>
+            <li>Add NOT NULL to 70%+ of your columns unless NULL is intentionally valid for that field.</li>
+            <li>Use ENUM types instead of plain text for fields with predefined allowed values — for integrity and documentation.</li>
+            <li>1:1 → FK as PK in child table. 1:M → FK in the "many" table. M:M → linking table with composite PK.</li>
+            <li>ON DELETE RESTRICT = fail. CASCADE = delete children. SET NULL = null children. Choose deliberately.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>snake_case</strong> for all table/column names — never camelCase.</li>
+            <li><strong>NOT NULL</strong> should be on most columns by default.</li>
+            <li><strong>ENUM</strong> for fixed allowed values — enforced at DB, not app level.</li>
+            <li><strong>1:1</strong> → child table uses parent PK as its own PK.</li>
+            <li><strong>1:M</strong> → FK in the "many" side table.</li>
+            <li><strong>M:M</strong> → linking table with composite PK of both FKs.</li>
+            <li><strong>RESTRICT:</strong> block delete. <strong>CASCADE:</strong> delete children. <strong>SET NULL:</strong> null children.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

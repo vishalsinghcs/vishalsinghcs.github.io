@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>What is a Database and DBMS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="../08-REST API Design/interview-questions.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="02-PostgreSQL and Data Types.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 09 - Databases with Postgres &gt; What is a Database and DBMS</div>
+
+        <h1>What is a Database and DBMS?</h1>
+        <p class="lead">
+          Databases are the persistence layer of every backend system. Understanding what they are, how they differ from in-memory storage, and why dedicated database management software exists is the foundation for everything else.
+        </p>
+
+        <h2>Why Do We Need Databases?</h2>
+        <p>
+          At its core, a database is a system that <strong>persists information across sessions</strong>. Persistence means storing data in a way that survives even after the program that created it has been stopped, restarted, or even replaced.
+        </p>
+        <p>
+          Without persistence, every time a user opened a to-do app they would lose all their data — every task created would be gone. Persistence is what makes software useful in the real world. The information must remain in the same expected state even after a significant amount of time has passed, or across different physical locations.
+        </p>
+
+        <h2>The Broad Definition of "Database"</h2>
+        <p>In the widest sense, any form of structured storage can be called a database:</p>
+        <ul>
+          <li>A smartphone contact list</li>
+          <li>Browser localStorage / sessionStorage / cookies</li>
+          <li>A plain text file where you jot down notes</li>
+        </ul>
+        <p>What all these have in common: they provide some way to <strong>create, read, update, and delete (CRUD)</strong> data.</p>
+
+        <p>However, when we say "database" in the context of backend systems and servers, we mean specifically <strong>disk-based databases</strong> — systems that store data on HDD or SSD storage.</p>
+
+        <h2>Disk-Based vs. RAM-Based Storage</h2>
+        <p>Two main types of storage are relevant to every backend system:</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Characteristic</th>
+              <th>RAM (Primary Memory)</th>
+              <th>Disk (Secondary Memory)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Speed</td>
+              <td>Very fast</td>
+              <td>Relatively slow</td>
+            </tr>
+            <tr>
+              <td>Cost</td>
+              <td>Expensive per GB</td>
+              <td>Cheap per GB</td>
+            </tr>
+            <tr>
+              <td>Typical capacity</td>
+              <td>8 GB – 128 GB</td>
+              <td>512 GB – 2 TB+</td>
+            </tr>
+            <tr>
+              <td>Persistence</td>
+              <td>Lost on shutdown</td>
+              <td>Survives shutdown</td>
+            </tr>
+            <tr>
+              <td>Use case</td>
+              <td>Caching (Redis)</td>
+              <td>Databases (Postgres, MongoDB)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+          The key insight: databases choose disk storage because they need capacity and durability, accepting a speed trade-off. Caching systems like Redis choose RAM because they need speed, accepting the trade-off of smaller capacity and volatility.
+        </p>
+
+        <h2>What is a DBMS?</h2>
+        <p>
+          Simply storing bytes on a disk is not enough. We need software that can efficiently organize, retrieve, modify, and protect that data. This software is called a <strong>Database Management System (DBMS)</strong>.
+        </p>
+        <p>The core responsibilities of a DBMS are:</p>
+        <ul>
+          <li><strong>Data Organization</strong> — Organizing data so that all CRUD operations (create, read, update, delete) are efficient, even at hundreds of GB of scale.</li>
+          <li><strong>Access</strong> — Providing a standard interface (typically SQL) through which clients can perform all necessary operations.</li>
+          <li><strong>Integrity</strong> — Ensuring the accuracy and validity of data. For example, a DBMS can enforce that a <code>payment_amount</code> field only ever stores numbers, not strings. If bad data is pushed, the DBMS rejects it at the database level before it corrupts your records.</li>
+          <li><strong>Security</strong> — Protecting data from unauthorized access through users, roles, and permissions.</li>
+        </ul>
+
+        <h2>Why Not Just Use Text Files?</h2>
+        <p>Before DBMS software existed, developers stored all data in text files. This approach failed for three fundamental reasons:</p>
+
+        <h3>1. Parsing</h3>
+        <p>
+          To find a specific customer in a text file, you must write application code (in JavaScript, Python, Go, etc.) to read the file, split every line, and compare each field one by one. This is slow and extremely error-prone — a parsing bug can corrupt your entire dataset.
+        </p>
+
+        <h3>2. No Structure</h3>
+        <p>
+          A text file has no schema. You cannot enforce that a payment field must only contain numbers. Any arbitrary text can be placed anywhere. Consistency of data across thousands of entries is impossible to guarantee.
+        </p>
+
+        <h3>3. Concurrency</h3>
+        <p>
+          What happens when two users try to modify the same record simultaneously? With a text file, both read the same value (e.g., <code>amount = 40</code>). One increases it to 60, the other decreases it to 20. The result depends on which write operation hits the disk last — completely non-deterministic. A DBMS manages concurrent access with locking, transactions, and isolation mechanisms to guarantee consistent results.
+        </p>
+
+        <h2>Relational vs. Non-Relational Databases</h2>
+        <p>At the highest level, DBMS software falls into two major categories:</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>Relational (SQL)</th>
+              <th>Non-Relational (NoSQL)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Data structure</td>
+              <td>Tables, rows, columns</td>
+              <td>Documents, collections</td>
+            </tr>
+            <tr>
+              <td>Schema</td>
+              <td>Strict, predefined</td>
+              <td>Flexible / schema-less</td>
+            </tr>
+            <tr>
+              <td>Data integrity</td>
+              <td>Enforced at DB level</td>
+              <td>Application must enforce it</td>
+            </tr>
+            <tr>
+              <td>Query language</td>
+              <td>SQL (Structured Query Language)</td>
+              <td>Varies (MongoDB Query Language, etc.)</td>
+            </tr>
+            <tr>
+              <td>Relationships</td>
+              <td>Foreign keys, JOINs</td>
+              <td>Embedded documents / manual</td>
+            </tr>
+            <tr>
+              <td>Examples</td>
+              <td>PostgreSQL, MySQL, SQL Server</td>
+              <td>MongoDB, CouchDB, DynamoDB</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>When to Choose Relational</h3>
+        <p>
+          Use a relational database when your data is structured and consistency matters. A <strong>CRM (Customer Relationship Management)</strong> system is a classic example — it must maintain accurate, consistent data about customers, contacts, and sales opportunities. Strong data integrity and complex query capabilities (JOINs across tables) are essential.
+        </p>
+
+        <h3>When to Choose Non-Relational</h3>
+        <p>
+          Use a non-relational database when your data is inherently unstructured or highly variable. A <strong>CMS (Content Management System)</strong> is a good example — blog articles can contain text, images, embedded videos, code blocks, or YouTube embeds. The schema is unknown upfront. MongoDB's flexible document model suits this case.
+        </p>
+
+        <h3>The Trade-off With Non-Relational</h3>
+        <p>
+          NoSQL databases offer flexibility, but they push the responsibility for data integrity to the application layer. Your backend code must validate consistency that a relational DBMS would enforce automatically. Application code changes frequently — which makes it far easier to introduce bugs that silently corrupt data over time.
+        </p>
+
+        <div class="nav-buttons bottom">
+          <a href="../08-REST API Design/interview-questions.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="02-PostgreSQL and Data Types.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            A <strong>DBMS is a librarian</strong>, not just a building. The library (disk) stores books (data). But without a librarian (DBMS), you'd have to walk every single aisle to find a specific book. The librarian maintains a catalogue (index), enforces rules about what books belong where (schema/integrity), controls who can access restricted sections (security), and ensures two people don't accidentally tear the same page (concurrency).
+          </p>
+        </div>
+
+        <div class="premium-box box-orange">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>Persistence:</strong> Storing data so it survives after the program that created it has stopped.</li>
+            <li><strong>DBMS:</strong> Database Management System — software that manages storage, retrieval, and integrity of data.</li>
+            <li><strong>Disk-based storage:</strong> Secondary memory (HDD/SSD) — large, cheap, slower.</li>
+            <li><strong>RAM:</strong> Primary memory — fast, expensive, volatile (data lost on shutdown).</li>
+            <li><strong>Data Integrity:</strong> The guarantee that data is accurate, valid, and consistent at all times.</li>
+            <li><strong>Concurrency:</strong> Multiple users or processes accessing/modifying the same data simultaneously.</li>
+          </ul>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Databases persist data so it survives program restarts and time.</li>
+            <li>In backend systems, "database" means disk-based storage — not RAM.</li>
+            <li>Caching (Redis) uses RAM for speed. Traditional databases (Postgres, MongoDB) use disk for capacity and persistence.</li>
+            <li>Text files fail as databases due to poor parsing performance, no schema enforcement, and no concurrency handling.</li>
+            <li>Relational DBs enforce data integrity at the DB level. Non-relational DBs push that to application code — which is riskier.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>Database:</strong> Any persistent, structured storage with CRUD operations.</li>
+            <li><strong>DBMS:</strong> Software managing organization, access, integrity, security.</li>
+            <li><strong>RAM vs Disk:</strong> RAM = fast, small, volatile. Disk = slow, large, durable.</li>
+            <li><strong>Text file failures:</strong> Slow parsing, no schema, no concurrency.</li>
+            <li><strong>Relational:</strong> Tables, strict schema, SQL, strong integrity (Postgres, MySQL).</li>
+            <li><strong>Non-relational:</strong> Documents, flexible schema, integrity in app code (MongoDB).</li>
+            <li><strong>CRM → Relational.</strong> <strong>CMS → Non-relational.</strong></li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

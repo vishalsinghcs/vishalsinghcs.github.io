@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interview Questions: Databases with Postgres</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper" style="max-width: 900px; display: block; margin: 0 auto;">
+      <main>
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="mind-map.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="#" class="nav-btn next" aria-label="Next (Coming Soon)" style="opacity: 0.5; cursor: not-allowed;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 09 - Databases with Postgres &gt; Interview Questions</div>
+
+        <h1>Interview Questions</h1>
+        <p class="lead">
+          09 - Databases with Postgres: DBMS Design, Data Types, Migrations, Schema Design, Relationships, Joins, Parameterized Queries, Indexes, and Triggers
+        </p>
+
+        <p class="muted" style="margin-bottom: 3rem;">
+          These questions test your ability to reason about database design decisions, query correctness, performance trade-offs, and data integrity — at the level of a backend engineer owning a production system. The goal is engineering thinking, not recitation of SQL syntax.
+        </p>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">1. Scenario-based Questions (40%)</h3>
+          <ul style="color: #333;">
+            <li style="margin-bottom: 1rem;">Your production Postgres database has a <code>users</code> table with 8 million rows. The endpoint <code>GET /users/:id</code> returns a single user by their UUID — it was instant in development but is now taking 400–800ms in production. No schema changes have been made. Walk through every possible root cause, how you would confirm which one is responsible, and what changes you would make at the database level to fix it permanently.</li>
+            <li style="margin-bottom: 1rem;">A junior engineer on your team is building a task management feature. They store the task priority as a <code>varchar(255)</code> column and plan to enforce that valid values are <code>"low"</code>, <code>"medium"</code>, and <code>"high"</code> through a <code>switch</code> statement in the service layer. You are reviewing this PR. What are all the ways this can go wrong in a production system, and what specific database-level changes would you require before approving?</li>
+            <li style="margin-bottom: 1rem;">Your backend application is using parameterized queries everywhere except one legacy endpoint that constructs its SQL by concatenating the user-provided <code>search</code> query parameter directly into the string. A security audit flags this. Explain what SQL injection is in concrete terms — what an attacker would actually send and what would happen — and how parameterized queries prevent it at the database driver level.</li>
+            <li style="margin-bottom: 1rem;">A new migration is deployed to production that adds a <code>NOT NULL</code> column to the <code>orders</code> table without a default value. The migration runs successfully on your staging database (which has 500 rows), but immediately fails with an error on production (which has 2 million rows). Explain exactly why this fails, what the correct process is for adding a non-nullable column to a large production table safely, and what the rollback plan should be.</li>
+            <li style="margin-bottom: 1rem;">You are building a project management platform. One team member says: "We should use MongoDB for storing task data because tasks can have custom fields that vary per project." Another says: "Postgres with a <code>jsonb</code> column for custom fields is sufficient." Evaluate both positions in terms of query capabilities, data integrity, indexing, and long-term maintainability. Which would you choose and why?</li>
+            <li style="margin-bottom: 1rem;">Your <code>GET /tasks</code> API supports sorting by <code>created_at</code>, <code>due_date</code>, and <code>priority</code>, and filtering by <code>status</code>. After adding indexes on all four of these fields, a DBA reviews your schema and tells you that one of the indexes is likely hurting performance more than helping it. Which one is the most likely candidate, why, and what would you do instead?</li>
+            <li style="margin-bottom: 1rem;">You need to delete a user from your platform. The users table is referenced by five other tables via foreign keys — <code>projects.owner_id</code> (RESTRICT), <code>tasks.assigned_to</code> (SET NULL), <code>comments.author_id</code> (CASCADE), <code>project_members.user_id</code> (CASCADE), and <code>audit_logs.actor_id</code> (RESTRICT). What happens when you execute <code>DELETE FROM users WHERE id = $1</code> if that user has rows in all five tables? Walk through the database's behavior for each constraint type and explain what order of operations is required to delete the user successfully.</li>
+            <li style="margin-bottom: 1rem;">Two backend engineers simultaneously send requests that both read the same value of a user's account balance (<code>credits = 40</code>), then each independently updates it — one adds 20, the other subtracts 15. When both writes complete, the balance is 25 instead of 45. Explain what race condition caused this, how relational databases handle this class of problem, and what specific mechanisms you would use in Postgres to prevent it.</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">2. "What if?" Questions (20%)</h3>
+          <ul style="color: #333;">
+            <li style="margin-bottom: 1rem;">What if your team decided to skip database migrations entirely and instead managed all schema changes by modifying the database directly via a GUI tool like TablePlus? The system has been running for two years with 12 developers. A new developer joins and needs to set up the project locally. A production incident happens and you need to roll back yesterday's schema change. Walk through every problem this approach creates in both scenarios.</li>
+            <li style="margin-bottom: 1rem;">What if relational databases had no concept of foreign keys or referential integrity constraints — all relationship management was handled entirely by application code? A new engineer joins and writes a bug that deletes users without first deleting their associated records. Trace the cascade of corrupted data states this introduces, and explain why enforcing referential integrity at the database level is architecturally more reliable than enforcing it at the application level.</li>
+            <li style="margin-bottom: 1rem;">What if you stored all monetary values in your e-commerce platform as <code>DOUBLE PRECISION</code> (floating point) instead of <code>DECIMAL</code>? The system processes 50,000 transactions per day. Over time, what subtle bugs would start appearing in financial calculations, reports, and tax computations? Explain the root cause at the binary representation level and what the real-world consequences are.</li>
+            <li style="margin-bottom: 1rem;">What if your <code>users</code> table used a sequential auto-incrementing integer (<code>BIGSERIAL</code>) as its primary key instead of a UUID, and this ID was exposed directly in your public REST API URLs like <code>/users/12345</code>? What specific security and business intelligence risks does this create, and what would an attacker or competitor be able to infer from these IDs?</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">3. Debugging Questions (15%)</h3>
+          <ul style="color: #333;">
+            <li style="margin-bottom: 1rem;">A <code>GET /projects</code> API returns the correct count of projects to some users but returns fewer projects than expected to others — even though the database data is correct and has not changed. The bug is inconsistent and cannot be reproduced reliably. There are no application-level filters applied. What are the three most likely database-query-related causes of this, and what would you check first?</li>
+            <li style="margin-bottom: 1rem;">After deploying a new migration that adds an index to the <code>tasks</code> table in production, write performance to that table drops by 40% and several background job workers start timing out. The read performance improved as expected. What is the cause, what is the relationship between indexes and write performance, and what would you do immediately to stabilize the system?</li>
+            <li style="margin-bottom: 1rem;">An engineer runs a <code>PATCH /user-profiles/:id</code> API call to update a user's bio. The response returns the updated bio correctly, but when they query the same row 10 minutes later, the <code>updated_at</code> column still shows the original timestamp from when the row was first created. The trigger for <code>updated_at</code> was set up in the migration. What are the most likely reasons the trigger is not firing, and how would you diagnose each one?</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">4. Design Questions (15%)</h3>
+          <ul style="color: #333;">
+            <li style="margin-bottom: 1rem;">Design the complete database schema for a multi-tenant project management platform supporting users, projects, tasks, and project membership with roles. For each table, specify: the columns and their types, which columns carry <code>NOT NULL</code>, which are primary keys, which are foreign keys, the <code>ON DELETE</code> behavior for each foreign key, and any enum types you would create. Justify every decision.</li>
+            <li style="margin-bottom: 1rem;">Design the indexing strategy for the following access patterns on a tasks table with 10 million rows: (1) Fetch all tasks for a specific project, sorted by <code>created_at DESC</code>. (2) Fetch all tasks assigned to a specific user, filtered by <code>status = 'pending'</code>. (3) Fetch a single task by its UUID. For each access pattern, identify which indexes are needed, whether a composite index would be better than separate indexes, and whether the primary key covers any of these patterns automatically.</li>
+            <li style="margin-bottom: 1rem;">Design a migration strategy for introducing a breaking change to the schema of a high-traffic production table. Specifically: you need to rename the column <code>full_name TEXT</code> to two separate columns <code>first_name TEXT</code> and <code>last_name TEXT</code>, while the table has 5 million rows and receives 2,000 writes per minute. The API and application code also need to be updated. How would you execute this change with zero downtime and no data loss? Describe the exact sequence of migrations, application deployments, and rollback checkpoints.</li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem;">
+          <h3 style="color: #111;">5. Architecture &amp; Trade-off Questions (10%)</h3>
+          <ul style="color: #333;">
+            <li style="margin-bottom: 1rem;">Your startup is in early stage and the team is debating whether to use PostgreSQL or MongoDB. The application has a core of structured relational data (users, subscriptions, invoices) but also needs to store flexible, user-defined content (a drag-and-drop form builder where each form has completely custom fields). One engineer argues for MongoDB because of the flexibility. Another argues for Postgres with <code>jsonb</code>. Analyze both choices from the perspective of: data integrity guarantees, query flexibility, operational complexity, and long-term migration cost. Which would you recommend for a startup that wants to move fast without creating irreversible architectural debt?</li>
+            <li style="margin-bottom: 1rem;">You are deciding between two approaches for representing a user's role in a project: (A) store it as a <code>TEXT</code> column with no constraint — validation happens in the application service; or (B) create a Postgres <code>ENUM</code> type and use it as the column type. Beyond the obvious data integrity argument, explain the full set of consequences each choice has on: database migrations when new roles are added, code readability for new team members, automated scripts that interact with the database, and database-level error messages in production logs.</li>
+          </ul>
+        </div>
+
+        <div class="nav-buttons bottom">
+          <a href="mind-map.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="#" class="nav-btn next" aria-label="Next (Coming Soon)" style="opacity: 0.5; cursor: not-allowed;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

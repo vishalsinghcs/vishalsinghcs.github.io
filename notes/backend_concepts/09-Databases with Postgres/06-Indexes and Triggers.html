@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Indexes and Triggers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="05-Writing Queries — JOINs and CRUD.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="mind-map.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 09 - Databases with Postgres &gt; Indexes and Triggers</div>
+
+        <h1>Indexes and Triggers</h1>
+        <p class="lead">
+          Indexes make queries dramatically faster by replacing slow sequential scans with direct lookups. Triggers automate repetitive actions (like updating <code>updated_at</code>) that the database should manage on its own — without depending on the application code.
+        </p>
+
+        <h2>What is a Database Index?</h2>
+        <p>
+          Without an index, when you run a query like <code>WHERE id = 'abc-123'</code>, the database performs a <strong>sequential scan</strong> — it reads every single row in the table one by one, comparing each row's ID to the target value, until a match is found.
+        </p>
+
+        <div class="custom-diagram">
+          <div class="diagram-node" style="animation-delay: 0s">Query: WHERE id = 'abc-123'</div>
+          <div class="diagram-arrow">↓</div>
+          <div class="diagram-node" style="animation-delay: 0.1s">Without Index: Scan row 1 → row 2 → row 3 → ... → row 1,000,000</div>
+          <div class="diagram-arrow">↓</div>
+          <div class="diagram-node" style="animation-delay: 0.2s">With Index: Look up 'abc-123' in lookup table → find disk location → fetch directly</div>
+        </div>
+
+        <p>
+          An index is a separate data structure (a lookup table) maintained by the database. It stores a value from a specific column alongside a pointer to where that row lives on disk. When a query filters, joins, or sorts on an indexed column, the database can look up the target value in the index in a fraction of the time compared to scanning all rows.
+        </p>
+
+        <p>
+          <strong>Under the hood — B-tree:</strong> By default, Postgres implements indexes as a <strong>B-tree (Balanced Tree)</strong>. This is important to understand: the index itself is not scanned linearly from top to bottom either. The B-tree is a sorted, self-balancing tree structure that allows the database to find any value using a process similar to binary search — splitting the search space in half at each step. For a table with 10 million rows, this means finding a value in roughly <strong>24 comparisons</strong> (<code>log₂ of 10,000,000 ≈ 23.25</code>), rather than reading all 10 million rows. This is what gives indexes their dramatic speed advantage. Scanning the whole table is <strong>O(n)</strong>; a B-tree lookup is <strong>O(log n)</strong>.
+        </p>
+
+        <p>
+          <strong>Book analogy:</strong> An index in a database is exactly like the index section at the back of a textbook. Instead of reading all 500 pages to find "Chapter 4", you look up "Chapter 4" in the index and jump directly to page 67. The database's index works the same way — look up the value, get the disk location, retrieve the data directly.
+        </p>
+
+        <h2>When to Create an Index</h2>
+        <p>The three primary conditions that signal a field should be indexed are:</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Condition</th>
+              <th>Example</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Field is used in a <strong>WHERE clause</strong></td>
+              <td><code>WHERE status = 'pending'</code> → index <code>status</code></td>
+            </tr>
+            <tr>
+              <td>Field is used in a <strong>JOIN condition</strong></td>
+              <td><code>JOIN tasks ON tasks.project_id = projects.id</code> → index <code>project_id</code></td>
+            </tr>
+            <tr>
+              <td>Field is used in an <strong>ORDER BY clause</strong></td>
+              <td><code>ORDER BY created_at DESC</code> → index <code>created_at DESC</code></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+          <strong>Note:</strong> Primary keys are automatically indexed by Postgres. You do not need to manually create an index on a primary key column. Foreign key columns, however, are not automatically indexed — you must add those yourself.
+        </p>
+
+        <h2>Index Order Matters for Sorting</h2>
+        <p>
+          An index can be created in ascending (<code>ASC</code>) or descending (<code>DESC</code>) order. If your most common query returns results sorted by <code>created_at DESC</code> (newest first), create the index in descending order. This allows Postgres to traverse the index in the same order as the query, without the overhead of sorting the result set afterward.
+        </p>
+
+        <pre><code>-- Index for efficiently sorting users by newest first
+CREATE INDEX idx_users_created_at_desc ON users (created_at DESC);
+
+-- Index for JOIN lookups on tasks.project_id
+CREATE INDEX idx_tasks_project_id ON tasks (project_id);
+
+-- Index for filtering tasks by status (used in WHERE status = 'pending')
+CREATE INDEX idx_tasks_status ON tasks (status);</code></pre>
+
+        <h2>The Cost of Indexes — Write Overhead</h2>
+        <p>
+          Indexes are not free. Every time a row is inserted, updated, or deleted, the database must also update all indexes on that table to reflect the change. More indexes = more work per write operation.
+        </p>
+        <p>The trade-off is:</p>
+        <ul>
+          <li><strong>Reads become faster</strong> (index lookup instead of full scan)</li>
+          <li><strong>Writes become slightly slower</strong> (index maintenance overhead)</li>
+        </ul>
+        <p>
+          For most applications where reads far outnumber writes, the trade-off strongly favors creating indexes on frequently queried fields. The decision guide:
+        </p>
+        <ul>
+          <li>Is this field used in a WHERE, JOIN, or ORDER BY condition?</li>
+          <li>Is the query containing this condition called frequently?</li>
+          <li>If yes to both → create the index.</li>
+          <li>If the query is rarely called, the overhead may not be worth it.</li>
+          <li>You can always delete an index later: <code>DROP INDEX idx_name;</code></li>
+        </ul>
+
+        <h2>What is a Trigger?</h2>
+        <p>
+          A trigger is a stored database function that runs automatically when a specific event occurs on a table — such as an INSERT, UPDATE, or DELETE. Triggers allow you to automate actions at the database level without requiring the application code to remember to perform them.
+        </p>
+
+        <h2>The updated_at Problem</h2>
+        <p>
+          Every table has an <code>updated_at</code> column. Every time a row is updated, this column should reflect the current timestamp. Without automation, every UPDATE statement in the application must explicitly include <code>updated_at = NOW()</code>. This is error-prone — a developer refactoring a query might forget, leaving the <code>updated_at</code> stale.
+        </p>
+        <p>A trigger solves this elegantly at the database level.</p>
+
+        <h2>Creating the Trigger</h2>
+        <p>Two steps: first create a trigger function, then attach it to each table as a trigger.</p>
+
+        <pre><code>-- Step 1: Create a reusable trigger function
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();   -- Set updated_at to current timestamp
+  RETURN NEW;               -- Return the modified row
+END;
+$$ LANGUAGE plpgsql;
+
+-- Step 2: Attach the trigger to each table
+CREATE TRIGGER set_updated_at_users
+  BEFORE UPDATE ON users
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER set_updated_at_projects
+  BEFORE UPDATE ON projects
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
+-- Repeat for tasks, user_profiles, project_members, etc.</code></pre>
+
+        <p>
+          With this trigger in place, every UPDATE on the <code>users</code> table automatically sets <code>updated_at</code> to the current timestamp — regardless of whether the application code remembers to do it. The database is the single source of truth for this field.
+        </p>
+
+        <h2>How Triggers Work</h2>
+        <ul>
+          <li><code>BEFORE UPDATE</code> — fires before the row is actually written to disk, allowing the function to modify the values being saved.</li>
+          <li><code>FOR EACH ROW</code> — the trigger function is called once for each row being updated in a batch update operation.</li>
+          <li><code>NEW</code> — a special variable inside trigger functions that holds the new values being written. Modifying <code>NEW.updated_at</code> changes what actually gets saved.</li>
+        </ul>
+
+        <h2>Down Migrations for Indexes and Triggers</h2>
+        <p>
+          When creating indexes and triggers in an up migration, the corresponding down migration must explicitly drop them in reverse order:
+        </p>
+        <pre><code>-- Down migration
+DROP TRIGGER IF EXISTS set_updated_at_users ON users;
+DROP TRIGGER IF EXISTS set_updated_at_projects ON projects;
+DROP FUNCTION IF EXISTS update_updated_at_column();
+
+DROP INDEX IF EXISTS idx_users_created_at_desc;
+DROP INDEX IF EXISTS idx_tasks_project_id;
+DROP INDEX IF EXISTS idx_tasks_status;</code></pre>
+
+        <div class="nav-buttons bottom">
+          <a href="05-Writing Queries — JOINs and CRUD.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="mind-map.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            An index is like a <strong>book's index section</strong>. Without it, finding "Chapter 4" means reading all 500 pages. With it, you look up "Chapter 4 → page 67" and jump directly there. A trigger is like a <strong>hotel's automatic door</strong>. You don't need to push it — the sensor (trigger condition) detects your approach (the UPDATE event) and opens the door (executes the function) automatically, every time, without any manual intervention.
+          </p>
+        </div>
+
+        <div class="premium-box box-orange">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>Sequential Scan:</strong> Reading every row in a table one by one to find a match. Very slow at scale.</li>
+            <li><strong>Index:</strong> A lookup data structure that maps a column's values to disk locations for fast retrieval.</li>
+            <li><strong>Write Overhead:</strong> The additional work required to update all indexes when a row is inserted, updated, or deleted.</li>
+            <li><strong>Trigger:</strong> A stored database function that fires automatically on specific table events (INSERT, UPDATE, DELETE).</li>
+            <li><strong>NEW:</strong> A trigger special variable holding the new row values about to be written. Modifiable before saving.</li>
+            <li><strong>BEFORE UPDATE:</strong> A trigger that fires before the row is written, allowing modification of values.</li>
+          </ul>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Without indexes, large table queries do sequential scans — extremely slow at scale.</li>
+            <li>Create indexes on fields used in WHERE clauses, JOIN conditions, and ORDER BY clauses.</li>
+            <li>Primary keys are auto-indexed. Foreign keys are NOT auto-indexed — add them manually.</li>
+            <li>Index order (ASC/DESC) matters for ORDER BY performance.</li>
+            <li>Indexes speed up reads but add write overhead — evaluate frequency before creating.</li>
+            <li>Triggers automate repetitive DB operations (like updating <code>updated_at</code>) at the DB level — more reliable than depending on application code.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>Sequential scan:</strong> No index → reads all rows. Slow at scale.</li>
+            <li><strong>Index:</strong> Lookup table: value → disk location. Fast retrieval.</li>
+            <li><strong>Create index when:</strong> field in WHERE, JOIN condition, or ORDER BY.</li>
+            <li><strong>Primary keys:</strong> auto-indexed. <strong>Foreign keys:</strong> manually add index.</li>
+            <li><strong>Index cost:</strong> faster reads, slower writes (index maintenance).</li>
+            <li><strong>Trigger:</strong> auto-runs a function on INSERT/UPDATE/DELETE.</li>
+            <li><strong>updated_at trigger:</strong> BEFORE UPDATE, set NEW.updated_at = NOW().</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

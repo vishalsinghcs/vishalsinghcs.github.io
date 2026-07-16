@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Writing Queries — JOINs and CRUD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="04-Schema Design and Constraints.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="06-Indexes and Triggers.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 09 - Databases with Postgres &gt; Writing Queries — JOINs and CRUD</div>
+
+        <h1>Writing Queries — JOINs and CRUD</h1>
+        <p class="lead">
+          With the schema in place, every API endpoint maps to one or more database queries. Understanding how to write efficient SELECT queries with JOINs, embed related data as JSON, filter dynamically, paginate results, and safely pass user-provided values is the day-to-day work of a backend engineer.
+        </p>
+
+        <h2>How to Approach SQL Queries</h2>
+        <p>
+          A common mistake is to write the <code>SELECT</code> clause first. Instead, always start from the <code>FROM</code> clause — this forces you to first determine where your data is coming from before deciding what fields to retrieve.
+        </p>
+        <pre><code>-- Build queries in this mental order:
+FROM   users u          -- 1. Where is the data?
+JOIN   user_profiles up -- 2. What tables do I need to join?
+WHERE  u.id = $1        -- 3. What is the filter condition?
+ORDER BY u.created_at DESC -- 4. What is the sort order?
+SELECT u.*, ...         -- 5. Which fields do I actually need?</code></pre>
+
+        <h2>Aliases</h2>
+        <p>
+          Assigning a short alias to a table (e.g., <code>FROM users u</code>, <code>FROM user_profiles up</code>) makes longer queries far more readable. You can then reference <code>u.email</code> instead of <code>users.email</code> throughout the query. It also disambiguates column names when joining tables that share column names.
+        </p>
+
+        <h2>JOINs — Combining Data from Multiple Tables</h2>
+        <p>
+          A JOIN merges rows from two tables based on a matching condition (usually a foreign key equals a primary key). The two most commonly used JOIN types are:
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>JOIN Type</th>
+              <th>Behaviour</th>
+              <th>When to Use</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>INNER JOIN</code></td>
+              <td>Only returns rows where the condition matches in <em>both</em> tables</td>
+              <td>When the related row is guaranteed to exist</td>
+            </tr>
+            <tr>
+              <td><code>LEFT JOIN</code></td>
+              <td>Returns all rows from the left table even if no match exists in the right table (NULL for missing right-side columns)</td>
+              <td>When the related row might not exist (optional relationship)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+          <strong>Practical example:</strong> When fetching users with their profiles, use <code>LEFT JOIN</code> because a user might not have filled in their profile yet. An INNER JOIN would silently omit users with no profile entry — a data bug that is hard to detect.
+        </p>
+
+        <pre><code>SELECT
+  u.*,
+  to_jsonb(up.*) AS profile   -- Embed the profile row as JSON
+FROM users u
+LEFT JOIN user_profiles up ON u.id = up.user_id
+ORDER BY u.created_at DESC;</code></pre>
+
+        <p>
+          <code>to_jsonb(up.*)</code> is a Postgres function that converts an entire row from the <code>user_profiles</code> table into a <code>jsonb</code> object. This allows you to return nested, related data in a single query call — no second API roundtrip needed.
+        </p>
+
+        <h2>Parameterized Queries — Security Against SQL Injection</h2>
+        <p>
+          Whenever a query includes a dynamic value from the user (a URL parameter, a request body field), you must use a <strong>parameterized query</strong> — never string concatenation.
+        </p>
+        <p>
+          A parameterized query contains a placeholder (a "slot") for the dynamic value. The database driver fills this slot at execution time, treating whatever value is provided as a <em>plain string</em> — not executable SQL. This prevents <strong>SQL injection attacks</strong>, where a malicious user embeds SQL commands in an input field (e.g., entering <code>'; DROP TABLE users; --</code> as their name).
+        </p>
+
+        <pre><code>-- Dangerous (SQL injection risk):
+"SELECT * FROM users WHERE id = '" + userId + "'"
+
+-- Safe (parameterized):
+SELECT * FROM users WHERE id = $1   -- $1 is the placeholder
+-- Pass userId as the parameter value at runtime</code></pre>
+
+        <p>All database drivers (Postgres drivers for Node.js, Go, Python, etc.) support parameterized queries. Always use them when incorporating user-supplied values in a query.</p>
+
+        <h2>READ — GET Single Record</h2>
+        <pre><code>-- GET /users/:id → get one user with their profile
+SELECT
+  u.*,
+  to_jsonb(up.*) AS profile
+FROM users u
+LEFT JOIN user_profiles up ON u.id = up.user_id
+WHERE u.id = $1;    -- $1 is the user ID from the URL parameter</code></pre>
+
+        <h2>READ — GET List with Filtering, Sorting, and Pagination</h2>
+        <p>
+          For list APIs, the query must be dynamically constructed in the application layer. The server checks which optional parameters the client sent (filter, sort, page) and builds the WHERE, ORDER BY, and LIMIT/OFFSET clauses accordingly.
+        </p>
+        <pre><code>-- GET /users?letter=J&sortBy=email&sortOrder=asc&page=2&limit=10
+SELECT
+  u.*,
+  to_jsonb(up.*) AS profile
+FROM users u
+LEFT JOIN user_profiles up ON u.id = up.user_id
+WHERE u.full_name ILIKE $1    -- $1 = 'J%'  (case-insensitive starts-with)
+ORDER BY u.email ASC          -- constructed dynamically based on sortBy / sortOrder
+LIMIT $2                      -- $2 = limit (e.g., 10)
+OFFSET $3;                    -- $3 = (page - 1) * limit  (e.g., page 2 → offset 10)</code></pre>
+
+        <p><strong>Key details:</strong></p>
+        <ul>
+          <li><code>ILIKE</code> is case-insensitive pattern matching. The <code>%</code> wildcard means "any characters after this point". So <code>'J%'</code> matches all names starting with J regardless of case.</li>
+          <li><code>OFFSET</code> is zero-based. If the user passes <code>page=2</code> and <code>limit=10</code>, the query should use <code>OFFSET = (2 - 1) * 10 = 10</code>. Convert from user-facing 1-indexed pages to 0-indexed offsets in the backend.</li>
+          <li>The <code>ORDER BY</code> field and direction must be validated in application code before being used in the query — never insert user-provided sort field names directly, as that could expose column names or enable injection.</li>
+          <li>The default sort (when client doesn't specify) should always be <code>ORDER BY u.created_at DESC</code>.</li>
+        </ul>
+
+        <h2>CREATE — INSERT</h2>
+        <pre><code>-- POST /users → create a new user
+INSERT INTO users (email, full_name, password_hash)
+VALUES ($1, $2, $3)
+RETURNING *;   -- Return the newly created row (including server-generated id and created_at)</code></pre>
+
+        <p>
+          The <code>RETURNING *</code> clause makes Postgres return the inserted row immediately after the INSERT, avoiding a second SELECT query. This is how the API returns the newly created resource in the response body with its server-generated <code>id</code> and <code>created_at</code>.
+        </p>
+
+        <h2>UPDATE — PATCH (Partial Update)</h2>
+        <pre><code>-- PATCH /users/:id → update only the fields the client sent
+UPDATE user_profiles
+SET
+  bio   = $1,    -- Only fields the client actually passed are included
+  phone = $2
+WHERE user_id = $3
+RETURNING *;      -- Return the updated row</code></pre>
+
+        <p>
+          In practice, the backend first checks which fields the client provided, then dynamically constructs the <code>SET</code> clause to include only those fields. Fields the client did not send are not included in the query at all — they retain their existing values. This is how PATCH (partial update) differs from PUT (full replacement).
+        </p>
+        <p>
+          The <code>updated_at</code> column should also be updated on every PATCH. This can be done explicitly in the SET clause, or automatically via a database trigger (covered in the next note).
+        </p>
+
+        <div class="nav-buttons bottom">
+          <a href="04-Schema Design and Constraints.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="06-Indexes and Triggers.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            A parameterized query is like a <strong>form letter with blank fields</strong>. The query is the template: "Dear [Name], your order [Order ID] has shipped." The blanks are filled in later — but they are always treated as data, never as instructions. If someone writes "DELETE FROM orders" in the Name field, it's just an unusual name — not a command. That's the difference between parameterized queries and string concatenation.
+          </p>
+        </div>
+
+        <div class="premium-box box-orange">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>INNER JOIN:</strong> Returns rows that have matches in both tables.</li>
+            <li><strong>LEFT JOIN:</strong> Returns all rows from the left table, NULLs for missing right-side rows.</li>
+            <li><strong>Alias:</strong> A short name assigned to a table inside a query (e.g., <code>FROM users u</code>).</li>
+            <li><strong>Parameterized Query:</strong> A query with placeholders (<code>$1, $2</code>) filled in safely by the database driver at runtime.</li>
+            <li><strong>SQL Injection:</strong> An attack where malicious SQL is embedded in user input and executed by the database.</li>
+            <li><strong>ILIKE:</strong> Case-insensitive pattern matching using <code>%</code> wildcards.</li>
+            <li><strong>OFFSET:</strong> Number of rows to skip before returning results — used for pagination.</li>
+            <li><strong>RETURNING:</strong> Postgres clause that returns the affected rows immediately after INSERT or UPDATE.</li>
+            <li><strong>to_jsonb():</strong> Postgres function that converts a table row into a jsonb object.</li>
+          </ul>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Write queries starting with FROM — it forces clarity about where data comes from.</li>
+            <li>Use LEFT JOIN when the related record might not exist; INNER JOIN when it is guaranteed.</li>
+            <li>Always use parameterized queries for user-provided values — never string concatenation.</li>
+            <li>Use <code>to_jsonb(row.*)</code> to embed related table rows as JSON in a single query.</li>
+            <li>OFFSET = (page - 1) * limit. Convert from user's 1-based page numbers to 0-based offsets.</li>
+            <li>Use <code>RETURNING *</code> after INSERT/UPDATE to get the modified row without a second query.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>Build order:</strong> FROM → JOIN → WHERE → ORDER BY → SELECT.</li>
+            <li><strong>INNER JOIN:</strong> both sides must match. <strong>LEFT JOIN:</strong> left side always returned.</li>
+            <li><strong>SQL Injection:</strong> Use $1, $2 placeholders, never string concatenation.</li>
+            <li><strong>ILIKE 'J%'</strong> → names starting with J, case-insensitive.</li>
+            <li><strong>OFFSET</strong> = (page - 1) × limit.</li>
+            <li><strong>INSERT ... RETURNING *</strong> → returns newly created row.</li>
+            <li><strong>UPDATE ... SET bio=$1 WHERE id=$2 RETURNING *</strong> → partial update, returns updated row.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

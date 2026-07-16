@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Database Migrations and Seeding</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="02-PostgreSQL and Data Types.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="04-Schema Design and Constraints.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 09 - Databases with Postgres &gt; Database Migrations and Seeding</div>
+
+        <h1>Database Migrations and Seeding</h1>
+        <p class="lead">
+          In production systems, you never apply database changes by manually typing SQL into a GUI tool. Migrations are the industry-standard mechanism for versioned, trackable, and reversible database schema changes.
+        </p>
+
+        <h2>Why Not Just Use a GUI?</h2>
+        <p>
+          Opening a tool like TablePlus and running SQL statements directly works fine for quick experimentation, but it creates serious problems in team and production environments:
+        </p>
+        <ul>
+          <li>There is no record of what changes were made, by whom, or when.</li>
+          <li>Other developers cannot reproduce the same database state on their local machines.</li>
+          <li>CI/CD pipelines and staging environments cannot be automated.</li>
+          <li>Rolling back a failed change is manual and error-prone.</li>
+        </ul>
+        <p>Migrations solve all of these problems systematically.</p>
+
+        <h2>What Are Database Migrations?</h2>
+        <p>
+          Migrations are a set of SQL files, stored in version control (Git), that represent every change ever made to your database schema — in the order those changes were applied.
+        </p>
+
+        <div class="custom-diagram">
+          <div class="diagram-node" style="animation-delay: 0s">db/migrations/</div>
+          <div class="diagram-arrow">↓</div>
+          <div class="diagram-node" style="animation-delay: 0.1s">001_create_users_table.sql</div>
+          <div class="diagram-arrow">↓</div>
+          <div class="diagram-node" style="animation-delay: 0.2s">002_create_projects_table.sql</div>
+          <div class="diagram-arrow">↓</div>
+          <div class="diagram-node" style="animation-delay: 0.3s">003_add_indexes_and_triggers.sql</div>
+        </div>
+
+        <p>
+          Each file is named with a sequential number or a timestamp (timestamp naming is more common in teams because timestamps guarantee global uniqueness). A migration CLI tool reads these files in order and applies the SQL statements to the target database.
+        </p>
+
+        <h2>Up Migrations and Down Migrations</h2>
+        <p>Every migration file typically contains two sections:</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Section</th>
+              <th>Purpose</th>
+              <th>Example Content</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>UP</strong></td>
+              <td>Apply the change (move forward)</td>
+              <td><code>CREATE TABLE users (...)</code></td>
+            </tr>
+            <tr>
+              <td><strong>DOWN</strong></td>
+              <td>Reverse the change (rollback)</td>
+              <td><code>DROP TABLE users</code></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+          Down migrations exist so that if something goes wrong in production after a migration is applied, you can roll back to the previous database state cleanly — without manually reconstructing what the schema looked like before.
+        </p>
+        <p>
+          The down migration is the exact inverse of the up migration. If the up migration creates three tables and two types, the down migration must drop those three tables and then drop those two types — in reverse order to respect dependencies.
+        </p>
+
+        <pre><code>-- migrate:up
+CREATE TYPE project_status AS ENUM ('active', 'completed', 'archived');
+
+CREATE TABLE projects (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  status project_status NOT NULL DEFAULT 'active',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- migrate:down
+DROP TABLE projects;
+DROP TYPE project_status;</code></pre>
+
+        <h2>The Migration Tool: dbmate</h2>
+        <p>
+          <strong>dbmate</strong> (and alternatives like <code>golang-migrate</code>) is a CLI tool that manages migration files and tracks which migrations have been applied. You configure it by pointing it at a <code>DATABASE_URL</code> environment variable.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Command</th>
+              <th>What it Does</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>dbmate new create_users_table</code></td>
+              <td>Creates a new timestamped migration file</td>
+            </tr>
+            <tr>
+              <td><code>dbmate up</code></td>
+              <td>Applies all pending up migrations in sequence</td>
+            </tr>
+            <tr>
+              <td><code>dbmate down</code></td>
+              <td>Rolls back the most recently applied migration</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>How the Migration Tool Tracks State</h2>
+        <p>
+          When you first run a migration tool on a database, it creates a special metadata table — typically named <code>schema_migrations</code>. This table stores the version (or filename) of every migration that has been applied.
+        </p>
+        <p>
+          The next time you run <code>dbmate up</code>, the tool checks the <code>schema_migrations</code> table to determine which migrations have already been applied and skips them, only running the new ones. This prevents the same SQL statements from being executed twice (which would cause errors like "table already exists").
+        </p>
+
+        <div class="custom-diagram">
+          <div class="diagram-node" style="animation-delay: 0s">schema_migrations table</div>
+          <div class="diagram-arrow">↓</div>
+          <div class="diagram-node" style="animation-delay: 0.1s">Stores: applied migration versions</div>
+          <div class="diagram-arrow">↓</div>
+          <div class="diagram-node" style="animation-delay: 0.2s">dbmate up → checks table → skips already-applied files</div>
+          <div class="diagram-arrow">↓</div>
+          <div class="diagram-node" style="animation-delay: 0.3s">Applies only new migration files → updates schema_migrations</div>
+        </div>
+
+        <h2>Seeding</h2>
+        <p>
+          <strong>Seeding</strong> is the process of populating a database with test data for development and testing purposes. After your schema migrations have created all the tables, you run seed migrations to insert fake-but-realistic data so you have something to actually test with.
+        </p>
+        <p>Best practices for seeding:</p>
+        <ul>
+          <li>Keep seed data in a separate migration file — don't mix it with schema creation statements.</li>
+          <li>Seed data only ever runs in development/staging environments — never in production.</li>
+          <li>Seeds often use <strong>CTEs (Common Table Expressions)</strong> to insert related data across multiple tables in a single readable SQL statement.</li>
+        </ul>
+
+        <pre><code>-- Example: Insert test users, then their profiles in one transaction using CTEs
+WITH inserted_users AS (
+  INSERT INTO users (email, full_name, password_hash)
+  VALUES
+    ('alice@example.com', 'Alice Brown', 'hashed_pw_1'),
+    ('bob@example.com',   'Bob Johnson', 'hashed_pw_2')
+  RETURNING id, email
+)
+INSERT INTO user_profiles (user_id, bio, phone)
+SELECT
+  id,
+  CASE WHEN email = 'alice@example.com' THEN 'Product designer' ELSE 'Backend engineer' END,
+  '555-0100'
+FROM inserted_users;</code></pre>
+
+        <h2>Key Benefits of Using Migrations</h2>
+        <ul>
+          <li><strong>Version control for your database</strong> — Every schema change is committed to Git alongside the application code that requires it. When you check out a branch, you can replay migrations to match exactly that branch's expected schema.</li>
+          <li><strong>Team collaboration</strong> — Multiple developers can apply the same migrations to get identical database schemas locally without any manual coordination.</li>
+          <li><strong>Rollback capability</strong> — If a migration causes a production outage, the down migration can revert the database schema quickly and safely.</li>
+          <li><strong>Auditability</strong> — You can trace the entire history of your database schema by reading migration files in order.</li>
+        </ul>
+
+        <div class="nav-buttons bottom">
+          <a href="02-PostgreSQL and Data Types.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="04-Schema Design and Constraints.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            Migrations are like <strong>Git commits for your database schema</strong>. Just as Git tracks every change to your code and lets you revert, branch, or replay history, migrations track every change to your database structure. The migration tool is like <code>git apply</code> — it reads a sequence of diff files and applies them one by one to bring the database up to the desired state.
+          </p>
+        </div>
+
+        <div class="premium-box box-orange">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>Migration:</strong> A SQL file containing schema changes (CREATE TABLE, CREATE INDEX, etc.) to be applied to a database in a controlled, versioned way.</li>
+            <li><strong>Up migration:</strong> The forward change — creates new tables, columns, or indexes.</li>
+            <li><strong>Down migration:</strong> The reverse — drops what the up migration created, enabling rollback.</li>
+            <li><strong>schema_migrations:</strong> The metadata table created by the migration tool to track which migrations have been applied.</li>
+            <li><strong>Seeding:</strong> Inserting test/demo data into a development database after the schema is created.</li>
+            <li><strong>CTE (Common Table Expression):</strong> A named temporary result set within a SQL query, used with <code>WITH ... AS (...)</code>.</li>
+            <li><strong>dbmate:</strong> A popular CLI migration tool for Postgres and other databases.</li>
+          </ul>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Never apply database changes manually in a GUI for production systems — always use migrations.</li>
+            <li>Every migration has an UP (apply) and a DOWN (rollback) section.</li>
+            <li>Migration tools track state via a <code>schema_migrations</code> table — preventing duplicate execution.</li>
+            <li>Seeding = test data for development only; keep it in a separate migration file from schema creation.</li>
+            <li>Commit migration files to Git alongside the code changes that require them.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>Migration:</strong> Versioned SQL file for schema changes.</li>
+            <li><strong>Up:</strong> Apply change. <strong>Down:</strong> Reverse change.</li>
+            <li><strong>dbmate new name</strong> → creates file. <strong>dbmate up</strong> → applies. <strong>dbmate down</strong> → rolls back.</li>
+            <li><strong>schema_migrations:</strong> Tracks applied versions, prevents double-run.</li>
+            <li><strong>Seeding:</strong> Inserting test data in development — separate migration file.</li>
+            <li><strong>Benefits:</strong> Version control, team sync, rollback, auditability.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

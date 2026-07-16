@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Databases with Postgres Mind Map</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper" style="max-width: 1200px; display: block; margin: 0 auto;">
+      <main>
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="06-Indexes and Triggers.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="interview-questions.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 09 - Databases with Postgres &gt; Mind Map</div>
+
+        <h1 style="text-align: center;">Databases with Postgres Mind Map</h1>
+        <p class="lead" style="text-align: center; margin-bottom: 2rem;">
+          A visual cheat sheet covering database fundamentals, PostgreSQL data types, migrations, schema design, relationships, querying, indexes, and triggers.
+        </p>
+
+        <div class="mermaid">
+flowchart LR
+    Root((Databases with Postgres))
+
+    Root --> Why{Why Databases}
+    Why --> W1[Persistence - data survives shutdown]
+    Why --> W2[RAM = fast but volatile and small]
+    Why --> W3[Disk = slow but durable and large]
+    Why --> W4([DBMS manages CRUD, integrity, security])
+    Why --> W5[Text files fail - no schema, no concurrency]
+
+    Root --> Types{Relational vs Non-Relational}
+    Types --> T1[Relational - tables, rows, strict schema]
+    Types --> T2[Non-relational - documents, flexible schema]
+    Types --> T3[Relational integrity enforced at DB level]
+    Types --> T4([Non-relational integrity in app code - risky])
+    Types --> T5{{CRM uses Relational, CMS uses NoSQL}}
+
+    Root --> PG{Why PostgreSQL}
+    PG --> P1[Open source and free]
+    PG --> P2[Follows SQL standard - easy to migrate]
+    PG --> P3[Highly extensible - 1400 page docs]
+    PG --> P4[Reliable and scalable]
+    PG --> P5{{jsonb support - replaces need for MongoDB}}
+
+    Root --> DT{Data Types}
+    DT --> D1[uuid - preferred PK in production]
+    DT --> D2[text - use over varchar - no length limit]
+    DT --> D3[decimal for prices, float for measurements]
+    DT --> D4([timestamptz for created_at and updated_at])
+    DT --> D5[jsonb - binary JSON, indexable]
+    DT --> D6[boolean, date, interval, arrays]
+
+    Root --> Mig{Migrations}
+    Mig --> M1[SQL files versioned in Git]
+    Mig --> M2[UP - apply change, DOWN - rollback]
+    Mig --> M3[dbmate new - creates file]
+    Mig --> M4([schema_migrations table tracks state])
+    Mig --> M5[Seeding - test data in dev only]
+
+    Root --> Schema{Schema Design}
+    Schema --> S1[snake_case for all table and column names]
+    Schema --> S2[NOT NULL on 70 percent of columns]
+    Schema --> S3{{ENUM for fixed allowed values}}
+    Schema --> S4[PRIMARY KEY - NOT NULL and UNIQUE]
+    Schema --> S5[FOREIGN KEY REFERENCES parent table]
+    Schema --> S6([CHECK for custom value conditions])
+
+    Root --> Rel{Relationships}
+    Rel --> R1[1 to 1 - child FK becomes PK]
+    Rel --> R2[1 to Many - FK on the many side]
+    Rel --> R3[Many to Many - linking table]
+    Rel --> R4([Composite PK in linking table])
+    Rel --> R5[ON DELETE RESTRICT CASCADE SET NULL]
+
+    Root --> Queries{Queries and CRUD}
+    Queries --> Q1[Build FROM first, then SELECT]
+    Queries --> Q2[LEFT JOIN when related row may not exist]
+    Queries --> Q3{{Parameterized queries prevent SQL injection}}
+    Queries --> Q4[to_jsonb - embed row as JSON field]
+    Queries --> Q5[ILIKE and percent for pattern matching]
+    Queries --> Q6[OFFSET for pagination - zero indexed]
+    Queries --> Q7([RETURNING star after INSERT and UPDATE])
+
+    Root --> Idx{Indexes and Triggers}
+    Idx --> I1[Index on WHERE JOIN and ORDER BY fields]
+    Idx --> I2[Primary keys auto-indexed]
+    Idx --> I3[Foreign keys need manual index]
+    Idx --> I4([Index order ASC or DESC matches query])
+    Idx --> I5[Write overhead - evaluate frequency first]
+    Idx --> I6{{Trigger auto-updates updated_at on UPDATE}}
+    Idx --> I7[BEFORE UPDATE - set NEW dot updated_at = NOW]
+
+    classDef root fill:#475569,stroke:#1e293b,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef branch1 fill:#2563eb,stroke:#1d4ed8,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef node1  fill:#dbeafe,stroke:#93c5fd,stroke-width:1px,color:#1e3a8a;
+    classDef branch2 fill:#16a34a,stroke:#15803d,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef node2  fill:#dcfce7,stroke:#86efac,stroke-width:1px,color:#14532d;
+    classDef branch3 fill:#ea580c,stroke:#c2410c,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef node3  fill:#ffedd5,stroke:#fdba74,stroke-width:1px,color:#7c2d12;
+    classDef branch4 fill:#9333ea,stroke:#7e22ce,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef node4  fill:#f3e8ff,stroke:#d8b4fe,stroke-width:1px,color:#581c87;
+    classDef branch5 fill:#e11d48,stroke:#be123c,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef node5  fill:#ffe4e6,stroke:#fda4af,stroke-width:1px,color:#881337;
+    classDef branch6 fill:#0891b2,stroke:#0e7490,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef node6  fill:#e0f2fe,stroke:#7dd3fc,stroke-width:1px,color:#0c4a6e;
+    classDef branch7 fill:#d97706,stroke:#b45309,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef node7  fill:#fef3c7,stroke:#fcd34d,stroke-width:1px,color:#78350f;
+    classDef branch8 fill:#7c3aed,stroke:#6d28d9,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef node8  fill:#ede9fe,stroke:#c4b5fd,stroke-width:1px,color:#4c1d95;
+
+    class Root root;
+    class Why branch1;
+    class W1,W2,W3,W4,W5 node1;
+    class Types branch2;
+    class T1,T2,T3,T4,T5 node2;
+    class PG branch3;
+    class P1,P2,P3,P4,P5 node3;
+    class DT branch4;
+    class D1,D2,D3,D4,D5,D6 node4;
+    class Mig branch5;
+    class M1,M2,M3,M4,M5 node5;
+    class Schema branch6;
+    class S1,S2,S3,S4,S5,S6 node6;
+    class Rel branch7;
+    class R1,R2,R3,R4,R5 node7;
+    class Queries branch8;
+    class Q1,Q2,Q3,Q4,Q5,Q6,Q7 node8;
+    class Idx branch3;
+    class I1,I2,I3,I4,I5,I6,I7 node3;
+        </div>
+
+        <div class="nav-buttons bottom">
+          <a href="06-Indexes and Triggers.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="interview-questions.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+    </div>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+  </body>
+</html>

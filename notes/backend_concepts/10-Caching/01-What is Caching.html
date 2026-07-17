@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>What is Caching</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="../09-Databases with Postgres/interview-questions.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="02-Network Caching.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 10 - Caching &gt; What is Caching</div>
+
+        <h1>What is Caching?</h1>
+        <p class="lead">
+          Caching is a fundamental mechanism used to decrease the time and effort it takes to perform computation or retrieve data. By storing a subset of data in a faster, more accessible location, we drastically improve application performance.
+        </p>
+
+        <h2>The Core Definition</h2>
+        <p>
+          In one sentence: <strong>Caching decreases the time and effort to perform work.</strong>
+        </p>
+        <p>
+          More technically, caching involves keeping a <strong>subset</strong> of primary data in a location that is much faster to access. The decision of what to cache depends on access frequency, usage probability, and the computational cost of generating that data.
+        </p>
+        <p>
+          We only cache a <em>subset</em> of data because fast storage (like RAM) is expensive and limited in capacity compared to primary storage (like hard disks). We cannot cache everything—we must selectively cache data to optimize performance.
+        </p>
+
+        <h2>Real-World Examples of Caching</h2>
+        <p>Caching is the secret engine behind almost every high-performance, globally scaled platform.</p>
+
+        <h3>1. Google Search (Distributed In-Memory Caching)</h3>
+        <p>
+          When you search "what is the weather today" on Google, the search engine doesn't crawl, index, and rank billions of web pages from scratch. Doing so would require immense CPU and memory resources and result in high latency.
+        </p>
+        <ul>
+          <li>Google uses a <strong>distributed in-memory caching system</strong> spread across the globe.</li>
+          <li>If the query result is already stored in the cache (a <strong>cache hit</strong>), it returns instantly.</li>
+          <li>If the query result is not found (a <strong>cache miss</strong>), the engine computes the result, returns it, and then stores it in the cache for future users.</li>
+        </ul>
+
+        <h3>2. Netflix (Content Delivery Networks)</h3>
+        <p>
+          Netflix streams terabytes of video content to millions of users worldwide with minimal buffering. They achieve this using <strong>CDNs (Content Delivery Networks)</strong>.
+        </p>
+        <ul>
+          <li>Instead of serving all videos from originating servers in the US, Netflix places <strong>Edge Servers</strong> geographically closer to users.</li>
+          <li>Algorithms predict which content is popular in specific regions and cache that subset of content on the edge servers.</li>
+          <li>Users in India stream from servers in India, drastically reducing latency and preventing the originating servers from crashing under global load.</li>
+        </ul>
+
+        <h3>3. Twitter / X (Trending Topics)</h3>
+        <p>
+          Twitter calculates "Trending Topics" by analyzing billions of tweets in real-time. This machine learning computation is highly resource-intensive.
+        </p>
+        <ul>
+          <li>Running this computation every time a user opens the trending page would crash the servers instantly.</li>
+          <li>Instead, Twitter computes the trends periodically (e.g., every few minutes) and stores the results in an in-memory cache like <strong>Redis</strong>.</li>
+          <li>When you open the app, you are served the pre-computed cached result, leading to instantaneous load times.</li>
+        </ul>
+
+        <h2>When Should We Use Caching?</h2>
+        <p>From the examples above, a clear pattern emerges. You should implement caching when:</p>
+        <ol>
+          <li>You want to avoid repeating <strong>heavy computations</strong>.</li>
+          <li>You want to avoid repeatedly transferring <strong>large amounts of data</strong> over long distances.</li>
+          <li>The data being requested is <strong>frequently accessed</strong> and does not change every millisecond.</li>
+        </ol>
+
+        <div class="nav-buttons bottom">
+          <a href="../09-Databases with Postgres/interview-questions.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="02-Network Caching.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            Think of caching like a <strong>wallet vs. a bank vault</strong>. The bank vault (database) stores all your money and is very secure, but it takes a long time to travel there and retrieve it. Your wallet (cache) stores a small subset of that money. It's much faster to pull cash from your wallet when buying coffee, saving you the time and effort of going to the bank every time you need to make a purchase.
+          </p>
+        </div>
+
+        <div class="premium-box box-orange">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>Cache Hit:</strong> The requested data was found in the cache and returned immediately.</li>
+            <li><strong>Cache Miss:</strong> The data was not in the cache, requiring the system to compute it or fetch it from primary storage.</li>
+            <li><strong>Subset:</strong> Caching never stores 100% of the data; it selectively stores what is most useful.</li>
+            <li><strong>Latency:</strong> The time delay before data transfer begins. Caching aims to minimize this.</li>
+          </ul>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Caching decreases both time (latency) and effort (server load/compute).</li>
+            <li>It relies on storing a carefully chosen subset of data in faster storage mediums.</li>
+            <li>Major platforms (Google, Netflix, Twitter) rely entirely on caching to survive global scale.</li>
+            <li>Use caching for compute-heavy tasks or massive data transfers that don't change dynamically every second.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>Google:</strong> Caches search results to avoid re-running expensive ranking algorithms.</li>
+            <li><strong>Netflix:</strong> Caches massive video files on edge nodes closer to users.</li>
+            <li><strong>Twitter:</strong> Caches compute-heavy trending topic data.</li>
+            <li><strong>Rule of thumb:</strong> Cache when computation is heavy, data is large, and changes are infrequent.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

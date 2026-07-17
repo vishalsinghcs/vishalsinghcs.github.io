@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Caching Strategies &amp; Eviction Policies</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="03-In-Memory Databases.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="05-Backend Use Cases.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 10 - Caching &gt; Strategies &amp; Eviction Policies</div>
+
+        <h1>Caching Strategies &amp; Eviction Policies</h1>
+        <p class="lead">
+          When implementing a cache in your backend, you must decide <em>how</em> data gets into the cache (Strategies) and <em>how</em> data gets removed when the cache is full (Eviction Policies).
+        </p>
+
+        <h2>Caching Strategies</h2>
+        <p>There are two primary patterns backend engineers use to read from and write to a cache.</p>
+
+        <h3>1. Lazy Caching (Cache Aside)</h3>
+        <p>
+          In Lazy Caching, the cache isn't populated proactively. Data is only loaded into the cache <strong>when someone actually requests it</strong>.
+        </p>
+        <p><strong>Workflow:</strong></p>
+        <ol>
+          <li>Client requests data.</li>
+          <li>Server checks the cache.</li>
+          <li><strong>Cache Hit:</strong> Return data to client.</li>
+          <li><strong>Cache Miss:</strong> Server fetches data from the database.</li>
+          <li>Server stores that data in the cache.</li>
+          <li>Server returns data to client.</li>
+        </ol>
+        <p><em>Advantage:</em> You never waste memory caching data that users aren't asking for.</p>
+
+        <h3>2. Write-Through Caching</h3>
+        <p>
+          In Write-Through, the focus is on keeping the cache perfectly synchronized with the database during <strong>write operations</strong> (POST, PUT, PATCH).
+        </p>
+        <p><strong>Workflow:</strong></p>
+        <ol>
+          <li>Client submits an update (e.g., changing their profile bio).</li>
+          <li>Server updates the database.</li>
+          <li><strong>In the exact same execution flow</strong>, the server updates the cache with the new bio.</li>
+          <li>Server returns success to client.</li>
+        </ol>
+        <p>
+          <em>Advantage:</em> The cache is never stale. 
+          <br><em>Disadvantage:</em> Write operations take slightly longer because you are writing to two places simultaneously (overhead).
+        </p>
+
+        <hr>
+
+        <h2>Eviction Policies</h2>
+        <p>
+          Because RAM is limited, your cache will eventually fill up. When a new piece of data needs to be stored, the cache must decide which old piece of data to delete. This is called an Eviction Policy.
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Policy</th>
+              <th>How it Works</th>
+              <th>When to Use</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>No Eviction</strong></td>
+              <td>If the cache is full, it throws an "Out of Memory" error on the next insert.</td>
+              <td>Rarely used, mostly for strict data sets where dropping data is unacceptable.</td>
+            </tr>
+            <tr>
+              <td><strong>LRU (Least Recently Used)</strong></td>
+              <td>Tracks the <em>timestamp</em> of when a key was last accessed. Drops the key that hasn't been touched in the longest time.</td>
+              <td>Standard default for most applications. (e.g., dropping yesterday's trending topic for today's).</td>
+            </tr>
+            <tr>
+              <td><strong>LFU (Least Frequently Used)</strong></td>
+              <td>Tracks the <em>number of times</em> a key has been accessed. Drops the key with the lowest access count, regardless of when it was last touched.</td>
+              <td>When some data is inherently more popular overall than others and must be preserved.</td>
+            </tr>
+            <tr>
+              <td><strong>TTL (Time to Live)</strong></td>
+              <td>Each key is given a countdown timer (e.g., 60 minutes). When the timer hits zero, the key is automatically invalidated and deleted.</td>
+              <td>For data with a known expiration window (e.g., an auth token valid for 24 hours).</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="nav-buttons bottom">
+          <a href="03-In-Memory Databases.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="05-Backend Use Cases.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            <strong>Lazy Caching:</strong> Going to the grocery store only when you check the fridge and realize you are out of milk.
+            <br><br>
+            <strong>Write-Through:</strong> Buying a carton of milk every single time you use a splash for your coffee, ensuring the fridge is always 100% full.
+            <br><br>
+            <strong>Eviction (LRU):</strong> Cleaning out your closet by throwing away the shirt you haven't worn in 5 years.
+          </p>
+        </div>
+
+        <div class="premium-box box-orange">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>Cache Aside:</strong> Another term for Lazy Caching. The app acts as a middleman between cache and DB.</li>
+            <li><strong>Stale Data:</strong> Data in the cache that no longer matches the primary database (e.g., the cache says a product costs $10, but the DB was updated to $15).</li>
+            <li><strong>Eviction:</strong> The forced removal of data to free up memory.</li>
+          </ul>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Lazy caching is efficient for memory but incurs a penalty on the first request (Cache Miss).</li>
+            <li>Write-through caching ensures data accuracy but adds latency to writes.</li>
+            <li>LRU is the most common eviction policy because recent usage is the strongest predictor of future usage.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

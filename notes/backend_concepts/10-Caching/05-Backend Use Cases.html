@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Backend Use Cases for Caching</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="04-Strategies and Eviction.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="mind-map.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 10 - Caching &gt; Backend Use Cases</div>
+
+        <h1>Backend Use Cases for Caching</h1>
+        <p class="lead">
+          In daily backend development, when do you actually write code to interact with Redis or Memcached? Here are the four most common real-world scenarios.
+        </p>
+
+        <h2>1. Database Query Caching</h2>
+        <p>
+          Some SQL queries are inherently expensive. They might join multiple large tables and perform complex aggregations. If an endpoint calling this query is hit frequently (e.g., loading a dashboard), it will overload the database.
+        </p>
+        <ul>
+          <li><strong>Solution:</strong> Run the query once, cache the JSON result in Redis with a TTL of 1 hour.</li>
+          <li><strong>E-commerce Example:</strong> Amazon caches static product details (like a Macbook description) during a sale. Hitting the database a million times a minute for static data is wasteful; serving it from RAM protects the database so it can handle actual purchases.</li>
+          <li><strong>Social Media Example:</strong> Twitter profiles are heavily read but rarely updated. Caching a celebrity's profile prevents the DB from being overwhelmed when millions view it in a single day.</li>
+        </ul>
+
+        <h2>2. Session Storing (Authentication)</h2>
+        <p>
+          In a stateful authentication flow, a server generates a session token upon login. For every subsequent API request, the server must validate that token.
+        </p>
+        <ul>
+          <li><strong>The Problem:</strong> Querying Postgres to validate a session token on <em>every single API call</em> adds massive latency and unnecessary database load.</li>
+          <li><strong>The Solution:</strong> Store active session tokens in Redis. Because fetching from RAM is instantaneous, API calls remain fast and the primary database is spared.</li>
+        </ul>
+
+        <h2>3. API Caching (3rd Party Integrations)</h2>
+        <p>
+          Often, your backend needs to talk to an external API (e.g., a Weather API) to serve data to your frontend.
+        </p>
+        <ul>
+          <li><strong>The Problem:</strong> External APIs usually have strict rate limits and charge you based on usage. If 1,000 users load your app, you make 1,000 calls to the Weather API, risking blocks or high bills.</li>
+          <li><strong>The Solution:</strong> Fetch the weather data once and cache it in Redis with a TTL of 30 minutes. The next 999 users are served the cached weather data. You satisfy 1,000 users while only paying for 1 API call.</li>
+        </ul>
+
+        <h2>4. Rate Limiting</h2>
+        <p>
+          Rate limiting prevents bots or malicious users from crashing your server by limiting how many requests they can make (e.g., "Max 50 requests per minute").
+        </p>
+        <p><strong>How it works with Redis:</strong></p>
+        <ol>
+          <li>A middleware intercepts the request before it reaches the controller.</li>
+          <li>It reads the user's public IP address from the <code>X-Forwarded-For</code> header.</li>
+          <li>It uses the IP as a Key in Redis, and stores a counter as the Value.</li>
+          <li>Every request increments the counter. If the counter exceeds 50 within a 1-minute TTL window, the middleware returns a <code>429 Too Many Requests</code> error.</li>
+        </ol>
+        <p>
+          <em>Why Redis?</em> Tracking rate limits requires an update on literally every single HTTP request. Doing this in a relational database would flood it with write operations. Redis handles this effortlessly due to its in-memory speed.
+        </p>
+
+        <div class="nav-buttons bottom">
+          <a href="04-Strategies and Eviction.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="mind-map.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            Think of <strong>API Caching</strong> like subscribing to a newspaper. Instead of calling the journalist (External API) every 5 minutes to ask if the news changed, you buy the paper once (Cache) and share it with your family for the rest of the day.
+          </p>
+        </div>
+
+        <div class="premium-box box-orange">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>Rate Limiting:</strong> Restricting the number of network requests a user can make in a given timeframe.</li>
+            <li><strong>X-Forwarded-For:</strong> An HTTP header that identifies the originating IP address of a client connecting to a web server through a proxy or load balancer.</li>
+            <li><strong>Stateful Auth:</strong> Authentication where the server must explicitly remember and track active sessions.</li>
+          </ul>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Never query static or slow-changing data from a DB on heavy-traffic endpoints.</li>
+            <li>Always cache 3rd party API responses to save money and avoid rate limits.</li>
+            <li>Use Redis for high-frequency writes that don't need permanent guarantees, like tracking rate limit counters.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

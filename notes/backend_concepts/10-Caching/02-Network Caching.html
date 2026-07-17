@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Network Caching</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="01-What is Caching.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="03-In-Memory Databases.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 10 - Caching &gt; Network Caching</div>
+
+        <h1>Network Caching</h1>
+        <p class="lead">
+          As a backend engineer, you will deal with caching at three major levels: Network, Hardware, and Software (In-Memory). The Network level consists heavily of Content Delivery Networks (CDNs) and Domain Name System (DNS) caching.
+        </p>
+
+        <h2>1. Content Delivery Networks (CDN)</h2>
+        <p>
+          The goal of a CDN is to cache content on servers that are geographically closer to the end users. This minimizes latency and reduces the computational and network load on the originating server.
+        </p>
+        
+        <h3>How a CDN Works</h3>
+        <ol>
+          <li><strong>User Request:</strong> A user requests a resource (e.g., an image, video, or web page) via a URL.</li>
+          <li><strong>DNS Resolution:</strong> The browser sends a DNS query. The CDN's DNS system routes the request to the nearest <strong>PoP (Point of Presence)</strong>. A PoP is a concentrated region containing multiple <strong>Edge Servers</strong>.</li>
+          <li><strong>Routing Decisions:</strong> The request is routed based on the user's geographic location and network conditions. (e.g., A user with a poor connection might be routed to a server containing a lower-quality video format).</li>
+          <li><strong>Edge Server Check:</strong> 
+            <ul>
+              <li><strong>Cache Hit:</strong> If the content is on the edge server, it is returned instantly.</li>
+              <li><strong>Cache Miss:</strong> If not, the edge server fetches the resource from the <strong>originating server</strong> (e.g., servers in the US), serves it to the user, and caches a copy for future requests.</li>
+            </ul>
+          </li>
+        </ol>
+
+        <p>
+          CDNs utilize <strong>TTL (Time to Live)</strong> to decide how long a piece of content stays in the cache. Once the TTL expires, the next request will fetch a fresh copy from the originating server and reset the TTL.
+        </p>
+
+        <h2>2. DNS Caching</h2>
+        <p>
+          DNS queries convert domain names (example.com) into IP addresses. Because resolving a domain from scratch involves querying multiple servers globally (Root, Top-Level Domain, Authoritative), DNS heavily relies on caching in <strong>multiple layers</strong> to avoid this slow recursive process for every request.
+        </p>
+
+        <h3>The Hierarchy of DNS Caching</h3>
+        <p>When you type a domain and press enter, caching is checked in this exact order:</p>
+        
+        <table>
+          <thead>
+            <tr>
+              <th>Layer</th>
+              <th>Component</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td><strong>Operating System Cache</strong></td>
+              <td>Windows, Mac, and Linux maintain their own local DNS cache. This is the absolute first place checked.</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td><strong>Browser Cache</strong></td>
+              <td>Modern browsers (Chrome, Firefox) maintain their own internal DNS cache separate from the OS.</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td><strong>Recursive Resolver Cache</strong></td>
+              <td>Provided by your ISP (e.g., Airtel, Jio, Comcast) or a public DNS provider (e.g., Google 8.8.8.8, Cloudflare 1.1.1.1). They cache results for thousands of users in your region.</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td><strong>Authoritative Name Server Cache</strong></td>
+              <td>The final destination that holds the actual IP. Even these servers sometimes implement caching to skip internal lookups.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+          If a <strong>Cache Hit</strong> occurs at any of these layers, the IP is returned immediately, and the remaining layers are skipped entirely.
+        </p>
+
+        <div class="nav-buttons bottom">
+          <a href="01-What is Caching.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="03-In-Memory Databases.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>
+            Think of a <strong>CDN</strong> like a global chain of fast-food franchises. The original recipes and ingredients come from the headquarters (originating server), but the actual food is prepared and served at a branch right down your street (Edge Node). 
+            <br><br>
+            Think of <strong>DNS Caching</strong> like saving a friend's phone number. You look it up in the phonebook once (Recursive Resolution), but after that, you save it in your phone contacts (Local Cache) so you never have to look it up again.
+          </p>
+        </div>
+
+        <div class="premium-box box-orange">
+          <h3>Important Terms</h3>
+          <ul>
+            <li><strong>Edge Nodes/Servers:</strong> Servers placed geographically close to end users.</li>
+            <li><strong>PoP (Point of Presence):</strong> A specific region or data center containing multiple edge servers.</li>
+            <li><strong>TTL (Time to Live):</strong> The expiration timer placed on cached data.</li>
+            <li><strong>Recursive Resolver:</strong> The DNS server (usually your ISP) that hunts down an IP address if it isn't in your local cache.</li>
+          </ul>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Network caching happens mostly invisibly to developers via CDNs and DNS.</li>
+            <li>CDNs route users to the nearest PoP based on location and network strength.</li>
+            <li>DNS relies on a 4-tier caching hierarchy to prevent the internet from collapsing under the weight of DNS queries.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>CDN:</strong> Edge nodes, PoP, Geographic proximity.</li>
+            <li><strong>TTL:</strong> Defines how long content lives in the CDN before fetching fresh from origin.</li>
+            <li><strong>DNS Cache Hierarchy:</strong> OS &rarr; Browser &rarr; ISP/Resolver &rarr; Authoritative.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

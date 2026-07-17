@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mind Map: Caching</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+      .mermaid {
+        display: flex;
+        justify-content: center;
+        background: #f8f9fa;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        overflow-x: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-wrapper" style="max-width: 1200px; display: block; margin: 0 auto;">
+      <main>
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="05-Backend Use Cases.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="interview-questions.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 10 - Caching &gt; Mind Map</div>
+
+        <h1 style="text-align: center;">Caching Mind Map</h1>
+        <p class="lead" style="text-align: center; margin-bottom: 2rem;">
+          A visual cheat sheet covering Caching concepts, Hardware tradeoffs, Strategies, Eviction Policies, and Backend Use Cases.
+        </p>
+
+        <div class="mermaid">
+flowchart LR
+    Root((Caching))
+
+    Root --> Def{What is Caching}
+    Def --> D1[Keep subset of data in fast storage]
+    Def --> D2[Decreases time and effort]
+    Def --> D3([Google Netflix and Twitter rely on it])
+
+    Root --> Net{Network Caching}
+    Net --> N1[CDN Edge Servers and PoPs]
+    Net --> N2[TTL determines cache lifespan]
+    Net --> N3([DNS cache OS Browser Resolver Authoritative])
+
+    Root --> Hard{Hardware Level}
+    Hard --> H1[CPU L1 L2 L3 Predictive]
+    Hard --> H2[RAM fast but volatile low capacity]
+    Hard --> H3([Disk slow but persistent massive capacity])
+
+    Root --> Mem{In-Memory Caching}
+    Mem --> M1[Redis and Memcached]
+    Mem --> M2[Key Value NoSQL Stores]
+    Mem --> M3([RAM for speed Disk for persistence])
+
+    Root --> Strat{Strategies and Eviction}
+    Strat --> S1[Lazy Caching Cache Aside - fetch on miss]
+    Strat --> S2[Write Through - update DB and Cache simultaneously]
+    Strat --> S3([Eviction LRU LFU and TTL])
+
+    Root --> Use{Backend Use Cases}
+    Use --> U1[Expensive DB Query Caching]
+    Use --> U2[Stateful Session and Auth Storing]
+    Use --> U3[External API caching avoids rate limits]
+    Use --> U4([Rate Limiting IP tracking using X-Forwarded-For])
+
+    classDef root fill:#475569,stroke:#1e293b,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef branch1 fill:#2563eb,stroke:#1d4ed8,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef node1  fill:#dbeafe,stroke:#93c5fd,stroke-width:1px,color:#1e3a8a;
+    classDef branch2 fill:#16a34a,stroke:#15803d,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef node2  fill:#dcfce7,stroke:#86efac,stroke-width:1px,color:#14532d;
+    classDef branch3 fill:#ea580c,stroke:#c2410c,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef node3  fill:#ffedd5,stroke:#fdba74,stroke-width:1px,color:#7c2d12;
+    classDef branch4 fill:#9333ea,stroke:#7e22ce,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef node4  fill:#f3e8ff,stroke:#d8b4fe,stroke-width:1px,color:#581c87;
+    classDef branch5 fill:#e11d48,stroke:#be123c,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef node5  fill:#ffe4e6,stroke:#fda4af,stroke-width:1px,color:#881337;
+    classDef branch6 fill:#0891b2,stroke:#0e7490,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef node6  fill:#e0f2fe,stroke:#7dd3fc,stroke-width:1px,color:#0c4a6e;
+
+    class Root root;
+    class Def branch1;
+    class D1,D2,D3 node1;
+    class Net branch2;
+    class N1,N2,N3 node2;
+    class Hard branch3;
+    class H1,H2,H3 node3;
+    class Mem branch4;
+    class M1,M2,M3 node4;
+    class Strat branch5;
+    class S1,S2,S3 node5;
+    class Use branch6;
+    class U1,U2,U3,U4 node6;
+        </div>
+
+        <div class="nav-buttons bottom">
+          <a href="05-Backend Use Cases.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="interview-questions.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+    </div>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+  </body>
+</html>

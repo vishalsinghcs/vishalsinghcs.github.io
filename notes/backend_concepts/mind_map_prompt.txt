@@ -6,6 +6,7 @@ Requirements:
 
 - Use the `mindmap` diagram type.
 - Create a highly organized hierarchy.
+- Please analyse previous topic's mind map to understand how it structured.
 - Keep every node concise (maximum 5–8 words).
 - Under each concept, add 1–3 short child nodes containing the most important facts (not just titles).
 - Do NOT write paragraphs.

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Relevance Scoring</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="02-Inverted Index.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="04-Use Cases and Comparisons.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        
+        <div class="breadcrumb">
+          <a href="../index.html">Home</a> &gt; 12 - Elasticsearch &gt; Relevance Scoring
+        </div>
+
+        <h1>Relevance Scoring</h1>
+
+        <h2>Why do we need it?</h2>
+        <p>Finding documents that match a query is only half the battle. In a database of millions, a single query might match tens of thousands of documents. Relevance scoring determines <em>which</em> of those matching documents are the most useful to the user, allowing the engine to return them in a sorted order.</p>
+
+        <h2>The BM25 Algorithm</h2>
+        <p>Elasticsearch utilizes an algorithm called <strong>BM25</strong> (Best Matching 25) to calculate a relevance score for each document against a given query. You don't need to understand the complex mathematics behind it, but you should understand the primary factors it uses to score documents.</p>
+
+        <h3>Scoring Factors</h3>
+        <ul>
+            <li><strong>Term Frequency (TF):</strong> How often does the search term appear in the document? If "machine" appears 10 times in a document, it is deemed more relevant than a document where it appears only once.</li>
+            <li><strong>Document Frequency (DF):</strong> How common is the search term across <em>all</em> documents? Common words (like "the" or "is") carry less weight. Rare words carry more weight and boost relevance significantly.</li>
+            <li><strong>Document Length:</strong> How long is the document? A term appearing once in a short tweet is highly relevant. That same term appearing once in a 500-page book is less relevant.</li>
+        </ul>
+
+        <h2>Field Boosting</h2>
+        <p>Field boosting is a practical feature in Elasticsearch that allows developers to manually prioritize certain fields over others during a search. This is crucial for returning the most intuitive results.</p>
+        <p>For example, if a user searches for a book:</p>
+        <ul>
+            <li>A match in the <strong>Title</strong> might be given a 3x boost.</li>
+            <li>A match in the <strong>Description</strong> might be given a 2x boost.</li>
+            <li>A match in the <strong>Content</strong> receives a standard 1x boost.</li>
+        </ul>
+
+        <div class="nav-buttons bottom">
+          <a href="02-Inverted Index.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="04-Use Cases and Comparisons.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>Relevance scoring is like a judge in a competition. It looks at how often a keyword shows up, how rare the keyword is overall, and where it was placed (title vs. footnote) to declare the winner.</p>
+        </div>
+        <div class="premium-box box-amber">
+          <h3>Important Terms</h3>
+          <p><strong>BM25 Algorithm</strong> — The default scoring algorithm used by Elasticsearch to rank documents.</p>
+          <p><strong>Field Boosting</strong> — Artificially inflating the relevance score if a match is found in specific, high-priority fields.</p>
+        </div>
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Relevance is what separates great search engines from basic database queries.</li>
+            <li>You can easily customize relevance in Elasticsearch by adjusting field boosts in your JSON query.</li>
+          </ul>
+        </div>
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li>Term Frequency: More occurrences = higher score.</li>
+            <li>Document Frequency: Rarer words = higher score.</li>
+            <li>Document Length: Shorter documents = higher density/score.</li>
+            <li>Field Boosting: Title matches outrank body matches.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

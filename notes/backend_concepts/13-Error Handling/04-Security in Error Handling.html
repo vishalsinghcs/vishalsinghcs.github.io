@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Security in Error Handling</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+    <style>
+      .mermaid {
+        display: flex;
+        justify-content: center;
+        background: #f8f9fa;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        overflow-x: auto;
+        margin-bottom: 2rem;
+        margin-top: 2rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="03-Global Error Handling.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="mind-map.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        
+        <div class="breadcrumb">
+          <a href="../index.html">Home</a> &gt; 13 - Error Handling &gt; Security in Error Handling
+        </div>
+
+        <h1>Security in Error Handling</h1>
+
+        <p>Error messages are often leveraged by malicious actors to map out the internal structure of your application. Securing your error handling workflow is paramount to protecting both your platform and your users.</p>
+
+        <h2>Leaking Internal Details</h2>
+        <p>Never return raw database or infrastructure errors directly to the client. A naive error response might contain table names, column names, or stack traces. Malicious users can use this information to construct highly targeted SQL Injection attacks.</p>
+        <p><strong>The Fix:</strong> Catch these errors in your global middleware and abstract them. If an error reaches your default "catch-all" block, always return a generic <code>500 Internal Server Error</code> with a message like "Something went wrong," keeping internal state hidden.</p>
+
+        <h2>Authentication Errors (OWASP Guidelines)</h2>
+        <div class="mermaid">
+flowchart TD
+    Login[Login Request] --> ChkE{Email Exists?}
+    ChkE -->|No| R1[Generic Error: Invalid username or password]
+    ChkE -->|Yes| ChkP{Password Correct?}
+    ChkP -->|No| R2[Generic Error: Invalid username or password]
+    ChkP -->|Yes| Succ[Login Success]
+    
+    style R1 fill:#fee2e2,stroke:#ef4444
+    style R2 fill:#fee2e2,stroke:#ef4444
+    style Succ fill:#dcfce7,stroke:#22c55e
+        </div>
+        <p>Authentication endpoints (like login) are prime targets. Consider a scenario where a user submits an email and password:</p>
+        <ul>
+            <li>If you return <em>"User with this email does not exist"</em>, an attacker can enumerate your database to figure out which emails belong to registered users.</li>
+            <li>If you return <em>"Incorrect password"</em>, the attacker knows the email is valid and can focus solely on brute-forcing the password.</li>
+        </ul>
+        <p><strong>The Fix:</strong> Regardless of whether the email exists or the password was wrong, always return a generic, indistinguishable error: <em>"Invalid username or password."</em> This prevents account enumeration attacks.</p>
+
+        <h2>Log Redaction</h2>
+        <p>Errors must be logged for debugging, but logs are often shipped to external visualization tools (like ELK Stack or Datadog). In major data breaches, hackers often target these log aggregation services.</p>
+        <p>Never log sensitive information such as:</p>
+        <ul>
+            <li>Passwords or API Keys</li>
+            <li>Credit card numbers (PII)</li>
+            <li>User email addresses</li>
+        </ul>
+        <p><strong>The Fix:</strong> Log the user's UUID and a generated Correlation ID instead. This gives engineers enough context to trace the error through the system without exposing personally identifiable information.</p>
+
+        <div class="nav-buttons bottom">
+          <a href="03-Global Error Handling.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="mind-map.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>Treat error messages like poker tells. If you give away too much specific detail, the opponent (attacker) can easily deduce your hand (internal architecture).</p>
+        </div>
+        <div class="premium-box box-amber">
+          <h3>Important Terms</h3>
+          <p><strong>Account Enumeration:</strong> An attack where a malicious user probes login endpoints to discover which emails are registered on the platform.</p>
+          <p><strong>Log Redaction:</strong> The process of removing or masking sensitive data before it is written to log files.</p>
+        </div>
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Never expose database structure, column names, or stack traces in API responses.</li>
+            <li>Always return a generic "Invalid username or password" for login failures.</li>
+          </ul>
+        </div>
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li>500 Errors = Hide details.</li>
+            <li>Auth Errors = Generic messages.</li>
+            <li>Logs = Redact PII, log UUIDs.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+  </body>
+</html>

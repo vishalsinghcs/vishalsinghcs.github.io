@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Use Cases and Comparisons</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="03-Relevance Scoring.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="mind-map.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        
+        <div class="breadcrumb">
+          <a href="../index.html">Home</a> &gt; 12 - Elasticsearch &gt; Use Cases and Comparisons
+        </div>
+
+        <h1>Use Cases and Comparisons</h1>
+
+        <h2>Typo Tolerance and Type-ahead</h2>
+        <p>A major advantage of full-text search tools like Elasticsearch is their ability to derive context from queries. They offer typo tolerance out-of-the-box. For example, if a user accidentally searches for <em>"treading"</em> instead of <em>"trending"</em>, the engine infers the likely intended query and returns relevant results. This makes features like <strong>type-ahead</strong> (autocomplete dropdowns) smooth and forgiving.</p>
+
+        <h2>The ELK Stack (Log Management)</h2>
+        <p>Beyond full-text search for application data, Elasticsearch is heavily utilized for log management. It is part of the famous <strong>ELK Stack</strong>:</p>
+        <ul>
+            <li><strong>E</strong>lasticsearch: The search and analytics engine.</li>
+            <li><strong>L</strong>ogstash: The server-side data processing pipeline that ingests logs.</li>
+            <li><strong>K</strong>ibana: The visualization dashboard.</li>
+        </ul>
+        <p>Because Elasticsearch is optimized for fast searching and statistical aggregation, it is the industry standard for parsing and monitoring system logs at scale.</p>
+
+        <h2>Elasticsearch vs. Postgres ILIKE</h2>
+        <p>Consider a benchmark test running on a database with 50,000 records of user reviews.</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>Postgres (ILIKE)</th>
+              <th>Elasticsearch</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Mechanism</strong></td>
+              <td>Sequential Pattern Matching</td>
+              <td>Inverted Index Lookup</td>
+            </tr>
+            <tr>
+              <td><strong>Speed (50k records)</strong></td>
+              <td>~3 to 7 seconds</td>
+              <td>~500 milliseconds</td>
+            </tr>
+            <tr>
+              <td><strong>Relevance Scoring</strong></td>
+              <td>None</td>
+              <td>BM25 Algorithm</td>
+            </tr>
+            <tr>
+              <td><strong>Typo Tolerance</strong></td>
+              <td>No</td>
+              <td>Yes</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>When to Use Which?</h2>
+        <ul>
+            <li><strong>Postgres Full-Text Search:</strong> If your search needs are basic and you want to avoid managing another infrastructure piece, modern Postgres has built-in full-text search that is sufficient for many small-to-medium use cases.</li>
+            <li><strong>Elasticsearch:</strong> If you are building a dedicated search experience (like an e-commerce catalog), require typo-tolerance, or are already using the ELK stack for logging, Elasticsearch is the clear choice.</li>
+        </ul>
+
+        <div class="nav-buttons bottom">
+          <a href="03-Relevance Scoring.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="mind-map.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>You don't need to be an Elasticsearch master to be a good backend engineer (unlike relational databases which are mandatory). Treat it as a specialized tool in your arsenal to deploy when traditional SQL search hits a wall.</p>
+        </div>
+        <div class="premium-box box-amber">
+          <h3>Important Terms</h3>
+          <p><strong>ELK Stack</strong> — A popular collection of three open-source products (Elasticsearch, Logstash, Kibana) used for log management.</p>
+          <p><strong>Type-ahead</strong> — Also known as autocomplete; predicting the rest of a word or sentence while the user is typing.</p>
+        </div>
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Elasticsearch dominates use cases requiring typo tolerance and relevance ranking.</li>
+            <li>It is also the industry standard for analyzing massive volumes of system logs.</li>
+          </ul>
+        </div>
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li>Typo tolerance improves UX.</li>
+            <li>ELK stack = Elasticsearch, Logstash, Kibana.</li>
+            <li>Postgres ILIKE is too slow for millions of records.</li>
+            <li>Elasticsearch reduces latency from seconds to milliseconds.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

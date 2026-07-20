@@ -436,608 +436,670 @@ After creating notes files, add links to those in the index.html file
 
 Now convert the following lecture transcript into the notes described above and write concepts taught in this lecture.
 
-Transcript for lecture 13. Caching, the secret behind it all:
+Transcript for lecture 16. Error Handling and Building Fault Tolerant Systems:
 
 
 
-what exactly is caching to simplify it in one sentence caching is a mechanism
-using which we decrease the amount of time and effort it takes to perform some
-amount of work that is the on line explanation of what exactly is caching and a more technical definition of that
-would be caching is basically keeping a subset of some data let's say we have a
-primary data and when we keep a subset not the whole data a subset of that data
-depending on the uses of the data the frequency of the uses and the probability of the next uses time etc
-etc depending on a lot of parameters when you keep a subset of some data in a
-location which is faster to access which takes less time and also it is easier
-which means it is it also takes less effort so technically speaking caching
-is a mechanism using which we can decrease the amount of time and the
-effort it takes to retrieve or to do some kind of operation that is a
-technical definition of what we mean when we say caching and this single
-mechanism or this single technique is a huge factor in a lot of high performance
-applications so let's go through a couple of examples and understand where exactly people use caching and how does
-it exactly impact the performance of the application and how important it is and
-to give you a hint it is very important at least when it comes to high performance applications which track
-latency in two digit micros or milliseconds okay let's take the example of Google pretty much all of us use or
-have used Google search in our browsers and what exactly happens when you search
-some query in Google let's say you type something in Google in the search bar and you hit and enter and that query is
-processed by Google search engine they have a pretty complex algorithm and workflow which every query goes through
-that typically involves crawling indexing and ranking billions and billions of web pages and that whole
-process is pretty expensive and when we say expensive computer tionally
-expensive right it takes a lot of computing power a lot of CPU a lot of
-memory resources and etc etc and let's say a query like what is the weather
-today and queries like these are searched millions and millions of times every day and without caching without
-implementing this mechanism called caching Google servers they would need
-to recompute all the results for every single query for every single query
-involving the current weather of that location and which will lead to a very high latency and of course a very high
-server load every single query would require going through all the index running all the ranking algorithms and
-fetching the results which would in turn significantly slow down the response STS
-now when we insert caching in this so what Google does the search engine is it
-uses it a distributed in memory caching system to store we'll see what is in
-memory caching system soon but that's how Google does it uses a distributed in
-memory casing system distributed in the sense the servers of the casing system are spread across the whole world
-they're not just concentrated in a single location but they are spread across all over the world and those cach
-servers they store the results whatever results are returned by all those
-ranking algorithms and all those different different algorithms that are involved in the whole uh Google
-search workflow they get cached or they get stored in the servers and when a
-user searches the system first checks whether the results of that particular
-query let's say you search the weather in some city of India so the system
-checks whether the results of that is present in the cash or not if the query is cached that means it is a cash hit
-right that's that's what we call it's a technical term whenever we find the data that we are looking for the cash we call
-it a cash hit if the system finds it it Returns the results instantly right uh
-retrieving data from a cache is very fast that's the one of the reasons we use cash in the first place right and
-we'll see why exactly fetching data from cash is fast as compared to our
-traditional databases like disk based databases right which is saw in the previous video okay we'll soon get into
-that well for now we are just going through some examples to understand the gravity or to understand the importance
-of caching in different different platforms and let's say the system does not find the result right the query that
-the user typed that has not been typed before so the system the cache it does
-not have the data so what it does it goes through the normal workflow all the ranking all the Sorting whatever
-algorithms are involved and then it takes that result and it caches it so that the next time the same user of or
-some other user tries to type the same query then those results can be fetched
-from the cach and can be returned to the user okay that's one example taking
-another example let say another popular platform and we take Netflix how exactly
-does Netflix a huge and a global streaming platform which delivers
-different different kinds of content like movies series and animes etc etc how does it deliver the content to
-millions of users all over the world and it steams large and when we say large it
-can be multiple terabytes because the way these streaming platforms work is
-for a single video let's say for a single movie it stores different different resolutions let's say we have
-a movie called movie one then it goes through a process called encoding and It prepares different
-different resolutions for different different devices and different different network speeds so for a high
-level explanation let's say it has a 1080p uh resolution and another for 720p
-another for 480p etc etc right and depending on your network speed and
-depending on which device you're trying to access the content of Netflix it dynamically sends an optimiz version of
-that content for or that movie right so that you don't waste your bandwidth and
-the load gets decreased on the Netflix server also okay that's all about the encoding part but talking about how does
-it exactly sense or delivers hundreds and thousands of terabytes of data to millions of users spread across all over
-the world right since Netflix is a global streaming platform and that too
-with minimal amount of buffering and and decreasing server load so that Netflix
-server don't crash and the way it does is it uses something called CDN and CDN
-also known as content delivery Network the way they work is Netflix has its own
-servers its own originating servers let's say it's somewhere in the US right
-in us there is a there are different different data centers and different different locations where it has its own
-servers right and its own server racks which store the actual movies right here
-we have the actual movies but what it does it goes an extra mile and what it does we have our world here let's
-imagine this is our whole world so at different different locations different different locations all over the world
-and those locations are of course chosen by the infrastructure that is available
-and how much network connectivity etc etc and a lot of parameters so all over the world there are different different
-locations and these are called Edge locations Edge locations Edge right
-these are called Edge locations because these servers are strategically placed
-so that the latency of the users Connection in that region let's say
-there is a server in this part of the world then for this reason the latency
-the latency of data or whatever requests are served from the server is going to
-be minimal right let's say we have us somewhere here minimal as compared to
-all the requests going through the originating server which is situated in us and that part of the data center
-serving request from all over the world then that will be a situation where all
-the people who are in us they will have low buffering time because
-geographically speaking they are closer to the servers that are serving the
-content so of course their uh lat is going to be very less as compared to
-people from the other side of the world right let's say from India and that is the reason this is a strategy that a lot
-of companies use right not just Netflix CDN or content delivery networks are very common and a lot of companies and
-lot of small and big companies use them to efficiently deliver different
-different content it can be video files it can be images it can be also web web
-pages right web pages which consist of static asss like JavaScript HTML or css
-ET etc those kinds of assets are also served from different different CDN when
-you use a platform like versel they also have an edge Network like this and their
-servers are also spread across all of the world so when you make a request to
-a server to a front end app which is deployed in versal so depending on your
-location that request is served from the closest region oral server to you
-instead of going to the originating server right so CDN are very common and this is how Netflix the global streaming
-platform serves billions and billions of users with hundreds and thousands of
-datab sub data every single minute using this concept called caching the content
-at Edge locations right we again come to this concept called caching if you
-remember the definition of is called taking a subset of a primary storage and
-placing it in a way that accessing data from this source is much much faster
-than accessing data from the primary storage so taking the example of Netflix Netflix takes some data a subset of the
-data of course it does not cache all the data of the Netflix storage in all the edge locations that would incur a lot of
-cost and of course a lot of resources is also it they use a lot of algorithms
-machine learning algorithms depending on what type of content people of that
-region are watching right they do a lot of trend analysis and lot of real time data Etc ET right a lot of computation
-goes behind deciding what data what subset of the data to cach so that the
-amount of time and the effort can be decreased to access that
-data right you cannot just put everything in cash right that defeats the whole purpose and caching is also
-more expensive than storing the data in secondary storage or disk based storage
-and that is the reason we don't put everything in cash memory right dis storages are relatively cheaper and also
-offer a lot of capacity now moving on to a third example let's take a platform
-called X or also previously known as Twitter okay and for this you can take
-any social media examples so this example can be applicable to Facebook also and you can say LinkedIn or YouTube
-videos etc etc right the same all these social media platforms implement the same kind of strategy for let's say if
-you're familiar with how Twitter the platform Works Twitter has a section
-called trending topics right and what Twitter does or what x does is it
-identifies trending Topics by analyzing millions and millions of Tweets in real
-time it analyzes all the tweets that people are making all over the world and
-it extracts some kind of patterns and some kind of Trends and it calculates and that calculation is very expensive
-it takes a lot of uh machine learning based algorithms it takes a lot of gpus and a lot of infrastructure right and it
-also involves processing a large amount of data terabytes and terabytes of data
-because we are talking about about analyzing tweets of people millions and billions of people all over the world so
-that is the reason to avoid doing this computation of this large amount of data
-and to use this much amount of resources to avoid doing that again and again because every time let's imagine if
-Twitter did all this calculation every time some user went to the trending section of the then of course the server
-will crash in minutes or seconds because there are like billions of people and
-if even half of them are trying to access the trending section and every user triggers this calculation this
-expensive calculation of course the server cannot handle that and they will crash so what Twitter does of course to
-avoid doing this computation this heavy computation for each request it cashes
-it okay and by now you can see the pattern right every time there is a
-situation where it's either about doing a lot of heavy
-computation or heavy amount of data when we have situations like this when we
-want to avoid doing a lot of computation again and again and when we want to avoid sending large amounts of data to a
-lot of users these are the two scenarios the common two scenarios when caching comes into play right so coming back to
-the Twitter example Twitter caches all these trending topics because for a trend to change in a particular region
-right let's say you are in some country and that country has ongoing elections
-so elections being the trending topic in Twitter is not something which is
-subject to change in let's say seconds or minutes right at least it will stay
-in trending section for a couple of hours or a couple of days and that is the reason since it is not dynamically
-changed it is not subject to minutes and hours of change that that is the reason
-it is very safe to cach the trending section of Twitter so what Twitter does
-it takes all this data all this millions and billions of tweets and every few
-minutes so we of course we cannot know what is the exact algorithm or what is the exact duration that Twitter does all
-this computation or what computations exactly Twitter does but taking a rough
-estimation for the sake of this example every few minutes every few minutes Twitter takes all these data from
-different different regions and it executes different different algorithms okay on a very high level speaking
-different different machine learning algorithms and Trend detection algorithms and a lot of those
-complicated stuff and it stores them in a inmemory cash something like that is
-we'll see what are some famous and popular in memory cache Technologies but
-red is is one of them and it is very famous so let's imagine
-calculates all these trending topics and it stores it in an inmemory key Value Store based database like redis and when
-the users request it then it takes that data from the cache instead of computing
-all of that again it takes that data from the cache and sends the user and that is the reason the moment you open
-your phone you get that data instantly you do not see any kind of delay right you do not see any kind of significant
-loading time of course if you have a very bad internet connection you'll see loaders and all but if you have a
-generally fast internet connection it's pretty fast the whole UI interaction and
-with those three examples we kind of have a pattern here that every time we want to avoid doing some kind of heavy
-computation or some kind of heavy data when we want to avoid these two kinds of situation we resort to what we call as
-caching and now that we know caching is an important concept and it is is
-implemented everywhere so on a high level and since we want to limit the context to especially backend
-engineering something all the concepts that you as a backend engineer are going to deal with on your day-to-day life or
-on your day-to-day development because of that we want to limit the context of caching because if you go around and
-start to find the use the implementation of caching in different different
-context starting from Hardware to Software to browsers etc etc it's going to take a lot of time and of course it
-is very good to have that knowledge but it is very difficult to cover all of
-that in a single video so we'll keep it relevant on a high level when we talk
-about caching you will see three levels of caching at least you'll notice these three caching more frequently as
-compared to other kinds of caching as a backend engineer those three are first is Network level second hardware and
-third is software based it's not purely software based of course software based
-caching also uses Hardware based caching to provide the performance but it's
-called software based caching because of the interaction and because of the the means of interaction you'll be dealing
-with some kind of Library some kind of software to interact with this cash that's why it's called software based
-caching but it's of course not purely software based caching it is it works
-with the hardware based cache okay now going into each of that let's start with
-network cache so inside Network cache also there are different different use cases a lot of use cases of caching but
-the two major ones that you'll see frequently are the first one is CDN as I
-just explained in the Netflix example how Netflix serves and delivers all
-these heavy terabytes and terabytes of content to uses all of the world there
-we discuss CDN briefly so here we'll go a little more deep into CDN and the
-second thing is DNS DNS is also something we use a lot every day you
-don't really notice the use but it is happening right and caching is also a
-very important part when it comes to DNS quaring so let's explore these two things which fall under Network level
-caches so first one is CDM also known as content delivery Network the whole idea
-of CDN or content delivery networks are to Cache content on servers that are
-geographically as I said geographically closer to the end users that's why they
-are also called Edge nodes or Edge servers or Edge Computing any kind of edge word that you notice that basically
-means it is happening in a server that is closest to you instead of a single
-server or single servers in a particular region or the originating server right
-the CDN make use of this concept that the content will be stored they will be
-cached and served from the servers that are closest to the users to minimize the
-amount of latency and minimize the amount of computation or the amount of
-resources of the originating server now on a high level this is how CDN work so
-let's imagine a user makes a request and it requests for some kind of resource a
-resource like an image or a video or a
-web page right some kind of resource by entering a URL in the browser okay
-that's how we typically access some kind of data over the internet right through the URL of our browser and that browser
-that browser sends a DNS query to resolve the domain name whatever the
-domain name that we have typed of that image of that video or that web page the
-browser sends a DNS query to resolve that domain name into an IP address
-because that's the use case of DNS right DNS names take domain names and convert them into IP addresses so that our
-browsers can access the actual location of the server right now next what
-happens the CDN domain name system the CDN DNS system routes that particular
-request to the nearest po po is also called as point of presence and it is
-just a fancy term it just basically means a particular region where there are multiple Edge servers these servers
-that we are seeing here there are multiple Edge servers in a particular region and that concentrated region is
-called po or point of presence for that region right PO is just a collection of
-multiple Edge servers for a particular region now what happens the CDN DNS
-system it routes the request to the nearest po right the nearest region
-which has multiple Edge servers so that it can serve the content right so that is the responsibility of the DNS system
-because that's why DNS is a very important component when it comes to CDN and it routes the request depending on
-multiple parameters parameters like users geographic location right and the
-network conditions what whether the user has a stable internet connection or it has a bad internet connection if it has
-a bad internet connection depending on that it might route to a different po or different Edge server so because this
-Edge server may only have the content of the highest quality let's say you have a banned internet connection and this
-particular po or point of presence this only has 1 1080 pixel formats of the
-video right this is just a rough example so depending on your network condition the DNS system the the CDN DNS system it
-will check that since you have a batter internet connection it will route it to a pop which has videos of lesser
-qualities so that you can load that resource with minimum amount of
-buffering okay for example if a user in New York requests a particular resource
-an image or video or web page the CDN the CDN system will direct the request to your poop near New York right that's
-how the requests are routed to the nearest po using DNS next what happens
-the Ed server once it reaches the PO which basically means a collection of Ed servers now here what happens it checks
-if the requested content that particular video that particular web page or image or whatever that is whether it is in the
-cach or not if if it is already cached or not depending on that it is either a
-cash hit or a cash M so as I already said if whatever we are looking for if
-it's already in the cash then we call it a cash hit if it's not then it's called a cash Miss if it is a cashit it finds
-the resource and it just sends the request to the user right it is the happy path but if it is a cash Miss what
-happens the content is not in the cache so the edge server whatever Edge server
-that is handling this particular request it fetches it from the originating server let's say the originating server
-are somewhere in us right and the user is in India so it is the responsibility
-of that as server to fetch it from the US servers the originating server where
-the actual resource is present of course the cash also has the copy of the resource it is not a fake resource but
-all the resources basically we are talking about originating servers have all the resources so that CDN can fetch
-from them and serve users the content and that's how typically a CDN a Content
-delivery Network Works using DNS and point of presence and originating servers and all these buzzwords CDs also
-use a concept called TTL time to live right so depending on that they decide
-how long to keep a particular piece of content so usually companies decide some
-kind of fair duration right this content should only be cached for the next few hours because after that it might have a
-new version or there might be Regional changes etc etc right so it is a safe default so that after this amount of
-time if a new request comes then instead of serving the old content it fetches
-from the originating server takes the fresh content and serves it with a new TTL time to right the way typical CDN
-workflow works and it is considered as a network level cache the Second Use case
-of caching when it comes to network layer is DNS DNS queries it they also
-make heavy uses of caching to minimize the latency of all the DNS queries that
-are happening from billions and billions of users at the same time so let's imagine another user scenario so that
-it's easier to keep track of how DNS actually works and where exactly does it
-actually implement the caching workflow so let's imagine a user enters something
-in the URL let's say a domain name example.com right in their browser and
-they press enter what happens the first thing on we are just only focusing on the DNS part of course when you type
-something in your url bar a lot of things happen but we'll be focusing on just the DNS part right so the users
-divides so after you hit enter the users device whatever the device it is the
-laptop or the smartphone it sends a DNS query and it sends it to a recursive
-resolver it's a technical term we'll see what it means it sends the DNS query to a recursive resolver and this
-resolver is typically provided by the users ISP ISP basically means whatever
-company it is you are taking your internet connection from so if you're from India it could be Gio it could be act or it could be AEL right so that is
-your ISP now this resolver this recursive resolver this is provided by
-your ISP your internet service provided or it could also be provided by some
-third partyy DNS providers like Google has a public DNS provider or Cloud flare
-also as a public public DNS provider etc etc right so it can be either of that it can be your ISP or it can be a public
-DNS provider like Google or Cloud flare now second thing what happens the DNS query is routed to your recursive
-resolver which can be in your ISP or a public DNS Server Like Google or Cloud
-flare it does not matter we'll see what exactly happens once the query reaches the recursive resolver the recursive
-resolver it does the following steps first thing what it does it first checks
-the local cache to see if it already has that particular IP right some random IP
-it checks once it has the query it checks whether it already has that particular IP cached in its local system
-when you say local it means without accessing a remote storage or anything like that in its local uh primary
-storage or secondary storage dis based stage whatever right in its own system it checks whether it has the entry for
-this IP in its local cach or not depending on that either it is a cash hit or a cash Miss if it is a cash hit
-the resolver immediately Returns the result and what is the result in this case we the DNS query was to check what
-is the IP of example.com so it checks whether example.com is in its local cach
-or not if it does then finds the corresponding IP address add and it returns it to the user to our browser or
-to our smartphone whatever it is right but if it is a Miss if it did not find
-it in its local cache it sends that query to other resols what are these
-other resols we proceed to the third step here right if it does not have the
-result if it if it does not have the corresponding IP address for that particular domain example.com it misses
-it here it is a cash Miss and it queries other resolvers and it is called quering
-the root server okay there are a lot of root servers I think 13 or 14 I don't know the exact figure but these are
-called root servers okay there are multiple root servers spread all over the world and they don't necessarily
-have the particular IP then they don't have the result for what is the IP address of example.com but what they do
-have is they have the address of the top level domains right top level domains
-like doco Doin etc etc they have the
-addresses or referrals for these top level domains or these top level domain
-servers okay we are talking about other servers now now since it is example.com it sends the address or the reference of
-the Doom top level server next you proceed it reaches the top level server
-for Doom okay the TLD TLD for the do top
-level domain right and from there that also does not have the IP address of
-example.com of course then this sends the address for the authoritative called
-authoritative name server for [Music] example.com it has the address for the
-authoritative name server for example.com and it sends the address of that then
-what happens the recursive resolver right we are still talking about the recursive resolver which has the
-responsibility of finding the IP address of this particular domain name and it is called recursive because it goes deep
-and deep and deep into different different servers until it finds the IP address that's why it's called a
-recursive resolver okay and at last we reach the actual authoritative name
-server for example.com and from there we can take the IP address whatever IP address it is can take that and it
-returns it where exactly caching comes into play here DNS heavily depends on caching because of how much of work it
-is to recursively reach out to different different servers and finally get the IP that's the reason DNS heavily depends on
-caches so that it does not have to do all this work for every single request so that it has some kind of local cash
-which it can use for further request it only wants to do it once for a certain amount of time right so most operating
-systems it can be Windows or Mac or Linux maintain some kind of local cach
-for DNS okay and when a user request a particular domain the OS the operating
-system checks its local cash first okay before it goes to your ISP the recursive
-resolver etc etc it checks its local cache if it can find it then it skips
-going to the query resolver the recursive resolver and immediately finds the IP address and goes to that and
-whatever the normal browser flow is then the next level if it does not find the
-entry for that particular domain then the next level of cach is browsers of
-course browsers most of the modern web browsers like Chrome Firefox they maintain their
-own DNS cache okay after our operating system the next hierarchy the next level
-of caching is implemented by our browsers they have their own local cach or DNS so that if our operating system
-cannot provide the corresponding IP address browsers also try to maintain their own cash they check if they have
-the IP address of a particular domain from some previous request if it does
-then they can skip going to the recursive query resolver and they can imediately access the website that's the
-next level the next level of cash is from the resolver the the recursive resolver that we talked about which
-recursively tries to find the IP address until it finds it in some server whether it is the root server the authoritative
-name server or whatever right that recursive resolver which is provided
-either provided by ISP or something like Google public DNS or Cloud flare right
-these components they which are known as recursive resolvers they also maintain
-their own cash so that if for some request they can find the corresponding
-entry they can immediately return it so that they can skip going to all these different different servers to find the
-IP address and beyond that also when we talked about authoritative name servers
-they also have some kind of cache not all of them implemented but some of them do and using which they can also skip
-going to skip making further request to further servers right so as you can see DNS also implements caching heavily in
-multiple layers next we have is the hardware level caching so if you are from a computer science background You'
-be already familiar with all these Concepts what is L1 cache what is L2 cache L3 cache what is main memory what
-is hard dis etc etc so caching is also implemented at Hardware level to make
-computations faster and to make a lot of CPU level operations faster so on a high level without going into too much
-technical side of it you can see that we have here our CPU chips which do the
-actual processing then we have multiple layers of caches we have the L1 cach here and the L2 cache and we also have
-the L3 cache which is a memory unit which is shared between different different caches right this memory is
-shared between different different CPU units then we have the Ram or random
-access memory which is also called as the main memory and then we have the secondary storage hard disk and Network
-CS Etc ET so what exactly happens CPU keeps these memory units also called as
-L1 cach L2 cach and L3 cache so that it can cast some of the repeated computations or some data which are
-frequently used or which are going to be used say to give an example if you are familiar with the concepts of arrays the
-reason arrays are a very good data structures for sequential accesses
-whenever you start traversing the elements of the array from a particular direction let's say you have 1 2 3 4 5
-here the moment you start traving here CPUs or different different Computing
-units inside your processing units what they do through different predictive
-algorithms they take the entire memory unit and they put it in some cache right
-can be L one cach L2 cach depending on the predictive algorithm and that's the reason accessing elements sequencially
-in an array is a very fast operation because of predictive algorithms of the processing unit that is just one
-examples of how harder level cach works the thing that we want to focus here is
-this part the random access memory or the main memory it's considered and
-whenever we talk about major caching Technologies say redis or M cached these
-are called inmemory key Value Store based databases and they are called inmemory databases
-because they store data in your main memory or the random access memory and
-it is called Random Access Memory because compared to hard dis or ssds in
-which you can access the data in a mechanical way so if we take hard dis
-for example there is some kind of head which revolves around the dis and it finally finds the data it it is a
-mechanical operation and compared to that main memory or Random Access Memory
-it has a bunch of capacitors and all and through the use of electrical signals
-and with the direct access of different different parts of the memory addresses
-through their addresses it can directly access the data with a single electrical signal and that is the reason it is
-called random access memory which means it does not matter from what direction you try to access the data the speed and
-the time is going to be the almost constant that's why it's called a random access memory and it is very fast
-to access data from this part of the memory but the problem is we don't have
-random access memory or the main memory in abundance even though we have speed
-at our disposal when it comes to Random Access Memory they have limited capacity
-and also they are volatile in nature which means whenever you turn off your
-power whatever whatever data is stored in random access memory it goes away right it clears it start fresh whenever
-you start your computer right because of their volatile nature and because of the way they are created at least from the
-harder level they are created with the tradeoffs that we are trading of
-nonvolatility and capacity for Speed right so that's the reason we cannot
-completely replace a hard disk or our traditional disk based St with random
-access memory right they have their use they are fast when it comes to data access and data retrieval but they are
-not a replacement for our secondary storage okay storing data in secondary storage is permanent permanent permanent
-in the sense they are not volatile does not matter whether your program is
-accessing it or not whether your computer is on or not the data persists there because it is physically writing
-the data in the disk right that is the reason hard disk or second disc storage have their use and primary storages have
-their own use primary storage have very fast data access time and secondary
-storages have slower data access but they provide the safety of persistence
-and that is the reason Technologies like redis or mcast these databases they make
-use of this random access memory or the main memory to store their data and behind the scenes for persistence they
-make use of the secondary storage so with some kind of mechanism when the program starts off they take the data
-from the secondary storage and load it in the main memory again so that you have your data persistence but when you retrieve it you
-retrieve it from the primary memory right is the responsibilities of these programs that is M cach or whatever
-caching technology the in memory caching technology that you are using is there responsibility to implement persistence
-Etc with the secondary storage but when we are talking about accessing the data
-whether retrieving it or modifying it it happens with the primary memory right that's the reason data access operations
-from these databases are very fast and finally coming back to the
-context of backend development Technologies like redis or mcast or if
-we are talking about Cloud Technologies then Technologies like AWS elastic cache
-these come into play they provide some kind of storage and that storage is based on the primary memory and that's
-the reason data access operations are very fast we call these Technologies in memory key value based
-no SQL databases right there are four components here the first thing we already saw they are called inmemory
-based databases because they as compared to traditional databases like Po gra or
-MySQL they are not stored in diss right second the storages they are stored in
-Ram or primary storage that's the reason they are very fast right that's why they
-are called inmemory databases the second thing is key value based as compared to traditional databases relational
-databases which have very strict schema and you have to create tables and you
-have to create rows etc etc right instead of that here the data structures are pretty simple you have keys and you
-have values you have a particular key and for that key you can store anything
-it can be a list it can be a Json it can be a string number ET different different Technologies offer different
-different data types so we won't go deep into that you can do your own research for that and that's the reason they are
-called key value based no SQL databases right they don't enforce the strictness of traditional SQL databases and that's
-about the name now since we are talking about databases like this which we use
-in our day-to-day backend development there are two types of caching strategies caching strategies the first
-one is lazy caching or also known as cash aside and the second one is known
-as write through and surprisingly we have already talked about this so we won't go very deep into this all in all
-lazy caching basically means let's say there is a client and it is requesting
-some resource so that server checks whether that resource is present in the cash not
-if it is then it returns that resource if it is not it fetches it from a different storage right some kind of
-primary storage and it fetches it it gets the data it stores it in the cash
-and then it Returns the result to the client so that the next time the client makes that request or some other client
-makes that request it again checks and it finds that in the cash and it returns it that's why they are called lazy
-caching you don't proactively cash things by predicting from client interaction or patents etc etc you just
-cash it when someone actually requests it that's why they're called lazy caching and it is a pattern that is very
-famous in a lot of different different context in backend development the second one is called Write through caching it is more about the cash
-updation strategy which basically means every time something changes right every time there is a post call or put call or
-patch call where you are actually changing some resource or creating some resource in the database in your primary
-storage what you do you make the change for that resource in your database you
-make the data as query at the same time in the same API call in the same execution flow you also make the same
-change in your cache so that the next time the request comes you can serve it from the cash and which also means all
-your operations all your right operations bring more overhead because at the same time you have to update the
-database and the cache at the same time time but the advantage here is your cash
-is always fresh right it is never expired you never serve old data since
-you update the data in the database and the cash at the same time your cash is
-always fresh so those are two major strategies that you will see frequently
-in your day-to-day development the next major component when we are talking about Technologies like redis or MC is
-the eviction policy something else that we should be aware of is the eviction
-policy and what it means is when you have a cash as we already know that in
-memory caches like redis they use primary storage or the random access memory which is limited in capacity as
-compared to the secondary storage so it is pretty obvious that at one point we'll run out of memory or if we are
-using a manage storage like a elastic cash right so they have a storage limit
-right in these conditions we are bound to run out of memory at some point and at that point we have to decide that we
-want to delete data from our cache right of course from the initial part of the
-video we have already discussed that cash is only a subset of the data which is frequently accessed which is store in
-a different location so that the retrieval is fast right so the keyword
-to focus here is a subset of the primary storage right we cannot store all of the primary storage to cash and that is the
-reason we have to decide that at some point we have to let go of some data so that the new data can be stored new data
-which are more important which have higher priority than whatever the old dat ties and that's why we have the
-eviction policies eviction policies basically means you decide how are you getting rid of the old data so that new
-data can be stored in the cach so a couple of strategies are the first one is no eviction and this basically means
-you do not configure any eviction policy the next time you try to insert data into the cache you get some error that
-the memory is full right does not make any sense but if you have not configured any eviction policies then the
-configuration is called No eviction the second one is lru also known as least
-recently used this algorithm basically checks that which pieces of data are
-least recently used basically means if there are other data points let's say we have 1 2 3 4 four keys in the cache and
-now the memory is full right and the database or something like that is they
-keep track of when was the last time a particular key was accessed let's say
-this key was accessed today and this is also accessed today this is also accessed today but this was accessed
-yesterday now when a new data point comes across let's say we want to store Key five when five comes across and this
-cash is full this has to make space for five and in this situation if we have configured least recently used eviction
-policy what it does it checks which is the data point which is the oldest accessed data point and since four was
-accessed yesterday and all the other ones were accessed today only it selects this that you will go out and five will
-go in this is what we mean when we say least recently used or lru cash eviction policies third we also have lfu which
-means least frequently used so going back to the earlier example forget over the time let's say okay we have four
-Keys 1 2 3 4 and five comes across now instead of tracking when was the last
-time this key was accessed it also tracks what is the frequency of the axis
-let's say one was accessed five times and we are talking about so far right
-one the key number one was accessed five times so far and two has been accessed
-10 time then we have three six and four was accessed let's say 23 times right
-some random numbers now when five comes across it checks which is the data point is least frequently used which means the
-access frequency is the least so if you check this one the key one was was
-accessed the least number of times right the five the other time the other keys are being accessed more frequently and
-that is the reason it it selects one and says that you will go out and five will go in that's what we mean when we say
-least frequently used cash eviction policy then we also have TTL time to
-live based eviction policy which basically means in redis we can configure what is the TDL time to live
-for different different keys right so depending on that a particular key can
-be invalidated automatically depending on the TTL time to okay and that can
-also be part of the eviction policy so in the same scenario when five comes in it checks that which of these keys have
-the lowest amount of TTL so which key is going to be expired soon right depending
-on that it selects that key and takes it out and inserts the new key and that's
-what we mean when we say time to leave TTL based eviction policy and that's pretty much all you need to know when it
-comes to the technicality of in memory caches like red and all rest of it is pretty straightforward you take whatever
-compatible library is available in your corresponding programming language let's say nodejs has node redis or something
-something so depending on that you just use the library it's not very complex
-you provide a key you provide a value you store it and you when you want to retrieve it you provide the key and you
-get the value right it is pretty straightforward it has no complexities like like SQL queries and aggregation
-etc etc it's pretty simple to access right but all this technical familiarity
-with how the technology Works behind the scenes what are the major components it helps you make sense of the whole thing
-and make better decisions etc etc so now that we have discussed all the
-technicalities of inmemory databases like red is mcast let's see some examples what are some use cases where
-do we actually use Technologies like redis the in memory databases and a
-typical backend engineering workflow and one of the major use cases is database
-DB query so let's take an example that you have an SQL query which has a lot of
-joints and it tries to join a lot of tables it does a lot of aggregation
-right and finally it ends up with a few rows it is a very compute intensive
-operation because you have a large data set let's say millions and millions of rows and it is a very compute intensive
-data set and you have through monitoring you have noticed that this particular
-API which calls this particular database query it is hit pretty frequently right it is let's say in your landing page or
-in your dashboard page and a lot of users are hitting this API and it is putting a lot of load in your database
-so what you can do you can take that particular query in the next line what you can do you can cach the result with
-some detail time to live you can say that for the next 1 hour cash this result and when the next request comes
-check if the result is present in the cach then serve it from there otherwise do the calculation once and store it in
-the cache and whenever some other modification happens you can manually
-change the cache or you can delete it or you can handle it accordingly right then
-whenever users hit that particular API instead of putting the load on the DB you can directly serve that particular
-uh result of the query from a cash right that is a good example right whenever you have a very compute intensive
-database operation and it is it is being called pretty frequently then you can
-cach that result to save some Computing time save some resource and to reduce the latency of the API call also to take
-some real world examples e-commerce websites like Amazon they also cast product details prices and inventory
-data etc etc to avoid querying the database for every single request so
-imagine there is some sale going on for a Macbook and all and if Amazon did not
-cash the details of a Macbook for that particular product then during the
-period of the sale millions of users hit that particular web page and the
-fetching the image of the MacBook or fetching all the product description of the MacBook these are all database
-operations right and the database will get a million requests and that puts
-significant load on the database and for no reason because a information like product details for a Macbook it does
-not change very often right so it is a very good candidate for caching so
-that's the reason websites like Amazon platforms like Amazon they cash static data like product details prices in some
-cases so that they can reduce the load in the database and the database can
-actually to do the important stuff instead of serving the static content like product details the same way social
-media platforms say like Twitter or Facebook they cach user profile data user profile data is not something that
-changes very often right maybe a couple of times in a year right that's the
-reason they serve they cach the user profile data so that every time that data is fetched that is served from the
-cash instead of from the database imagine if it is a social media profile of some celebrity in that case that
-particular page and that particular API of patching the user profile details of that celebrity that might get hit let's
-say a thousand times per day right or if they have an upcoming movie maybe a
-million times a day in that case putting all that load on the database does not make much of a sense since that user
-profile information is pretty static most of the times it can serve that content from cash right and even if the
-user makes some change they can invalidate the cach and put the new entry but it is a pretty read heavy
-operation as you can see from the pattern and whenever we have a read heavy operation and the right is pretty
-infrequent we can make use of caching okay so database caching database query
-caching is one of the primary examples of when we use Technologies like redis
-or in memory databases the second one is session storing session so if you have
-watched the authentication video in this playlist you might be aware of this in a typical authentication flow after a
-successful authentication a session token is generated for that particular user and that session token is stored in
-some kind of storage right and ideally it is stored in redis or a inmemory
-database so that every time the user makes a request or an API call we have
-to fetch that session information from somewhere right if did not use redis
-we'll have to fetch that from our database and as you already know fetching data from random access memory
-or primary memory or in this case cash like redis is much much faster than
-fetching data from a database and that's the reason in order to avoid latency in
-every single API and to avoid putting load on our database people usually store session tokens authentication
-related session tokens in redis or any in memory databases right that is another use case is of redis third is
-API caching so let's say in your back end you are making use of some external API let's say some weather AP and you
-are taking the information from that and you are doing some kind of computation to serve your own front end now every
-time your frontend makes a request to your API if you do not make use of caching you also make another request to
-the weather API to fetch the weather data and if you have a lot of users and
-they are making multiple API calls to here you also end up making a lot of and
-thousands of API calls to this external API and usually since external API calls
-have some kind of limit some kind of rate limit or some kind of pricing based on how frequently are calling them you
-will quickly increase your billing or you'll hit your rate limit and since in
-this case it is not realtime data right it is a weather data which is safe to
-Cache weather data does not not change in like seconds or minutes that's why it is a kind of data that is safe to Cache
-so what you do you fetch that information from that API you cash it and you make use of that in all the
-subsequent request that is coming from your frontend and you can use something like TTL for let's say of an hour so you
-cach this data for an hour and for the next 1 hour all the requests will use
-the value of the weather data from the cache and after an hour the cash automatically invalidates it and the
-next time a request comes instead of taking it from cash you'll fetch the weather data again you you'll put it in
-the cash and then you return the request right whenever it comes to interacting with external API we think about caching
-so that we can decrease the billing or we can avoid hitting the rate limit and
-one last use case that comes to mind is since we are talking about rate limiting
-rate limiting mechanism is also implemented most of the times using a
-technology like redis or any inmemory caches because the way rate limiting is implemented is it is usually some kind
-of middleware which sits somewhere in the middle since it is called a middle that's the reason before the request is
-passed to your whatever route or controller or whatever it is and this is the browser or any client that is making
-the request and this is this is the entry point to your particular server right and this is the middleware the
-rate limit middleware and what it does is it takes the header some kind of
-header which gives it the IP address of the user usually the header is something
-like X forwarded for right this header is mostly used for implementing rate
-limiting to find out the IP address the public IP address of your client
-wherever the request is coming from and this is usually added by reverse process like X or whatever that you are using
-that is the point the point is the job of this middleware the rate limit middleware is it takes this header out
-from that request every request has some default headers Associated you already
-know then it takes this particular header out from that request and it
-checks the IP address and usually rate limits have some kind of default mechanisms of durations like how many
-requests let's say you can only make 50 requests per second right and these are
-mostly implemented to avoid uses from Bots let's say if it's a very compute
-intensive API then rate limiting can help you uh save your resource right
-save your compute let's say this is the condition you a particular client can only do 50
-request in 1 minute let's say 1 minute then whenever a request comes it checks
-that whatever value it is in the X forwarded for header let's say it find
-some IP 10 12 some kind of Ip since we are talking about a key Value Store okay
-it saves some kind of counter say that this is the IP address for this IP
-address for the start of this minute the first request came I got one request the
-next time the request comes it checks the cash so far one minute has not passed right that's why it checks and it
-increases the counter from one it makes two same way 3 4 every time a request comes
-it increases the counter so that within a minute if the counter exceeds 50 then
-what it does it blocks that request and it sends an error response of 4 to9 and
-when we send a status code of 4 to9 it means too many requests too many
-requests this is how a particular workflow looks like for rate limiting now coming into caching
-this particular part where it stores the counter is usually in redice or any
-inmemory databases because in if it stored it in a relational database
-something like pogress or MySQL that is possible of course that is possible it has a persistent storage and we can
-retrieve data etc etc but difference is taking data out from a relational
-database takes more time right even a difference of let's say 20 or 30
-milliseconds that makes a difference on what is the latency of the API if we
-stored it in a relational database then for each request we'll be making a database call in turn the first thing is
-anyway the latency will be increased for that particular API since we are making a database call unnecessarily for each
-request second thing is the load on our database also increases let's say there
-are like a th000 users then, users are making 100 request per a minute then our
-database will be flooded with just the request of rate limiting right that is
-the reason we want to separate this out for two reasons first is of course to make it as fast as possible so that we
-can minimize the latency of apis and also to decrease the database load and
-that is the reason whenever we are talking about implementing rate limiting we make use of inmemory databases like
-redis instead of storing it in our relational databases and with that we have pretty much covered what is caching
-why do we use it some real world examples and why do we use inmemory
-caches why is it called inmemory cache why Ram primary storage is faster and some real world examples of redis some
-different components of redis ET ET and that pretty much covers all you need to know to be comfortable with caching to
-understand caching to understand the context where it is used and what are the different components of it and why
-do we use it some real we examples and next you can use all these
-Technologies you can start with red is the open source alternative V key right and you can depending on your
-programming language you can install a library and you can get your hand study and see what are the differences in
-accessing data from a relational database as compared to something like in memory database like redis
+
+
+In the world of back-end development, errors are not just problems to solve.
+They are a normal part of building applications. And every developer needs
+to understand that errors will happen. And the key is to being ready for them,
+being ready to detect them, being ready to fix them. And here is a reality. Your
+database queries, they will sometimes fail. your external APIs, they will sometimes time out and your users will
+sometimes send bad data which will break your APIs if you're not ready for them or if you are not expecting them and
+your business logic will hit unexpected edge cases sometimes. So the question is
+not whether errors will happen but how you will handle them when they actually
+do. So in this video there are no tools that I want to talk about. There are no
+frameworks, there are no examples, code snippets, nothing. It is a mindset. When
+you are a backend engineer, when you're responsible for executing your core business logic, when you're responsible
+for making sure every single transaction, every single user activity
+goes seamlessly. Then you need a particular mindset, a fault tolerant
+mindset so that you are prepared for the worst and you know how worse it can get
+and there are some things that you need to keep your eyes on and there are some
+tips on how to detect them and how to prevent them. What are the best practices people usually implement?
+whether it's a startup, whether it's a big enterprise or open-source
+repositories, etc., etc. Let's start with what are the different types of
+errors that you might encounter in your day-to-day life as a backend engineer.
+The first type, I think this is the most common type, which logic errors. Logic
+errors. Now, these are the sneaky ones. It's not always very easy to detect them
+or to fix them. Logic errors are probably in my experience the most
+dangerous type because they don't crash your application as such but they just
+make it do the wrong thing. Your code which you have written it runs fine but
+the results are incorrect. The results are unexpected. So to take an example
+let's say we have an e-commerce store. you are a back end engineer in a
+e-commerce kind of SAS application and this store that accidentally applies a
+discount twice and that gives customers negative shipping costs. The app does
+not really crash in this particular scenario. But now your uh platform, the
+platform that you are working for as an engineer, your platform is losing money
+and it is losing money on every single order because of this one logic issue.
+Now these errors can go unnoticed for weeks and even months while quietly
+causing problems if you don't you're not monitoring them or if your users are not
+reporting them and your platum is just facing more and more loss every single
+week. So when do they actually happen and why do they happen? Some of the common scenarios are for example if you
+let's say misunderstand requirements or you implement algorithms
+incorrectly or if you just don't think about edge cases. So these are some of
+the usual scenarios when logic errors occur. The first thing is
+misunderstanding requirements. Let's say your typical sprint cycle follows by
+having a one-on-one discussion with your client or with your product managers and
+during those discussions some of the points came across a little confusing and you noted down the requirements
+which were not the intended ones. So you went ahead and implemented those and
+that went straight to production and with lack of testing it also went to the users and it started causing problems.
+So misunderstanding requirements is a pretty common one. Then you might have
+uh let's say it's a very complicated algorithm depending on the user's behavior and depending on the user's
+past purchase history. You are issuing different different discount codes and different different discount workflows.
+And in those complicated algorithms you made uh one slight miscalculation and
+that in turn caused all this discount related loss in your platform. Or it
+might be that you did not expect a particular user activity, a particular user behavior in a payment workflow in a
+discount based workflow and that caused some issue. So these are some of the
+scenarios where logic related errors might occur and they are pretty dangerous ones. If we are talking about
+payments or monies or uh security in that aspect, they can corrupt data and
+they can produce wrong business results over time without getting detected. So
+that's all about logic errors. Second type is database errors. Now database
+errors can bring your entire system down since most backend apps they rely
+heavily on their database. And these errors range from a simple connection problem to complex issues like deadlocks
+and transaction related issues. And connection errors happen when your app
+cannot talk to your database. Your back end throws a couple of 500 errors and your front end just shows empty screen
+everywhere. Or it can also be because the network is down and the database
+server is overloaded. Or you have run out of connection pools. We you make use
+of this concept called connection pools so that your back end can hold a couple
+of open connections to your database server open TCP connections so that it
+does not have to do the whole process of TCP handshake and all every time a new request comes. So database pooling is
+kind of an optimization to prevent uh TCP connection based setup costs. So in
+a pooling based setup that can also cause an error and when these errors
+happen your app basically cannot really function because your back end needs to
+interact with the source of the data to send something to the front end to and
+the front end needs something to show right. So if your database is down if your database is throwing error then
+your whole platform your whole app cannot really function properly. That's about the first kind of database errors
+which I just mentioned are connection errors. Connection errors. Second thing can be about constraint violation. Now
+this is something which is not very apparent. By constraint violation I mean that you are trying to perform some kind
+of operation which breaks the database rules. For example, you might try to
+create a user with an email that already exists. In that case, your database just throws a unique constraint error. And if
+we'll come back to that in the later part of the video, but if you are not properly handling that error, the unique
+constraint error and you're not sending a properly formatted message to your user to your front end, then that error
+might bubble up to your to your main process and it might throw a 500 error
+to your front end. So that is one kind of constraint violation, the unique constraint violation. If you're trying
+to create a user with the same email or it can also be that you are trying to reference a customer that does not
+really exist in another table. For example, you have two tables. One is
+customers and second is orders. So in the orders table you have a field called
+customer ID and this is a foreign key to this table and this is let's say not
+nullable and you are trying to insert a new record into the orders table with a
+customer ID which does not really exist in the customer table and since it is a foreign key and you are referencing the
+customers table the database throws an error if it cannot find a associated
+entry in the customer's table. So that can also be a cause of constraint
+violation. And the reason for these kinds of violation, the constraint violation is usually lies in your
+validation layer. If you're not properly handling all the edge cases both in your front end and your back end, then these
+kinds of constraint violation error might occur. So that is something to keep in your mind in order to avoid the
+database constraint violation related errors. Then you have to make your validation layer stronger. But of course
+the constraint violation errors like unique key errors they cannot be avoided. Only the database knows whether
+a new entry a new email is unique or not. So for those use cases of course you have to focus on your error
+formatting. How to send a properly a user-friendly message to your front end so that your front end can show a proper
+message that try a different email this email already exists something like that. And then in the database we have
+another kind of error which is called query errors. Query errors basically happen when your SQL is malformed. For
+example, you are trying to access tables that don't exist because you made a typo
+in your SQL query. Let's say you wrote a query something like select star from
+customers. This is a proper query. But instead of writing this, you ended up writing something like you made a typo
+and that caused an error that this table that you are trying to query from this does not really exist. So that is a
+error which happened because of a typo a malformed SQL query or it can also happen when your queries are too complex
+and they time out etc. deadlocks. Deadlocks are another reason. Deadlocks
+are particularly tricky and they occur when multiple database operations are
+waiting for each other and they create kind of a circular dependency. Now
+that's where we have a dreadlock kind of situation. So that's also something you have to be worry about. Next we have
+external service errors. uh most of the modern apps that we have uh these days
+SAS applications mostly that we are talking about they depend on a lot of external services external services like
+uh payment processors or email providers or let's say cloud storage stoages like
+object storage like S3 or radius or let's say you are using a external
+provider something like oz0ero or clerk for your authentication system so that
+is also an external dependent dependency and each one of these external dependencies is a point of failure that
+you don't really have any control over and that is a big problem and you cannot
+really avoid that. It's not like you can abandon using any external dependency that's not possible because you have to
+build a lot of systems from scratch a lot of complex systems that people have spent years of effort on. So that is not
+really something that is practical. So you have to expect that all these external services might fail and you
+have to be prepared that when they fail these are the things that we are going to do to make it up for our users and
+couple of reasons why these external services might fail. First thing is of course network. This is how we from our
+backend application connect to an external services either through HTTP or through TCP or through websocket any
+other kind of connection. But the backbone the medium is of course the network the internet and the internet is
+not really perfect. So you'll have to deal with things like connection timeouts and DNS failures and network
+partitions. This is affected by your routing etc. Partitions right and you
+need to expect this and you need to plan for them. For example, let's say you are
+using a authentication provider something like clerk or something like ozero. Another thing to keep in mind
+when you're using an external provider is authentication errors happen when external services like clock or ozero
+they reject request due to either because bad credentials the username password is not correct the email is not
+correct or expired tokens or insufficient permissions etc. So just because you're using an external
+services for your authentication is not secure enough in itself because you are
+using them as an integration you still have your own back end they are not standalone and in your own back end you
+can cause security issues security issues like you might expose sensitive
+user informations in your logs etc. So that is something that you have to keep in your mind since we are talking about
+external dependencies authentication etc. I just thought of mentioning this point. Now, next thing is rate limiting.
+When you are using external services, let's say you are integrating some kind of AI functionality and you are using an
+open AI key or you are using something like resend for your emails etc. And
+these external services they pretty much all of them have this functionality called rate limiting. And rate limiting
+exists so that their users so our external services let's say an email
+provider like resend and we are their users business users but still users we
+cannot abuse them. They prevent malicious users who send abnormal amount
+of request in a particular time frame and they have mechanisms rate limiting
+mechanisms implemented so that they can prevent uh users like us and users with
+bad intentions and for some reason let's say your platform because of some kind
+of user activity in your platform or let's say some kind of logic errors you ended up hitting their API a abnormal
+amount of times. and it started failing because and their rate limiting algorithm triggered and they started
+blocking you or sending you 4 to 9. So we get the response code 4 to9 when we
+make too many requests. It means too many requests and you started getting this error code 429. So in these kinds
+of scenarios you have to expect them from beforehand and you have to be ready for them. And by be ready for them, I
+mean you have to implement strategies. Strategies like let's say exponential
+backoff. Exponential backup is a pretty common strategy that we usually implement in case of rate limiting
+related errors. For example, once we start getting 4 to9 requests. So we have
+a condition in our error handling logic that if we start getting 4 to 9 then
+wait for a minute wait for 2 minutes then try again. If you still get 4 to 9
+then wait for double that amount of time. If we previously waited for 2 minutes now we'll wait for 4 minutes and
+we'll try again and until we start getting successful responses we'll keep
+doing this. That's why it's called an exponential backup strategy. So in order to deal with rate limiting errors you
+have to implement these strategies. Strategies like exponential backoff. And the last one when you are dealing with
+external dependency the most inevitable one is service outage or service going
+down. Now this we see pretty much happening every once in a while. Let's
+say some major cloud provider something like GCP or something like some services of AWS face some kind of issue some kind
+of incident and they go down and when they go down a lot of their clients go down and we have this u chaos in the
+internet in the Twitter that this service is down these users are complaining etc. So external services
+going down is something we as software engineers don't really have a lot of
+control over. They are inevitable and sometimes they go down because of
+unexpected incidents or sometimes they go down because of maintenance and your app your back end needs to handle these
+kinds of errors also gracefully either with fallbacks you have to have let's
+say your radius service goes down then you should have a second layer of backup
+something like in-memory caching or a second radius node etc like some kind of
+fallback so that your app can handle that gracefully and without affecting
+any kind of major user functionality like payments or something like order processing etc. In the next category we
+have and this is a famous one input validation errors and these are
+something which happen because of users in our platform because of the consumers
+of our platform. Input validation errors happen. They happen because users uh
+send bad data that does not really meet our requirements, meet our system requirements, meet our rules and the
+validation layer which throws these errors. This is our first line of defense against any kind of bad data or
+malicious inputs since we are detecting at the entry point in our backend application and we are just throwing
+errors if something does not meet our requirements. And there are different types of rules that we usually enforce.
+If you watch the validation video in this playlist, then you'll have a much
+deeper understanding about the different kinds of validation that we like to do. But usually it's something like format
+validation where we check if let's say an email is an appropriate email format or not, whether a phone number looks
+like a phone number or not, or a date is an appropriate date or not, etc., etc.
+And you need to be clear even if it's some kind of custom data we need to be clear what exact format that we are
+expecting and we should only accept that format for the sake of security for the
+sake of fall tolerance. We also have range validations that handles numeric inputs whether the maximum amount is too
+high or the minimum amount is too low etc or if the string is too long or if
+it is too short. If the array has at least three items or if the array has more than 100 items, things like this
+are called range based errors. We also have required field validation and this
+check if a particular field which is mandatory for a particular operation to
+happen is present or not. If they are not present then we throw an error and usually in these kinds of errors we
+throw a 4handed which is a bad request error from back end and these kinds of
+errors are the easiest ones to expect and the easiest ones to handle because
+we already know the requirements of our data and we just enforce those rules at
+the entry point of our backend application and if anything seems off we just throw an error right unlike the
+other kinds kinds of errors that we saw above which are external dependency which we don't really have any control
+over logic errors which are hard to detect. It's a validation errors are the
+easiest ones to handle. So make sure you have a very robust validation layer.
+Does not matter what kind of backend app that you are building. Next up we also have configuration errors. What does
+this mean? Configuration errors can prevent your app from starting if you
+have that kind of setup in your app, which you should have. And they also can
+make your production environment behave unexpectedly. And these kinds of errors, configuration errors, they usually show
+up when you are moving between your development, your staging and your production environment. For example,
+while development, you added a particular environment variable. Let's say something like open AI API key. You
+added this in your env file and you raised APR and it is merged and you
+forgot to add this particular variable in whatever your production environment
+variable flow is whether it is manual or whether it is coming coming from AWS parameter store etc etc and you just
+forgot to add that there and the deployment went successful from this point. If you forgot to add that two
+things can happen. If you are checking at the start of your application, you're
+validating the presence of all the required environment variables. If you have that kind of setup in your back
+end, then your app fails to start. And I think this is the best case scenario.
+That's why if you are building a backend app, make sure your environment variable or your configuration settings whatever
+that you are reading either from environment variables or from remote stores whatever all these variables
+which are required for your app to function properly which are not optional. Make sure you validate them at
+the first step before your server starts. And if any of them are missing, if any of them are corrupt, then fail
+your app there. So that when you make a new deployment and since most of the deployments have kind of a setup like
+blue green deployment where unless the new deployment is successfully starts,
+the previous deployment does not really stop. So if you push something and a new
+deployment starts and it fails, your previous deployment is still running and
+uh your app is not really down. As compared to another scenario where you're not doing this kind of setup
+setup where at the start of your app you're checking all the required environment variables, the configuration
+variables are present or not and you're not throwing any kind of error. You're not stopping your app. But because of
+this kind of setup, what happens in your API handlers? API handlers which make
+use of this new OpenAI service to make an API call to the OpenAI servers to
+let's say generate some kind of image or something. So when that API is finally
+hit by some user then uh this service is triggered and since that service tries
+to access this particular configuration variable which is open a API key and it cannot find it and it errors out and
+your users get a 500 errors fails during runtime and this is the worst case
+scenario. We always prefer to crash our app at the start before it it starts to
+serve real users as compared to this. This is a bad scenario is something
+which should not happen. So that's all about configuration errors. It happens
+when we are moving between development, staging, production and it is pretty common. So in order to prevent these
+kinds of errors, make sure you have this kind of setup where before you start your app, you are validating all your
+required configuration variables. In the next video in the series, we are talking about configuration management of
+backend apps. So there we'll do a deep dive on what kind of configuration that we need, where to store them etc etc.
+But just to give a high level advice that make sure you validate your configuration variables before your
+server starts so that you can avoid these sneaky kind of errors while your
+application is running your while your back end is running. Now let's talk about prevention. Since we discussed
+what are the different kinds of errors that might happen and what are the things that you have to keep an eye on
+have to make a note of. Let's see what we actually can do. So in my opinion one
+of the best strategy is finding errors before they spread. This is the best
+strategy does not matter what environment that we're talking about whether we are talking about front end backend infrastructure does not matter.
+Finding errors the moment they happen before they cause any actual damage that
+is the best strategy a any kind of system can have the best kind of error
+handling. So this is the key point in this video which is the best error
+handling starts before error happens. This is your key strategy and it should
+be the best kind of error handling. It starts before errors happen. So health
+checks are fundamental in this. They continuously monitor your system. We
+typically have if you are talking about monitoring your servers HTTP servers then we expose a endpoint something like
+health or something like status in an endpoint which will return some kind of
+generic response that it is okay. The key thing is not the response it returns
+the response code is important. As long as it returns a 200 response code it
+means that it's running. If it's returning something like 400 or something like 500 then something is
+wrong. So that's why you make use of health checks so that any external service any external tool can keep
+pinging keep hitting this particular endpoint to make sure that it is active.
+It is error-free. But this only checks whether they are running or not your services and your servers are running or
+not. But that is in itself not enough. You should not just check if the
+services are running. You should also check and you should also verify that they are really doing their job. And
+when we are talking about that, first thing that comes to mind is databases. To make sure that your back end is doing
+its job, the primary component that comes to mind is databases. And for that we also have database based health
+checks. and database based health checks they test connectivity whether we are
+whether we can successfully connect to our databases or not and things like query performance if some of the queries
+which used to take let's say 500 millconds they have suddenly started taking 4 seconds or 5 seconds then there
+is something wrong or the data integrity things like that a simple ping or a
+simple health check endpoint which only checks that our server is running or not
+that in itself is not enough. Running a representative query and checking the
+results how much time it took and how much time it takes on average etc etc.
+And the second thing in our pack is of course the external services. Now we
+should also implement some kind of health check kind of functionality for
+our external services to make sure that we can successfully connect to them and they are functioning as they are
+supposed to function. For example, for payment processors, you can implement
+test transactions so that when an actual transaction happens from a user side, we
+already know that since the last test transaction 5 minutes back was successful, then we are good to go. when
+it comes to real transactions with real users. Same way for email services, send
+test messages to your internal email addresses to make sure that the emails are delivering and your connectivity can
+be established with the external service etc etc. Same way for authentication services, you can generate test tokens.
+You can test those tokens against validation endpoints that your authentication service exposes. And that
+way you can verify that your authentication service is functional. And the last thing is core
+functionality. These tests basically involves that your configuration. As I mentioned just before this point that at
+the start of the app we should make sure that all the required configuration variables are present. If they're not
+present then we are stopping at that point and showing a meaningful message so that whichever operator the wagon
+operator the infrastructure operator they can appropriately configure those variables and start the service again
+successfully. So making sure that the configuration is properly loaded. The caches some of the default caches the
+caches which are necessary to run on production workload they are populated
+and some of the internal data structure whether it's about configuration or about external service etc etc they are
+consistent. So these are called some of the core functionality. So we should also keep an eye on these things. So all
+of this combined we can say that these are proactive error detection ahead of
+time making sure we are already prepared for all these worst case scenarios and
+we have methodologies to prevent them and if they occur to fix them. So that's
+why we call all of these as proactive error detection. Then one of the major
+components especially when we are talking about error handling and fault tolerant systems then this is something
+which will always show up which is monitoring and observability. Now this
+is a huge topic logging monitoring and observability and we have I think the
+next to next video in this series is going to be about logging monitoring and observability that's why I don't want to
+spend much time here in this video which is all about the mindset that we need to
+deal with errors right it's nothing concrete just a scope to touch base upon
+that's why we are not going to talk much about monitoring and observability in this video but The whole idea about
+monitoring is it detects errors quickly and while they are happening and it
+provides enough context for us to debug those errors. One point to keep in mind
+in that area is don't just track if for people who are already familiar with
+practices of monitoring and observability. One of the advices is to don't just track error rates. Also
+monitor performance metrics that might indicate problems before they cause failures. One of the early telltale
+signs before a system is going to break is the performance implications. If you
+are seeing the degradation of performance in some of your services, then it might mean that they are going
+to fail soon. So by monitoring performance we can successfully avoid
+some of the failures. Uh your monitoring setup should track different types of errors across different parts of your
+application including uh HTTP errors, database errors, external service
+failures, business logic errors. It should cover everything your monitoring setup whatever service that you are
+using for monitoring or whatever methodology that you are implementing in your back end. It should try to cover as
+many sources of errors as possible. And when we are talking about performance metrics or performance monitoring, it
+should track things like response times or resource usage and throughput, your
+business metrics monitoring. It should keep track of performance indicators, things like a sudden drop in successful
+transactions, assuming you are running some kind of e-commerce uh back end. Then in a scenario like where the rate
+of successful transaction suddenly drops and you're seeing a lot of failed transactions then it might indicate some
+kind of technical problem even though the error rates are normal. That's why tracking business metrics metrics like
+transactions successful authentications etc etc that's also important. Then
+logging good practices they provide information you need to understand and debug errors. You should implement
+things like structural logging formats like JSON logs which can be easily passed and more metadata can be added to
+it and tools like Graphana or Loki. These external tools which are meant to
+be log aggregation tools they can take those logs the JSON logs and they can
+appropriately parse them and you can explore your error rates in a visual dashboard kind of setup. You can search
+through them, you can store them in external storage etc etc. So that's pretty much all about monitoring and
+observability on a very high level. We are going to dive deep into that the
+tools that are usually used etc etc in a future video but for now when it comes
+to error rates and a fall tolerant system monitoring and observability is a
+key part to that. That's why we had to mention it here. And next up I want to talk about some of the philosophies that
+have always helped me especially in the scenario of error handling or building robust systems. First thing is immediate
+error response. Now when an error happens your immediate response that
+determines whether it becomes a minor issue or a major failure and the
+strategy depends on the error type and the context of that error. For example,
+for recoverable errors, things that we already talked about the email sending
+workflow. Let's say you have in an external service something like resend or sending an email and that service
+failed. Now you are in a situation of error handling. And if you think about it, it is a recoverable error. Sending
+an email is not something that has to happen uh under milliseconds. We can afford some kind of delay. So in
+scenarios like these for recoverable errors, retry mechanisms or exponential
+backup strategies they are a good solution and they work well for network
+errors or temporary resources or let's say we have run out of database
+connections in our database. So in these kinds of network errors or resource
+utilization kind of errors in these kinds of errors retry mechanisms exponential backup strategies they work
+quite well from my own experience but something that you have to be careful about is not to overwhelm already
+stressed systems. So should keep the error handling logic, whatever retrying
+logic, whatever exponential backoff logic that you're implementing, the resource overutilization logic that you
+have implemented, they should not add more stress to your system since your system is already under stress. That is
+something that you have to keep an eye on. And the second is nonreoverable
+errors. The first one is that we talked about sending an email or running out of database connections in our pool. So
+those are called recoverable errors. But talking about non-reoverable errors, the
+strategy that works best is containment and graceful degradation. Containment
+and graceful. In this we usually do solutions like
+switching to cast data or disabling non-essential features or providing
+alternative functionality providing some kind of backup as a fallback and
+containing the scope of that damage. So that is a key strategy that we try to
+implement in the cases of non-reoverable errors. So that's about immediate error
+responses. How should you react to two different kinds of errors. One is recoverable errors and the second is
+non-reoverable errors. The second thought or the second key idea is error
+recovery strategies. Now this depends of course on the error nature and the
+functionality criticality. But automatic recovery can handle many errors without
+human interventions. For example, if a service has failed and it is in a state
+of not responding to any kind of requests etc etc then restarting that
+service automatically having some kind of tool or some kind of setup in our workflow for restarting that service or
+that particular process works pretty much all the time. Then implementing
+cleanup functionality like cleaning up corrupted caches. If we have problem
+related to caches or switching to a backup systems that also works most of
+the time but you should design these things carefully because some of the times these things might make the
+problems worse. You have to adopt a trial and error based strategy. Try these things. Try to reach that error
+threshold ahead of the time and see what works for you. What kind of error
+recovery strategy works for what kind of service. Now for some other kinds of
+services, manual recovery is pretty much necessary because it requires human
+judgment and human decision making. So for these kinds of errors which needs a
+manual intervention, I should plan to document these processes. So that all
+your team members and your new hires are aware of these kinds of workflows. What
+to do in a situation of incident or any kind of uh service failure and you
+should test them so that you are already prepared. you know that they are definitely going to work when the
+situation arises and they can be executed quickly especially in a stressful situation where taking
+decisions quickly is the key to providing a better user experience to
+your user base and in scenarios like these one of the key things to keep in mind is not to corrupt your data. So
+data recovery strategies data is the most important part in your application because all the other things are
+basically the code that is running the services that are running but the only tangible thing is the data that you hold
+the data of your user the data of all your transaction of your orders or whatever kind of platform that you are
+building. So data integrity should be one of your number one priorities. So this should involve taking backups at
+the key moments and restoring from backups, replaying transaction logs using specialized recovery tools. Third
+thing is propagation control. Not all errors should be
+handled exactly the moment they occur. Sometimes errors need to propagate up to
+higher levels when there is more context to the error. And we also use the word
+stack trace in scenarios like these. But you should have this kind of setup where
+you are intentionally bubbling up your errors to a particular process, the primary process or the secondary
+process. But you should have the whole bubbling workflow in your control. Otherwise, this might spread to other
+services or it might shut down your main service. We have this concept called
+exception handling in most programming languages. whether we are dealing with JavaScript or Python where we have this
+exception based workflow we we handle errors using try catch. So these
+exception handling hierarchies provide the structure for error propagation. So
+catching lower level exceptions and wrapping them with enough context and bubbling them up to higher level
+exceptions so that we have more business context so that we have enough
+information in our hands so that we can log the appropriate data. We can send a meaningful error to our front end or if
+we need to we can trigger some kind of recovery strategy at that point. So
+planning this whole thing bubbling up the low-level error up to our highle
+process with enough context that is something which is pretty common that we
+implement in pretty much all our backend applications. We also have a different name for this which is called global
+error handling and we'll come back to that in the next point. So error boundaries these boundaries where the
+last point where we stop the errors from propagating further these error
+boundaries in service architecture especially they prevent errors in one
+service from affecting others. So that's the reason we should aim to use separate
+processes and implement timeouts things like timeouts which protect service level boundaries and use things like
+message cues to decouple different different services instead of having them in the same process. uh we should
+implement things like rabbit MQ different other kinds of message Q- based architecture so that we have a
+asynchronous communication between two different services so that a bug in one
+service does not cause the failure of another service now coming back what I
+like to call as the final safety net global error handling final safety net
+is one of my favorite error handling mechanisms something which I pay a lot
+of attention to in pretty much every backend app that I have built with is
+because this is one of those modules which you spend a lot of time initially when you're setting your whole platform
+up when you are getting to know the features that you might need the services that you are using etc etc but
+from that point on you only make slight tweaks or add more conditions to check
+etc etc but this is a one-time effort And this is a single effort which pays a
+lot in the future, not even in the distant future, the immediate future
+because this is the most important error handling strategy you can implement in a
+backend app. A global error handling workflow. So this is how it typically works. I want to explain this global
+error handling workflow using real life workflows that we typically use in backend apps. So from our earlier videos
+that we already know in a very common backend architecture we usually have the
+first entry point is of course the routing layer. From there we reach the
+handler. The routing layer decides which handler is going to take care of a
+particular request. And the handler deals with taking or extracting whatever
+data from that payload that we're receiving the performing operations like
+des serialization and validation and binding etc etc. And once it has all the
+appropriate data it calls a particular service method we call it service
+because in a typical service method we might make use of one or more repository
+methods. So service method is basically an orchestrator for different repository
+methods. Now what do we mean by repository method? These are the leaf nodes in a backend function which
+usually do one thing and usually that is running a database query. So we might
+have functions like get user by id that is a repository method and a service
+might fetch a particular user by its ID and then it might do additional
+operations like it can fetch all the users posts in the same service method
+by calling a different repository method. So one service which returns a user and all its posts can call two
+repository method. That's why we have made this separation so that repository methods are unit level. We try to keep
+their scope limited to one single kind of database operation and we let the
+service the concerned service decide what repository method and how many
+repository method that it wants to call etc. So in this architecture that most
+back end apps follow when we are talking about error handling let's say in the repository layer so the route that we
+are talking about let's say we we have a a good readads kind of platform which is
+a to oversimplify it a book management book management platform and in a
+typical endpoint of a book management platform that we are trying to create a
+new book. That's what we want to do. It is a endpoint, an API endpoint. To
+create a new book and to create a new book, we want a couple of fields in our
+payload. The first thing is name. Then name of the book, which is a mandatory field that we need to insert into the
+database or let's say some optional field called description. So these are the two fields that we need to create a
+new book. So there are different types of errors that can happen in this particular API. So first thing is let's
+say so let's say in the entry point at this point in our handler since the handler performs operations like
+validation etc then validation etc and we have a business rule that the name of
+the book cannot exceed more than 500 characters. We have this rule in our violation layer and the user has sent a
+new book name which is around 700 characters. So the data the payload
+reaches our handler and in our handler when the validation fails you want to of
+course error out and return a meaningful error to the user. So that is one kind
+of error that can happen. Now going inside we let's say passed the service
+layer and we finally reached the repository layer and in the repository layer we have created a function a
+function called insert new book and in that function we are running this insert
+query using SQL we are using posgress imagining and we try to insert this new
+book but we get a database error which is a unique constraint violation error
+which says that a book with this particular name already exists in our table in our books table that's why this
+operation cannot be performed and we get a database level error so that is a different kind of error that we might
+get so these are the two different kinds of errors we might get in a single API endpoint but the whole point of global
+error handling is there are a couple of advantages to it but the pattern usually works by does not matter in what level
+we uh get a new error or what kind of error that is. Usually what we try to we
+try to bubble that error up up to our global error handler middleware. Usually
+we try to keep our global error handling in a middleware layer so that it has
+access to all the incoming requests and all the outgoing responses. So the aim
+is to does not matter at what layer we get a particular type of error. We try
+to bubble that error up. So if it is a exception handler kind of language let's
+say something like JavaScript or Python we just throw that error and we catch that error in our middleware in our
+final error handler or if it's a language like Go where we return the
+error then we keep returning the error from our repository to our service to
+our handler until it reaches our middleware layer and the plan is to from
+all these different places that a error can arise and an error can be thrown
+from for example from our repository layer we might throw database errors
+from our service layer we might throw our internal errors and from our handler
+layer we might throw validation related errors and in every single programming language we have this ability to create
+custom errors. So in our final global error handler middleware what we try to
+do we read the error and depending on what kind of error that is we perform different different kinds of operation
+and we return a particular kind of an error response back to the user assuming
+it's an userfacing backend application. For example, if it is a validation error, we return an error response back
+to the user with the response code of 400 and whatever validation error messages they need to fix their data. So
+the first kind can be a 400 error. We return a new HTTP message with the
+response code of 400 which means bad request. And we attach all the form
+field related errors or any kind of business logic error etc. and we let the user fix them that came from the handler
+layer. Second thing, the other scenario that we talked about where the name of the book already exists in our books
+table that's why our database threw us a unique constraint violation error and
+for that in the global error handler middleware we got a new error which is a
+database error. Now even for a database error we'll have different different
+ways to deal with them and different different kinds of message formats to
+send to the user. For example, for this use case for a unique constraint
+violation kind of error the ideal response since it is an error which was
+thrown because of some data sent by the user. So ideally we can send something
+like a HTTP error with a response code of 400 which is for bad request. We are
+saying that this payload is a bad request and because in the message we
+can say that this is for the code HTTP code and in the message field in HTTP
+error we'll have an structure. So some of the usual fields in an HTTP error structure is a code the HTTP status code
+which is 400 in this case a message or any other form field related error data
+which we usually send in a array in an array of dictionaries or array of objects or an array of JSONs. So in the
+message field we can say that this this book already book already exists in our
+database or just book already exists and this we did for a unique constraint
+violation error. Same way let's say there is a different API endpoint for
+fetching the details of a single book. So there is a URL in the front end a
+user can go to this particular books and in the book 1 2 3 when this is our front
+end domain and when they navigate to this particular route what we want to do
+we in the front end we want to show the details of the book and for the front end to be able to show the details of
+the book it has to call an API and our back end serves that API uh in a similar route in the back end also we have this
+particular route And the front end makes a request to this particular route the books route with the path parameter of 1
+2 3. So it reaches the handler uh it goes through there is no particular validation that we want to do for this
+particular request since there is no body and the ID is a number and that
+passes the validation layer. It passes the service layer and it finally reaches the repository layer. In the repository
+layer what we do? We run a select query. So we do select star from books where
+the ID of the book is 1 2 3. Right? You can add a valid SQL query here. But for
+the sake of this example, this is what you want to do. You want to select a particular book from the books table
+whose ID is 1 2 3. Now assuming that because of some malformed link or
+someone trying to scam our user for any kind of reason the front end the user in
+the front end reach this particular route but this book with this ID does
+not really exist in our platform and the front end made a request with this particular ID and we reached our
+repository layer and we ran this particular query and because the book
+does not exist the database through us a no rows. So most of the drivers database
+drivers especially in the relational database field has this particular common error which is no rows. If for a
+particular SQL query especially for a select query there are no rows for those
+conditions the driver will throw an error right there are no rows and what we did we just bubbled it up so that our
+global error handler can deal with it. So that's why we reached here. So the first kind of error that we talked about
+that the global error handling middleware has to deal with is unique constraint violation error and same way
+the second kind of error that we just talked about is no rows error. So the
+global error handling middle sees that it is a database error and it is not a uni constraint violation error. It is a
+no rows returned kind of error. So for this use case the data the error
+handling middleware can see that it is a route where a particular resource with a
+particular ID was requested but the database through error response and
+because of this it can finally deduce that this particular resource does not really exist in our database and for
+that kind of scenario we have an appropriate error code which is the 404. We use the 404 response code in HTTP
+errors when we are trying to request a particular resource but that resource does not really exist. At this point the
+error handling middle finally throws an error with the code 404 and the message
+that the book with ID 123 does not exist. That is the second kind of database error. Another different kind
+of database error that comes to mind is a foreign key violation error. So let's
+take a scenario where we are talking about a book management platform. So in a particular endpoint we are creating a
+new book with a new author and for that endpoint for that API to work
+successfully there has to be an existing author and we have to pass the author ID in the post payload in our body. So we
+send a payload with the book name, the book description which is optional and an author ID. It passes our validation
+layer and it finally reaches our repository layer. And in our repository layer, we are inserting we are running
+an insert query. Insert into books name, description, author ID with values
+whatever the values the user has passed. But for some reason the user or the
+front end has passed an author ID which does not really exist in our database. And since in our database the books
+table for the author id field for the author ID column the constraint is it is
+a foreign key which references a row particular row in our authors table and
+since there are no authors with that particular author ID our database throw us an error. This particular query
+breaches the foreign key reference violation error whatever. So that can be another kind of database error that our
+global error handling middleware has to deal with. So for that scenario, what can we do? If you think about it, the
+front end passed a ID which does not exist. The resource does not exist in
+our database. So we can throw a 404 saying that this author ID does not
+really exist. That's all about global error handling middle. This is a final
+safety net that I like to call it where we can come up with and define different
+different kinds of error that our platform has to face throughout its life
+cycle and we define all these rules about how to deal with those errors and
+what kind of responses to return to our users. So it has two major advantages.
+The first one is of course more robust and secure because it does not matter
+where in which layer an error occurs. We are handling it in our final gateway in
+our final middleware. It is considered more robust since there is no way we'll
+forget some kind of condition because if let's say for a unique constraint
+violation error if we did not have a global error handling middleware and we let the layers where the error actually
+occurred to send a meaningful error message to our users in that kind of scenario. Let's say in our repository
+layer unique constraint violation error occurs. So it is the responsibility of the repository layer to send a bad
+request error to our user saying that this book already exists in our database. But for a particular
+repository method, let's say we forgot to add that condition and the database function through an error. And since in
+most of the backend setups if a particular error is not appropriately handled or appropriately identified and
+dealt with what we do we convert that error into a 500 error which basically says that internal server error we don't
+really know what happened something just went wrong so try again sometimes later. So the user instead of getting a
+meaningful error message like the book already exists in our database it will get a 500 internal server error
+something went wrong. So that is the problem uh with not having a global error handler and not having all your
+error handling logic in a single place that sometimes we forget to add all the conditions. So in scenarios like those
+having a final safety net which catches all the different kinds of errors that has a possibility to arise. The second
+thing is connected to the same point only which is reducing redundancy. If we
+don't have a central point of error handling logic, then all these different kinds of error handling logic that we
+have in a single file or a single function, we have to spread them out in
+all different layers and we have to let that particular layer to handle those
+kinds of error. For example, let's say we discuss three different kinds of database error that might occur in a
+particular SQL query. So if we did not have a centralized error handling logic
+then for each repository method in every place where we are executing an SQL
+query we have to call a particular function or we have to add all these conditions that this is not a unique
+constant violation error. This is not a foreign key violation error etc. And if it is that error then deal with it that
+way. So that significantly increases the redundancy of our code and it is also
+prone to more bugs. Those are the two major advantages of having a global
+error handling logic in a single place. Since we are talking about error handling, the last two things that I
+want to bring up is which is mostly related to the security aspect of error
+handling. So first thing that you have to keep in mind is you have to be very mindful about what kind of error
+messages that you are exposing to your users to your consumers. What kind of
+details are leaving your backend app which might compromise the security of
+your application which might expose information about some of your users which can fall into wrong hands and they
+can perform or compromise the security of your users which are equally bad. Whether it is compromising the security
+of your platform or compromising the security of your users, it is equally bad. In fact, compromising the security
+of your users is worse than your platform because that harms your
+goodwill, your trust in the market, etc., etc. Now, it can happen in a
+couple of places. The first one is you have to make sure that whatever default
+error handling mechanism in your back end is whether it is in the global error handler or whatever place you are
+keeping it in it is not leaking any kind of internal details back to the consumer. For example, let's say you
+your database threw some kind of unique constraint violation error or some kind of database error which has some details
+about the table names or the indexes or the constraint etc etc the internal
+details of your database. So in your global error handling middleware, if you're just taking whatever error that
+has bubbled up from your lower layers, for example, in this case, the repository layer and you're sending that
+message back to the user in the message field of your error structure, then that can cause severe damage to your
+platform. Because for advanced users, for malicious users, they can take details like your table names, your
+constraint names, etc., etc. from your database internal details and they can try more advanced attacks, more advanced
+forms of SQL injection. They can just make your platform a target and they can
+actively come up with more and more strategies to bypass your security and
+it will be harder for you to prevent those kinds of attacks. So that is the reason in all the error messages try to
+have as much control as you can over the messages. So try to understand what kind
+of error is being thrown from whatever layer it is being thrown from and generate a message which is meant for a
+user. For example, as I talked about in your default error handling logic instead of throwing a 500 and attaching
+whatever message that bubbles up from your lower layers add 500 and in the message just say something went wrong.
+Since if you have reached 500 which is a default error handling mechanism which
+means that in the previously you have tried to check whether it is a validation layer whether it is a uniconent validation error whether it is
+a business error etc etc you have checked all the different kinds of errors and finally you have reached this
+stage where you don't really know what kind of error that is. So for that kind
+of situation you don't really want your user to know what kind of error was thrown. So it most probably has some
+kind of internal details in the error message and that is why in the default error handling logic you always want to
+have a generic message something like something went wrong or the default
+error message in most library which is internal server error that is one aspect
+the second aspect is let's say we are dealing with a authentication or authorization module let's say it is a
+login endpoint you are expecting expecting an email and password and after you get the email and password
+from the post request body you'll take that you'll check from the email whether a user exists or not if the user does
+not exist you'll send an error and then if the user exists you proceed you check
+whether the password is correct or not if the password is correct you'll throw an error etc etc that's what comes to our mind when we think about a login
+endpoint but here also when we are talking about error handling Something
+that you have to keep in mind is authentication is one of the most targeted modules in most of the apps
+that attackers malicious users usually like to target. So in this case you have
+to follow some of the security practices. This particular resource which is called OAS cheat sheet. This
+resource has good practices and advices for a lot of different kinds of
+workflows. For example, authentication, you'll get these different different advices that don't do this, don't do
+this, this will compromise your platform in this way, this will compromise your users in this way, etc. So, you can
+follow some of the security practices whatever is relevant to your use case from a a resource like this. But uh the
+whole idea is let's say we are talking about a sign-in endpoint or a login endpoint and in the first step you took
+the email which was provided in the body and you checked that whether a user with this particular email exists or not. So
+if the user does not exist with that email instead of saying a user with this email does not exist you should return
+an error response which says that invalid username or password invalid email or password so that we can avoid
+scenarios scenarios like let's say you have a malicious user who is trying to bypass some of the accounts of our legit
+users or harmless users. So what strategy they are trying to come up
+with? So they are trying different different email addresses and with various passwords. If you are returning
+very detailed error messages like a user with this email does not exist or your
+password is incorrect then what they can do they can implement a step-by-step approach for this attack. And what they
+can do first they will try different different emails with a single password
+and for each email they'll keep getting this message that a user with this email does not exist a user with this email
+does not exist and finally when they hit an email for which a user exists since
+we are naively returning error messages they will get an error message saying that your password is incorrect since
+they are able to find an email for which a user already exists in our platform.
+Now they are getting an error message which says that your password is incorrect and now they have an email
+which they know that a particular user exist with this email. Now they can try different different passwords uh common
+passwords which have better chances of getting a hit and with that they are
+able to compromise the security of our platform. So just using error messages just using the weakness in our error
+handling mechanism attackers malicious users can compromise our security and
+the security of our users. So that is the reason try to follow security best practices when it comes to error
+messages. And the second thing which comes to mind is especially in the aspect of security is logs. On a very
+high level, the idea is try to not expose the sensitive information like
+user's email, users passwords, their API keys or their credit card numbers, etc.,
+etc. in your logs, logs which you think are limited to your own servers, your
+own infrastructure, which are not getting leaked to any kind of external
+malicious user. But that's not how it always works. In most of the major data
+breaches, what happens since major companies use external services, multiple services to manage their logs
+because for a particular company which has a fair amount of user traffic, they
+generate hundreds of GBs of logs every day, right? And they have to use multiple services, storage services,
+analysis services, observability services, different kinds of services to manage their logs efficiently. So what
+happens in these major data breaches the company's logs gets leaked and from
+these logs if they are not following best security practices like not logging users credit card numbers not logging
+users emails not logging users passwords API keys etc etc that detail gets leaked
+and hundreds of malicious users have access to them in case of errors let's say authentication error occurs you
+should not log any sensitive information about the user always log user's ID ID
+instead of their email and only correlation ID so that you have enough context. That's pretty much all I have
+to say about error handling and creating fall tolerant systems. This is mostly theory just a couple of ways of looking
+at systems and making the systems more robust and keeping our mind open for
+different kinds of errors and different kinds of error handling mechanisms.
 

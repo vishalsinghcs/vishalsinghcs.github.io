@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Proactive Error Detection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+    <style>
+      .mermaid {
+        display: flex;
+        justify-content: center;
+        background: #f8f9fa;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        overflow-x: auto;
+        margin-bottom: 2rem;
+        margin-top: 2rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="01-Types of Errors.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="03-Global Error Handling.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        
+        <div class="breadcrumb">
+          <a href="../index.html">Home</a> &gt; 13 - Error Handling &gt; Proactive Error Detection
+        </div>
+
+        <h1>Proactive Error Detection</h1>
+
+        <p>The best error handling starts <em>before</em> the error happens. Detecting issues quickly and preventing them from cascading is critical for fault tolerance.</p>
+
+        <h2>Health Checks</h2>
+        <div class="mermaid">
+flowchart LR
+    LB[Load Balancer] -.->|Status 200 OK| HC[Health Check /health]
+    HC -->|Query test| DB[(Database)]
+    HC -->|Auth token test| API[3rd Party API]
+    HC -->|Read test| Cache[(Redis)]
+        </div>
+        <p>Health checks continuously monitor your system. A basic HTTP server health check might expose an endpoint like <code>/health</code>. As long as it returns a <code>200 OK</code> status code, the server is running. However, just knowing the server process is alive is not enough.</p>
+
+        <h3>Database Health Checks</h3>
+        <p>To ensure the backend is truly doing its job, health checks must verify database connectivity. This involves:</p>
+        <ul>
+            <li>Testing successful connection establishment.</li>
+            <li>Running a representative query to verify performance (e.g., ensuring a query hasn't spiked from 500ms to 4 seconds).</li>
+            <li>Checking data integrity.</li>
+        </ul>
+
+        <h3>External Service Health Checks</h3>
+        <p>You should also implement checks for critical 3rd-party services. For example, generating test transactions for payment processors, sending internal test emails to verify delivery services, or validating test tokens against authentication providers.</p>
+
+        <h2>Immediate Error Responses</h2>
+        <p>When an error does occur, how you respond determines if it becomes a minor issue or a major incident:</p>
+        <ul>
+            <li><strong>Recoverable Errors:</strong> (e.g., a temporary network blip, rate limits). Use retry mechanisms and exponential backoff. <em>Warning: Do not overwhelm an already stressed system with aggressive retries.</em></li>
+            <li><strong>Non-recoverable Errors:</strong> Focus on <em>containment and graceful degradation</em>. Switch to cached data, disable non-essential features, or use a fallback mechanism.</li>
+        </ul>
+
+        <h2>Monitoring and Observability (High-level)</h2>
+        <p>Monitoring detects errors quickly and provides context for debugging. Don't just track error rates; monitor <strong>performance metrics</strong> (like sudden latency spikes) and <strong>business metrics</strong> (like a sudden drop in successful checkouts). These often serve as early warning signs before hard failures occur.</p>
+
+        <div class="nav-buttons bottom">
+          <a href="01-Types of Errors.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="03-Global Error Handling.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>Imagine your backend as a car dashboard. A generic <code>/health</code> check is just verifying the battery isn't dead. True proactive detection requires gauges for engine heat (database latency) and fuel pressure (external API health).</p>
+        </div>
+        <div class="premium-box box-amber">
+          <h3>Important Terms</h3>
+          <p><strong>Graceful Degradation:</strong> Allowing a system to continue operating, albeit with reduced functionality, rather than crashing completely.</p>
+          <p><strong>Observability:</strong> The ability to understand the internal state of your system purely by looking at its external outputs (logs, metrics, traces).</p>
+        </div>
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>A basic 200 OK health check is insufficient; you must test databases and external dependencies.</li>
+            <li>Monitor business and performance metrics, not just raw error rates.</li>
+          </ul>
+        </div>
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li>Recoverable errors = Retries / Backoff.</li>
+            <li>Non-recoverable = Containment / Fallbacks.</li>
+            <li>Catch issues before they hit real users.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+  </body>
+</html>

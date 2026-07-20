@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Types of Errors</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+    <style>
+      .mermaid {
+        display: flex;
+        justify-content: center;
+        background: #f8f9fa;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        overflow-x: auto;
+        margin-bottom: 2rem;
+        margin-top: 2rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="../12-Elasticsearch/interview-questions.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="02-Proactive Error Detection.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        
+        <div class="breadcrumb">
+          <a href="../index.html">Home</a> &gt; 13 - Error Handling &gt; Types of Errors
+        </div>
+
+        <h1>Types of Errors in Backend Systems</h1>
+
+        <div class="mermaid">
+flowchart TD
+    App[Backend App]
+    App -->|Logic| LE[Logic Errors: Silent & Dangerous]
+    App -->|Data| DE[(Database Errors: Deadlocks)]
+    App -->|Network| EE[External APIs: Outages & 429s]
+    App -->|Payload| VE[Validation: Bad Request Data]
+    App -->|Startup| CE[Config Errors: Missing Variables]
+        </div>
+
+        <p>In backend engineering, the question is not <em>whether</em> errors will happen, but <em>how</em> you handle them when they do. Developing a fault-tolerant mindset means being prepared for various failure scenarios.</p>
+
+        <h2>1. Logic Errors</h2>
+        <p>These are the sneakiest and most dangerous type. Your code runs without crashing, but the business logic is fundamentally wrong. For example, accidentally applying a discount twice resulting in negative shipping costs. These can go unnoticed for weeks, quietly corrupting data or causing financial loss.</p>
+
+        <h2>2. Database Errors</h2>
+        <p>Because backend applications rely heavily on data, database errors can bring down the entire system:</p>
+        <ul>
+            <li><strong>Connection Errors:</strong> The app cannot talk to the database (e.g., network down, connection pool exhausted).</li>
+            <li><strong>Constraint Violations:</strong> Attempting to insert a duplicate email (Unique Constraint) or referencing a non-existent ID (Foreign Key Constraint).</li>
+            <li><strong>Query Errors:</strong> Malformed SQL, accessing non-existent tables, or complex queries timing out.</li>
+            <li><strong>Deadlocks:</strong> Multiple operations waiting on each other, creating a circular dependency.</li>
+        </ul>
+
+        <h2>3. External Service Errors</h2>
+        <p>Modern applications depend on 3rd-party providers (Stripe, AWS S3, Auth0, Resend). Each is a potential point of failure:</p>
+        <ul>
+            <li><strong>Network & Outages:</strong> DNS failures, timeouts, or major cloud provider outages.</li>
+            <li><strong>Rate Limiting (429):</strong> Hitting an API too frequently. Requires strategies like <em>exponential backoff</em>.</li>
+            <li><strong>Authentication Errors:</strong> Expired tokens or invalid credentials when talking to external APIs.</li>
+        </ul>
+
+        <h2>4. Input Validation Errors</h2>
+        <p>These occur when clients send bad data. The validation layer is the first line of defense. By catching malformed emails, out-of-range numbers, or missing required fields early, we can safely return a <code>400 Bad Request</code> and prevent bad data from reaching core business logic.</p>
+
+        <h2>5. Configuration Errors</h2>
+        <p>Missing environment variables (e.g., an OpenAI API Key) can crash the application. It is always better to validate all required configurations <strong>at startup</strong> so the app crashes immediately during deployment, rather than failing randomly at runtime when real users trigger an API call.</p>
+
+        <div class="nav-buttons bottom">
+          <a href="../12-Elasticsearch/interview-questions.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="02-Proactive Error Detection.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>Treat your application like a fortress. You must anticipate breaches (logic errors), supply line cuts (database/external outages), and bad actors (validation errors) before they actually occur.</p>
+        </div>
+        <div class="premium-box box-amber">
+          <h3>Important Terms</h3>
+          <p><strong>Exponential Backoff:</strong> Waiting progressively longer periods (1m, 2m, 4m) before retrying a failed external API request.</p>
+          <p><strong>Constraint Violation:</strong> Breaking database rules like uniqueness or foreign key references.</p>
+        </div>
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Logic errors are dangerous because they don't crash the app.</li>
+            <li>Fail fast: validate configuration variables on startup, not during runtime.</li>
+          </ul>
+        </div>
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li>Types: Logic, DB, External, Validation, Config.</li>
+            <li>Rate limits (429) require exponential backoff.</li>
+            <li>Validation is the first line of defense (400 Bad Request).</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+  </body>
+</html>

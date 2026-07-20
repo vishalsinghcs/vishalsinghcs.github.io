@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Global Error Handling</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+    <style>
+      .mermaid {
+        display: flex;
+        justify-content: center;
+        background: #f8f9fa;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        overflow-x: auto;
+        margin-bottom: 2rem;
+        margin-top: 2rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="02-Proactive Error Detection.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="04-Security in Error Handling.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        
+        <div class="breadcrumb">
+          <a href="../index.html">Home</a> &gt; 13 - Error Handling &gt; Global Error Handling
+        </div>
+
+        <h1>Global Error Handling</h1>
+
+        <p>Global error handling is the practice of catching all errors in a single, centralized middleware instead of scattering <code>try/catch</code> blocks indiscriminately across your codebase. This acts as a final safety net for your backend architecture.</p>
+
+        <h2>The Typical Backend Architecture</h2>
+        <p>To understand where errors should be handled, we first define the layers of a typical request lifecycle:</p>
+        <ol>
+            <li><strong>Routing Layer:</strong> Decides which handler processes the incoming request.</li>
+            <li><strong>Handler Layer:</strong> Extracts payload data, performs validation, and formats the final HTTP response. Throws <em>Validation Errors</em> (400 Bad Request).</li>
+            <li><strong>Service Layer:</strong> The orchestrator for business logic. It can call multiple repository methods. Throws <em>Logic Errors</em>.</li>
+            <li><strong>Repository Layer:</strong> The leaf node executing single database queries. Throws <em>Database Errors</em> (e.g., Unique Constraint Violations, No Rows Found).</li>
+        </ol>
+
+        <h2>Propagation Control (Bubbling Up)</h2>
+        <div class="mermaid">
+sequenceDiagram
+    participant Repo as Repository Layer
+    participant Service as Service Layer
+    participant Handler as Handler Layer
+    participant Middle as Global Middleware
+    participant Client
+    
+    Repo--xService: Database Error
+    Service--xHandler: Bubble Up
+    Handler--xMiddle: Bubble Up
+    Note over Middle: Map DB Error to HTTP Status
+    Middle->>Client: JSON Error Response
+        </div>
+        <p>Not all errors should be resolved the moment they occur. The key concept is <strong>propagation</strong>: catching lower-level exceptions, wrapping them with necessary context, and bubbling them up to higher levels.</p>
+        <p>If the Repository Layer encounters a database error, it shouldn't try to send an HTTP response. Instead, it bubbles the error up to the Service Layer, which bubbles it to the Handler Layer, until it reaches the Global Error Handler.</p>
+
+        <h2>The Centralized Middleware</h2>
+        <p>The Global Error Handler sits as a middleware at the very edge of your application. When an error bubbles up, it inspects the error type and formats an appropriate response:</p>
+        <ul>
+            <li><strong>Validation Error (Handler):</strong> Returns <code>400 Bad Request</code> with a list of malformed fields.</li>
+            <li><strong>No Rows Returned (Repository):</strong> Returns <code>404 Not Found</code>.</li>
+            <li><strong>Foreign Key Violation (Repository):</strong> Returns <code>404 Not Found</code> (the referenced resource doesn't exist).</li>
+            <li><strong>Unique Constraint Violation (Repository):</strong> Returns <code>400 Bad Request</code> (e.g., "Email already exists").</li>
+            <li><strong>Unknown Error:</strong> Returns <code>500 Internal Server Error</code> with a generic message like "Something went wrong."</li>
+        </ul>
+
+        <h2>Advantages</h2>
+        <p>This approach prevents code redundancy (no duplicate error checking in every controller). Most importantly, it is highly robust. By routing all errors through one gateway, you guarantee no unhandled exception will leak internal system details to a user.</p>
+
+        <div class="nav-buttons bottom">
+          <a href="02-Proactive Error Detection.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="04-Security in Error Handling.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>Think of your architecture as a corporate ladder. A worker (Repository Layer) doesn't issue public press releases (HTTP Responses). They pass the problem up to the CEO (Global Middleware), who controls exactly what the public sees.</p>
+        </div>
+        <div class="premium-box box-amber">
+          <h3>Important Terms</h3>
+          <p><strong>Propagation:</strong> The act of passing an error up the call stack to be handled by a higher-level function.</p>
+          <p><strong>Middleware:</strong> A centralized function that sits between incoming requests and outgoing responses, intercepting them for tasks like error formatting.</p>
+        </div>
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Never send HTTP responses directly from deep business logic or database layers.</li>
+            <li>A centralized error handler eliminates duplicate code and ensures consistency.</li>
+          </ul>
+        </div>
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li>Route -> Handler -> Service -> Repo.</li>
+            <li>Bubble errors up the stack.</li>
+            <li>Middleware converts internal errors to HTTP status codes.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>02 - How Task Queues Work</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="01-Introduction and Workflow.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="03-Types of Background Tasks.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 11 - Background Tasks and Task Queues &gt; How Task Queues Work</div>
+
+        <h1>How Task Queues Work</h1>
+        <p class="lead">The underlying engine that manages and distributes background tasks reliably.</p>
+
+        <h2>Definition</h2>
+        <p>A task queue is a system for managing, storing, and distributing background jobs to separate consumer processes. It reliably hands off work from the producer to the consumer.</p>
+
+        <h2>Components</h2>
+        <ul>
+            <li><strong>Producer:</strong> The main application code that creates a task, serializes it (usually to JSON), and pushes it to the queue.</li>
+            <li><strong>Broker (The Queue):</strong> A temporary holding area that stores tasks until consumers pick them up (e.g., Redis PubSub, RabbitMQ, SQS).</li>
+            <li><strong>Consumer (Worker):</strong> A separate process that constantly monitors the broker, dequeues tasks, deserializes them, and executes the registered handler.</li>
+        </ul>
+
+        <h2>Step-by-step Flow</h2>
+        <ol>
+            <li><strong>Enqueueing:</strong> The Producer serializes task data and pushes it into the Broker.</li>
+            <li><strong>Monitoring:</strong> The Consumer continuously watches the Broker for new items.</li>
+            <li><strong>Dequeueing:</strong> The Consumer pulls the task from the queue and deserializes the payload back into its native format.</li>
+            <li><strong>Execution:</strong> The Consumer runs the specific function logic using the provided data.</li>
+            <li><strong>Acknowledgement (Ack):</strong> The Consumer sends a success signal back to the Broker, and the task is safely deleted.</li>
+        </ol>
+
+        <h2>Visibility Timeout</h2>
+        <p>When a consumer picks up a task, the broker hides it from other consumers for a set period, called the visibility timeout. If the consumer fails to acknowledge success (e.g., it crashes) before the timeout expires, the broker makes the task available again for other workers to retry.</p>
+
+        <div class="custom-diagram">
+          <div class="diagram-node" style="animation-delay: 0s">Producer (App Code)</div>
+          <div class="diagram-arrow">↓ Enqueues Task</div>
+          <div class="diagram-node" style="animation-delay: 0.2s">Broker (Redis, SQS)</div>
+          <div class="diagram-arrow">↓ Dequeues Task</div>
+          <div class="diagram-node" style="animation-delay: 0.4s">Consumer (Worker Process)</div>
+          <div class="diagram-arrow">↓ Acknowledges Success</div>
+          <div class="diagram-node" style="animation-delay: 0.6s">Broker Removes Task</div>
+        </div>
+
+        <div class="nav-buttons bottom">
+          <a href="01-Introduction and Workflow.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="03-Types of Background Tasks.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+      
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>Think of the queue as a to-do list for your backend. The producer adds sticky notes to the board, and the workers pull sticky notes off to complete them.</p>
+        </div>
+        <div class="premium-box box-amber">
+          <h3>Important Terms</h3>
+          <p><strong>Producer</strong> — The application that creates the background task.</p>
+          <p><strong>Broker</strong> — The intermediate data store that holds the queued tasks.</p>
+          <p><strong>Consumer</strong> — The worker process that executes the task.</p>
+          <p><strong>Visibility Timeout</strong> — Time period a task is marked "in-progress" before returning to the queue if unacknowledged.</p>
+        </div>
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Acknowledgments prevent task loss when workers crash.</li>
+            <li>Visibility timeouts ensure tasks get processed even if a consumer fails mid-execution.</li>
+          </ul>
+        </div>
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li>Producer enqueues serialized JSON tasks.</li>
+            <li>Broker stores tasks temporarily (e.g., Redis, SQS).</li>
+            <li>Consumer dequeues, executes, and acknowledges tasks.</li>
+            <li>Visibility timeout re-queues unacknowledged tasks.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

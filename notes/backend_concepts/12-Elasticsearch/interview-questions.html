@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interview Questions: Elasticsearch</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <div class="page-wrapper" style="max-width: 900px; display: block; margin: 0 auto;">
+      <main>
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="mind-map.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="../13-Error Handling/01-Types of Errors.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        
+        <div class="breadcrumb">
+          <a href="../index.html">Home</a> &gt; 12 - Elasticsearch &gt; Interview Questions
+        </div>
+
+        <h1 style="text-align: center;">Interview Questions</h1>
+        <p class="lead" style="text-align: center;">
+          12 - Elasticsearch: Full Text Search, Inverted Indexes, Relevance Scoring, and Performance.
+        </p>
+
+        <p class="muted" style="margin-bottom: 3rem; text-align: center;">
+          These questions evaluate your deep understanding of how search engines operate at scale, indexing trade-offs, and architectural decision-making. The goal is engineering thinking, not recitation of terms.
+        </p>
+
+        <div class="interview-box" style="margin-bottom: 2rem">
+          <h3 style="color: #111">1. Scenario-based Questions</h3>
+          <ul style="color: #333">
+            <li style="margin-bottom: 1rem">
+              You have a Postgres database with 50 million product records. The PM wants a fast autocomplete search bar with typo tolerance. How do you implement this, and what architectural changes are required?
+            </li>
+            <li style="margin-bottom: 1rem">
+              Users complain that when they search for "running shoes", they see socks with the description "best for running" before the actual shoes. How would you solve this relevance issue using field boosting?
+            </li>
+            <li style="margin-bottom: 1rem">
+              A user searches for "IPHONE" but all documents are stored as "iphone". How does Elasticsearch handle case sensitivity to ensure a match is still found?
+            </li>
+            <li style="margin-bottom: 1rem">
+              Your search results for a common term like "machine" are burying documents that have "Machine" as the exact title, favoring documents that mention "machine" 10 times in a long description. How does the BM25 algorithm address this automatically via document length?
+            </li>
+            <li style="margin-bottom: 1rem">
+              You are using the ELK stack to manage logs for 20 microservices. Developers complain they can't see the latest logs for the last 15 minutes, but the application is running fine. What components of the ELK stack would you investigate first and why?
+            </li>
+            <li style="margin-bottom: 1rem">
+              A client requests that when a user searches for "laptpo", it should still return "laptop". Explain how you would implement this using fuzzy search and the concept of edit distance.
+            </li>
+            <li style="margin-bottom: 1rem">
+              You perform a bulk insertion of 10,000 documents into Elasticsearch. A query executed 10 milliseconds later returns 0 results, but a query executed 2 seconds later returns all 10,000. Why does this happen, and how does Elasticsearch handle index refreshing?
+            </li>
+            <li style="margin-bottom: 1rem">
+              Your company is using Elasticsearch as the primary datastore instead of Postgres. You receive a requirement to join a `users` table with an `orders` table to perform a complex search. How do you approach this in a document-based search engine?
+            </li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem">
+          <h3 style="color: #111">2. "What if?" Questions</h3>
+          <ul style="color: #333">
+            <li style="margin-bottom: 1rem">
+              What if you define a field as a `keyword` type instead of a `text` type? How does this drastically alter how the inverted index stores the data, and what queries will now fail?
+            </li>
+            <li style="margin-bottom: 1rem">
+              What if a user searches for a stop-word like "the" or "is" across millions of documents? How does the Document Frequency (DF) parameter in BM25 prevent the search score from becoming meaningless?
+            </li>
+            <li style="margin-bottom: 1rem">
+              What if Elasticsearch used standard B-Tree indexing (like a relational database) instead of an inverted index? How would this impact the performance of full-text search?
+            </li>
+            <li style="margin-bottom: 1rem">
+              What if you configure an Elasticsearch cluster to synchronously accept writes directly from the main API without a message broker? What happens during a temporary network partition?
+            </li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem">
+          <h3 style="color: #111">3. Debugging Questions</h3>
+          <ul style="color: #333">
+            <li style="margin-bottom: 1rem">
+              You notice that Elasticsearch search latency has suddenly spiked from 50ms to 5 seconds. CPU usage is maxed out, but the search volume hasn't changed. What indexing or ingestion behaviors might be causing this performance degradation?
+            </li>
+            <li style="margin-bottom: 1rem">
+              A developer accidentally indexed a 100MB PDF document into a single text field of a single document. Explain how this heavily penalizes the document's BM25 score for any standard query.
+            </li>
+            <li style="margin-bottom: 1rem">
+              You run a search for "Apple iPhone" and expect the results to only include documents containing both words. Instead, you get millions of results, some only containing "Apple" (the fruit) and some only containing "iPhone". What went wrong with your query DSL structure?
+            </li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem">
+          <h3 style="color: #111">4. Design Questions</h3>
+          <ul style="color: #333">
+            <li style="margin-bottom: 1rem">
+              Design a data synchronization pipeline that keeps an Elasticsearch index eventually consistent with a primary Postgres database without significantly impacting the latency of the main API's write operations.
+            </li>
+            <li style="margin-bottom: 1rem">
+              Design an autocomplete (type-ahead) feature for a global e-commerce site. Explain how you would model the data differently than a standard full-text search (e.g., using edge n-grams).
+            </li>
+            <li style="margin-bottom: 1rem">
+              Your application generates 1TB of logs per day. Design an ELK stack architecture to ingest, process, and query these logs efficiently, taking into account data retention and index lifecycle management.
+            </li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem">
+          <h3 style="color: #111">5. Architecture & Trade-off Questions</h3>
+          <ul style="color: #333">
+            <li style="margin-bottom: 1rem">
+              A team proposes using Postgres full-text search instead of deploying a new Elasticsearch cluster for a read-heavy blog platform. Under what specific conditions is this architectural choice superior, and when does it become a liability?
+            </li>
+            <li style="margin-bottom: 1rem">
+              Why is the write (ingestion) phase in Elasticsearch so highly CPU-intensive compared to appending a row in a standard relational database? What trade-off is being made here regarding read vs. write performance?
+            </li>
+          </ul>
+        </div>
+
+        <div class="nav-buttons bottom">
+          <a href="mind-map.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="../13-Error Handling/01-Types of Errors.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interview Questions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <div class="page-wrapper" style="max-width: 900px; display: block; margin: 0 auto;">
+      <main>
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="mind-map.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="../12-Elasticsearch/01-The Search Problem.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        
+        <div class="breadcrumb">
+          <a href="../index.html">Home</a> &gt; 11 - Background Tasks and Task Queues &gt; Interview Questions
+        </div>
+
+        <h1 style="text-align: center;">Interview Questions</h1>
+        <p class="lead" style="text-align: center;">
+          11 - Background Tasks and Task Queues: Workflows, Task Types, Design Considerations, and Best Practices.
+        </p>
+
+        <p class="muted" style="margin-bottom: 3rem; text-align: center;">
+          These questions test your ability to reason about asynchronous architectures, worker management, data consistency, and edge-case failures in a high-traffic production system. The goal is engineering thinking, not recitation of terms.
+        </p>
+
+        <div class="interview-box" style="margin-bottom: 2rem">
+          <h3 style="color: #111">1. Scenario-based Questions</h3>
+          <ul style="color: #333">
+            <li style="margin-bottom: 1rem">
+              A background worker processing email sending tasks crashes midway because the 3rd-party email API goes down. You are using BullMQ with an exponential backoff strategy, but after 5 retries, the task is marked as failed. How would you handle this to ensure the email is eventually sent when the 3rd-party API recovers a day later?
+            </li>
+            <li style="margin-bottom: 1rem">
+              You implement a chained task workflow for video uploading: (1) Encode Video, (2) Generate Thumbnails, (3) Generate Subtitles. Users complain that videos take too long to appear. Upon investigation, you realize that if Thumbnail generation fails, the entire chain is retried from the beginning, re-encoding the 2GB video. How would you redesign this workflow?
+            </li>
+            <li style="margin-bottom: 1rem">
+              Your application creates a "Delete Account" batch task that spans multiple microservices. Midway through the deletion process, the database is locked for maintenance and the task crashes. The next time it runs, it crashes with a "foreign key constraint" or "user not found" error because half the data was already deleted. What architectural principle was violated, and how do you fix it?
+            </li>
+            <li style="margin-bottom: 1rem">
+              A spike in user sign-ups adds 10,000 "Send Welcome Email" tasks to your Redis broker. Your 2 consumer nodes are processing 10 tasks per second. Users are receiving their welcome emails 20 minutes late, but your CPU usage on the workers is only at 10%. Why is processing so slow, and what is the immediate fix to handle this backlog?
+            </li>
+            <li style="margin-bottom: 1rem">
+              You deploy a new version of your worker codebase that expects a new JSON field <code>user_preferences</code> in the task payload. Suddenly, thousands of tasks start failing immediately. What deployment mistake did you make regarding background tasks, and how do you safely roll out schema changes to task payloads?
+            </li>
+            <li style="margin-bottom: 1rem">
+              You have a recurring cron task that cleans up orphan database sessions every midnight. However, because you are running 3 instances of your backend API behind a load balancer, the cleanup task executes 3 times simultaneously, causing database deadlock errors. How do you ensure a cron job runs exactly once across a distributed system?
+            </li>
+            <li style="margin-bottom: 1rem">
+              Your external PDF generation service is strict about rate limits: 100 requests per minute. You have 5 worker nodes processing report generation tasks. How do you implement a distributed rate limiter to ensure the combined workers never exceed 100 requests per minute?
+            </li>
+            <li style="margin-bottom: 1rem">
+              You notice that your Redis instance memory is growing uncontrollably, reaching 100% and crashing the application. Upon inspection, the task queue is not particularly large, but the worker nodes are logging a high number of "Timeout" errors when acknowledging tasks. Explain the interaction between visibility timeouts, unacknowledged tasks, and memory leaks in the broker.
+            </li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem">
+          <h3 style="color: #111">2. "What if?" Questions</h3>
+          <ul style="color: #333">
+            <li style="margin-bottom: 1rem">
+              What if a broker (like RabbitMQ) did not enforce a visibility timeout, and instead immediately deleted a task the moment a consumer picked it up? How would this impact the reliability of payment processing pipelines?
+            </li>
+            <li style="margin-bottom: 1rem">
+              What if you designed a distributed system where background tasks were processed completely asynchronously, but the frontend required the immediate result of the task to display a success message? How would you bridge the asynchronous gap to make the frontend feel synchronous?
+            </li>
+            <li style="margin-bottom: 1rem">
+              What if you used a standard relational database (like PostgreSQL) table as a task queue instead of a dedicated broker like SQS or Redis? What specific concurrency and performance bottlenecks would you face under high throughput?
+            </li>
+            <li style="margin-bottom: 1rem">
+              What if your background tasks were perfectly idempotent, but the downstream 3rd-party API they call (e.g. charging a credit card) is not idempotent? How do you safely retry your background tasks without double-charging the user?
+            </li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem">
+          <h3 style="color: #111">3. Debugging Questions</h3>
+          <ul style="color: #333">
+            <li style="margin-bottom: 1rem">
+              You have a queue dedicated to processing image uploads. The queue length is constantly sitting at zero, but users are complaining that their images are never processed. You check the broker, and tasks are being created successfully. Where could the disconnect be happening between the producer, broker, and consumer?
+            </li>
+            <li style="margin-bottom: 1rem">
+              A user reports that every time they click "Export Data", they receive 5 duplicate emails containing the same CSV file. You check the codebase, and the producer definitely only enqueues the task once. Explain why a worker might process and complete the exact same task 5 times.
+            </li>
+            <li style="margin-bottom: 1rem">
+              Your worker nodes are suddenly restarting every 15 minutes due to Out Of Memory (OOM) errors. The tasks they are processing are simple data aggregations. You suspect the tasks themselves are fine, but the worker process is holding onto memory. What is a common pitfall in worker process lifecycle management that leads to memory leaks?
+            </li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem">
+          <h3 style="color: #111">4. Design Questions</h3>
+          <ul style="color: #333">
+            <li style="margin-bottom: 1rem">
+              Design a background task architecture for a food delivery app like UberEats. Specifically, handle the workflow where an order is placed, the restaurant accepts it, and a delivery driver is assigned. Outline the queues, the task types, and the error handling required for this flow.
+            </li>
+            <li style="margin-bottom: 1rem">
+              Design a notification system that sends a monthly newsletter to 10 million users. You must ensure that no user receives the email twice, the database isn't locked during processing, and the entire job completes within 4 hours.
+            </li>
+            <li style="margin-bottom: 1rem">
+              Design a system to handle webhooks from Stripe (e.g. <code>payment_intent.succeeded</code>). Stripe expects a 200 OK within 3 seconds, or they will retry. How do you design your API and background workers to ingest, validate, and process these webhooks reliably at scale?
+            </li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem">
+          <h3 style="color: #111">5. Architecture & Trade-off Questions</h3>
+          <ul style="color: #333">
+            <li style="margin-bottom: 1rem">
+              Discuss the trade-offs between using a Push-based queue (where the broker actively sends tasks to workers) versus a Pull-based queue (where workers continuously poll the broker for tasks). When would you choose one over the other?
+            </li>
+            <li style="margin-bottom: 1rem">
+              Why would an engineering team choose to deploy background workers as completely separate isolated services (e.g., in a separate Kubernetes deployment) rather than running the worker threads in the same Node.js/Python process as the main HTTP API? What are the operational costs of this isolation?
+            </li>
+          </ul>
+        </div>
+
+        <div class="nav-buttons bottom">
+          <a href="mind-map.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="../12-Elasticsearch/01-The Search Problem.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inverted Index</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="01-The Search Problem.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="03-Relevance Scoring.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        
+        <div class="breadcrumb">
+          <a href="../index.html">Home</a> &gt; 12 - Elasticsearch &gt; Inverted Index
+        </div>
+
+        <h1>Inverted Index</h1>
+
+        <h2>Definition</h2>
+        <p>An inverted index is a data structure that maps content (such as words or terms) back to its location in a set of documents, effectively flipping the search problem upside down.</p>
+
+        <h2>How it Works</h2>
+        <p>Instead of scanning every document to see if a term exists, an inverted index creates a global dictionary of all terms found across all documents during the storage phase.</p>
+
+        <h3>Step-by-step Flow</h3>
+        <ol>
+            <li><strong>Ingestion:</strong> When a new document (e.g., a book or product) is added, the system scans its content.</li>
+            <li><strong>Tokenization:</strong> The text is broken down into individual terms (words).</li>
+            <li><strong>Indexing:</strong> For each term, the system records exactly which documents contain it and where it appears.</li>
+            <li><strong>Retrieval:</strong> When a user searches for a term, the system simply looks up the term in the dictionary and instantly retrieves the list of matching documents.</li>
+        </ol>
+
+        <h2>Advantages</h2>
+        <ul>
+            <li><strong>Blazing Fast:</strong> Lookups happen in milliseconds, regardless of how large the total dataset grows.</li>
+            <li><strong>Scalable:</strong> It efficiently handles millions of documents.</li>
+            <li><strong>Foundation for Relevance:</strong> Since it tracks the frequency and location of terms, it allows for sophisticated ranking algorithms.</li>
+        </ul>
+
+        <h2>Apache Lucene</h2>
+        <p>The inverted index is not a new concept; it has been researched since the 1960s. Today, the most prominent open-source implementation of the inverted index is <strong>Apache Lucene</strong>. Elasticsearch, along with many other full-text search tools, is built on top of the Lucene engine.</p>
+
+        <div class="nav-buttons bottom">
+          <a href="01-The Search Problem.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="03-Relevance Scoring.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>An inverted index is exactly like the index at the back of a textbook. Instead of reading the whole book to find where "Machine Learning" is mentioned, you look it up in the back and it gives you the exact page numbers instantly.</p>
+        </div>
+        <div class="premium-box box-amber">
+          <h3>Important Terms</h3>
+          <p><strong>Inverted Index</strong> — A dictionary-like data structure mapping terms to document locations.</p>
+          <p><strong>Apache Lucene</strong> — The core text search engine technology that powers Elasticsearch.</p>
+        </div>
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Inverted indexing flips the search problem from "find term in documents" to "look up documents by term."</li>
+            <li>It processes text heavily during insertion (write) to make retrieval (read) incredibly fast.</li>
+          </ul>
+        </div>
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li>Creates a map of Word → List of Documents.</li>
+            <li>Powers full-text search engines like Elasticsearch.</li>
+            <li>Reduces search time from seconds to milliseconds.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

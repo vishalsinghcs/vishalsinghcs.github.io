@@ -2,7 +2,7 @@ Topic is _______
 
 Generate interview questions as if you are a Senior Staff Engineer at Google, Amazon, Microsoft, Meta or a top startup.
 
-For this you need to create an html file named interview-questions inside a folder of a given topic and you need to write atleast 20 questions in that file for that topic's folder. Also add link to this file in the index.html file, put the link inside the same topic and it should be last link of that topic. You can use the notes inside that topic's folder to understand what to ask for. See the previous interview-questions.html files in previous topic's folders to understand the UI of these files. Keep the UI consistent. Follow the following guidelines for generating questions strictly.
+For this you need to create an html file named interview-questions inside a folder of a given topic and you need to write atleast 20 questions in that file for that topic's folder. Also add link to this file in the index.html file, put the link inside the same topic and it should be last link of that topic. You can use the notes inside that topic's folder to understand what to ask for. See the previous interview-questions.html files in previous topic's folders to understand the UI of these files. Keep the UI consistent. Also analyse the previous topic's interview questions html file to understand its structure. Follow the following guidelines for generating questions strictly.
 
 DO NOT generate textbook questions such as:
 - What is HTTP?

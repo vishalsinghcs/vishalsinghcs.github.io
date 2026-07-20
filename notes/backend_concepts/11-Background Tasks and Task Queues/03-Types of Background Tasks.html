@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>03 - Types of Background Tasks</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="02-How Task Queues Work.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="04-Design Considerations.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 11 - Background Tasks and Task Queues &gt; Types of Background Tasks</div>
+
+        <h1>Types of Background Tasks</h1>
+        <p class="lead">Different patterns for executing offline workflows.</p>
+
+        <h2>1. One-off Tasks</h2>
+        <p>A single task triggered by a specific event in the request-response lifecycle. These are the most common type of tasks.</p>
+        <ul>
+            <li><strong>Example:</strong> Sending a welcome email after a user signs up.</li>
+        </ul>
+
+        <h2>2. Recurring Tasks (Cron Jobs)</h2>
+        <p>Tasks that execute periodically at specific intervals.</p>
+        <ul>
+            <li><strong>Example:</strong> Sending a weekly analytics report every Sunday at midnight, or cleaning up abandoned database sessions at the end of the month.</li>
+        </ul>
+
+        <h2>3. Chained Tasks</h2>
+        <p>Tasks that have a parent-child relationship, where a task can only execute once its parent successfully finishes.</p>
+        <ul>
+            <li><strong>Example:</strong> In a video platform, Task A (Video Encoding) runs first. Once finished, it triggers Task B (Thumbnail Generation) and Task C (Transcription Generation) in parallel.</li>
+        </ul>
+
+        <h2>4. Batch Tasks</h2>
+        <p>A single trigger spawns multiple similar tasks, or one large task acts on a large batch of data concurrently.</p>
+        <ul>
+            <li><strong>Example:</strong> An "Account Deletion" trigger that spawns dozens of smaller tasks to delete a user's specific assets across different microservices. Another example is sending a monthly newsletter to thousands of users simultaneously.</li>
+        </ul> 
+
+        <div class="nav-buttons bottom">
+          <a href="02-How Task Queues Work.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="04-Design Considerations.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+      
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>Different tasks require different treatment. A single fire-and-forget task is like sending a letter. A cron job is like a daily alarm. A chained task is like an assembly line.</p>
+        </div>
+        <div class="premium-box box-amber">
+          <h3>Important Terms</h3>
+          <p><strong>Cron Job</strong> — A time-based job scheduler used for recurring tasks.</p>
+          <p><strong>Chained Task</strong> — A workflow where tasks sequentially trigger other dependent tasks.</p>
+        </div>
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Use recurring tasks to keep your database clean.</li>
+            <li>Break down massive jobs into batch or chained tasks to optimize processing.</li>
+          </ul>
+        </div>
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li>One-off: Emails, simple notifications.</li>
+            <li>Recurring: Scheduled cleanup, daily reports.</li>
+            <li>Chained: Sequential dependent steps (e.g., video processing).</li>
+            <li>Batch: Bulk concurrent operations.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>01 - Introduction and Workflow</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="../10-Caching/interview-questions.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="02-How Task Queues Work.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 11 - Background Tasks and Task Queues &gt; Introduction and Workflow</div>
+
+        <h1>Background Tasks: Introduction and Workflow</h1>
+        <p class="lead">Understanding how to offload non-critical operations from the request-response lifecycle.</p>
+
+        <h2>Definition</h2>
+        <p>A background task is any piece of code or logic that runs outside of the main client-server request-response lifecycle. It is used for operations that do not need to happen synchronously or immediately before responding to the client.</p>
+
+        <h2>Why do we need it?</h2>
+        <p>Synchronous processing of heavy or external tasks within an API call can cause timeouts and poor user experience. Background tasks solve this by offloading operations, ensuring the main application remains scalable and responsive.</p>
+
+        <h2>How it works (Step-by-step Flow)</h2>
+        <ol>
+            <li><strong>Action Trigger:</strong> The user performs an action on the frontend (e.g., signing up).</li>
+            <li><strong>Initial Processing:</strong> The backend performs immediate necessary operations (e.g., validating and storing user data).</li>
+            <li><strong>Task Creation (Enqueueing):</strong> Instead of performing a long-running task synchronously, the backend serializes the required data into JSON and pushes it into a task queue.</li>
+            <li><strong>Immediate Response:</strong> The backend returns a success response (e.g., 200 OK or 201 Created) to the client immediately.</li>
+            <li><strong>Background Execution (Dequeueing):</strong> A separate consumer process picks the task from the queue, deserializes the data, and executes it.</li>
+        </ol>
+
+        <h2>Advantages</h2>
+        <ul>
+            <li><strong>Faster Processing Time:</strong> Keeps API responses fast and prevents blocking.</li>
+            <li><strong>Resilience:</strong> External service downtimes don't break the main API logic.</li>
+            <li><strong>Retrying Mechanisms:</strong> Provides built-in support for retrying failed tasks using techniques like exponential backoff.</li>
+        </ul>
+
+        <h2>Disadvantages</h2>
+        <ul>
+            <li><strong>System Complexity:</strong> Adds architectural complexity with brokers, consumers, and additional monitoring.</li>
+            <li><strong>Delayed Execution:</strong> Tasks aren't instantaneous; users might need to wait for eventual consistency.</li>
+        </ul>
+
+        <h2>Real-world Example</h2>
+        <p>When a user signs up, instead of waiting for a 3rd-party service to send the welcome email synchronously, the backend pushes an <code>send_email</code> task to the queue and instantly tells the user "Please check your inbox."</p>
+
+        <div class="custom-diagram">
+          <div class="diagram-node" style="animation-delay: 0s">API Receives Request</div>
+          <div class="diagram-arrow">↓</div>
+          <div class="diagram-node" style="animation-delay: 0.2s">Backend Creates Task & Enqueues</div>
+          <div class="diagram-arrow">↓</div>
+          <div class="diagram-node" style="animation-delay: 0.4s">API Returns 200 OK to Client</div>
+          <div class="diagram-arrow">↓</div>
+          <div class="diagram-node" style="animation-delay: 0.6s">Worker Picks Task & Executes</div>
+        </div>
+
+        <div class="nav-buttons bottom">
+          <a href="../10-Caching/interview-questions.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="02-How Task Queues Work.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+      
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>Imagine a restaurant. The waiter taking your order and telling you it'll be ready soon is the main API. The chefs in the kitchen actually cooking your food is the background process.</p>
+        </div>
+        <div class="premium-box box-amber">
+          <h3>Important Terms</h3>
+          <p><strong>Background Job</strong> — Code executed outside the main request-response cycle.</p>
+          <p><strong>Exponential Backoff</strong> — A retry strategy that progressively increases the wait time between failed attempts.</p>
+        </div>
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Never block your API with external API calls if you can avoid it.</li>
+            <li>Background tasks are essential for resilient backend architecture.</li>
+          </ul>
+        </div>
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li>Background tasks run outside the request-response cycle.</li>
+            <li>Use them for slow, non-critical, or third-party dependent operations.</li>
+            <li>They prevent your main API from crashing when external services fail.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

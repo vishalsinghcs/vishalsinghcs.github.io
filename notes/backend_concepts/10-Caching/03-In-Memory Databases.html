@@ -4,46 +4,111 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hardware &amp; In-Memory Caching</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../styles.css">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../styles.css" />
   </head>
   <body>
     <div class="page-wrapper">
       <main class="left-column">
         <div class="nav-buttons">
-          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <a
+            href="../index.html"
+            class="nav-btn back"
+            aria-label="Back to Index"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <line x1="19" y1="12" x2="5" y2="12"></line>
               <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
           </a>
-          <a href="02-Network Caching.html" class="nav-btn prev" aria-label="Previous">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <a
+            href="02-Network Caching.html"
+            class="nav-btn prev"
+            aria-label="Previous"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <polyline points="15 18 9 12 15 6"></polyline>
             </svg>
           </a>
-          <a href="04-Strategies and Eviction.html" class="nav-btn next" aria-label="Next">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <a
+            href="04-Strategies and Eviction.html"
+            class="nav-btn next"
+            aria-label="Next"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
           </a>
         </div>
-        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 10 - Caching &gt; Hardware &amp; In-Memory Databases</div>
+        <div class="breadcrumb">
+          <a href="../index.html">Home</a> &gt; 10 - Caching &gt; Hardware &amp;
+          In-Memory Caching
+        </div>
 
         <h1>Hardware &amp; In-Memory Caching</h1>
         <p class="lead">
-          While network caching handles data in transit, software-based caching (what backend engineers write code for) relies entirely on the architecture of Hardware memory.
+          While network caching handles data in transit, software-based caching
+          (what backend engineers write code for) relies entirely on the
+          architecture of Hardware memory.
         </p>
 
         <h2>Hardware Level Caching</h2>
         <p>
-          Before understanding software caches, you must understand how a computer's CPU and memory interact. Computers have multiple layers of storage, trading off capacity for speed:
+          Before understanding software caches, you must understand how a
+          computer's CPU and memory interact. Computers have multiple layers of
+          storage, trading off capacity for speed:
         </p>
 
         <ol>
-          <li><strong>CPU Caches (L1, L2, L3):</strong> Tiny amounts of extremely fast memory built directly onto the CPU chip. CPUs use predictive algorithms to move data here right before it's needed (e.g., sequentially reading an array in memory is fast because the CPU caches the next blocks ahead of time).</li>
-          <li><strong>Main Memory (RAM):</strong> Also known as Random Access Memory. Very fast, but limited in capacity.</li>
-          <li><strong>Secondary Storage (Hard Disks/SSD):</strong> Massive capacity, but mechanically or electronically slower. Provides permanent data persistence.</li>
+          <li>
+            <strong>CPU Caches (L1, L2, L3):</strong> Tiny amounts of extremely
+            fast memory built directly onto the CPU chip. CPUs use predictive
+            algorithms to move data here right before it's needed (e.g.,
+            sequentially reading an array in memory is fast because the CPU
+            caches the next blocks ahead of time).
+          </li>
+          <li>
+            <strong>Main Memory (RAM):</strong> Also known as Random Access
+            Memory. Very fast, but limited in capacity.
+          </li>
+          <li>
+            <strong>Secondary Storage (Hard Disks/SSD):</strong> Massive
+            capacity, but mechanically or electronically slower. Provides
+            permanent data persistence.
+          </li>
         </ol>
 
         <h3>RAM vs. Disk (The Core Trade-off)</h3>
@@ -68,7 +133,10 @@
             </tr>
             <tr>
               <td><strong>Volatility</strong></td>
-              <td><strong>Volatile</strong> (Data is lost when power is turned off)</td>
+              <td>
+                <strong>Volatile</strong> (Data is lost when power is turned
+                off)
+              </td>
               <td><strong>Persistent</strong> (Data survives reboots)</td>
             </tr>
           </tbody>
@@ -76,35 +144,88 @@
 
         <h2>In-Memory Key-Value NoSQL Databases</h2>
         <p>
-          Because RAM is so fast, we use specific database technologies designed explicitly to store data in RAM rather than on Disk. The most popular examples are <strong>Redis</strong>, <strong>Memcached</strong>, and cloud equivalents like <strong>AWS ElastiCache</strong>.
+          Because RAM is so fast, we use specific database technologies designed
+          explicitly to store data in RAM rather than on Disk. The most popular
+          examples are <strong>Redis</strong>, <strong>Memcached</strong>, and
+          cloud equivalents like <strong>AWS ElastiCache</strong>.
         </p>
 
-        <p>Let's break down the name: <strong>In-Memory Key-Value NoSQL Database</strong></p>
+        <p>
+          Let's break down the name:
+          <strong>In-Memory Key-Value NoSQL Database</strong>
+        </p>
         <ul>
-          <li><strong>In-Memory:</strong> Data is stored in RAM (Primary Storage) for ultra-fast retrieval, unlike Postgres or MySQL which default to Disk.</li>
-          <li><strong>Key-Value:</strong> The data model is simple. You provide a unique "Key", and the database stores a "Value" (which can be a string, JSON, list, etc.).</li>
-          <li><strong>NoSQL:</strong> They do not enforce strict schemas, tables, or relational constraints. They are built for raw speed, not complex relationships.</li>
+          <li>
+            <strong>In-Memory:</strong> Data is stored in RAM (Primary Storage)
+            for ultra-fast retrieval, unlike Postgres or MySQL which default to
+            Disk.
+          </li>
+          <li>
+            <strong>Key-Value:</strong> The data model is simple. You provide a
+            unique "Key", and the database stores a "Value" (which can be a
+            string, JSON, list, etc.).
+          </li>
+          <li>
+            <strong>NoSQL:</strong> They do not enforce strict schemas, tables,
+            or relational constraints. They are built for raw speed, not complex
+            relationships.
+          </li>
         </ul>
 
         <h3>How Do They Survive Reboots? (Persistence)</h3>
         <p>
-          If RAM is volatile, what happens when a Redis server crashes? Does all the cached data disappear?
+          If RAM is volatile, what happens when a Redis server crashes? Does all
+          the cached data disappear?
         </p>
         <p>
-          While the primary operation (reading and writing) happens in RAM for speed, technologies like Redis implement background mechanisms to occasionally sync that data to Secondary Storage (Disk). When the server restarts, Redis reads the data from the disk back into RAM.
+          While the primary operation (reading and writing) happens in RAM for
+          speed, technologies like Redis implement background mechanisms to
+          occasionally sync that data to Secondary Storage (Disk). When the
+          server restarts, Redis reads the data from the disk back into RAM.
         </p>
         <p>
-          <em>Note: The primary goal is speed. The disk is only used as a safety net, not for querying.</em>
+          <em
+            >Note: The primary goal is speed. The disk is only used as a safety
+            net, not for querying.</em
+          >
         </p>
 
         <div class="nav-buttons bottom">
-          <a href="02-Network Caching.html" class="nav-btn prev" aria-label="Previous">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <a
+            href="02-Network Caching.html"
+            class="nav-btn prev"
+            aria-label="Previous"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <polyline points="15 18 9 12 15 6"></polyline>
             </svg>
           </a>
-          <a href="04-Strategies and Eviction.html" class="nav-btn next" aria-label="Next">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <a
+            href="04-Strategies and Eviction.html"
+            class="nav-btn next"
+            aria-label="Next"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
           </a>
@@ -115,27 +236,49 @@
         <div class="premium-box box-blue">
           <h3>Mental Model</h3>
           <p>
-            Think of <strong>Disk Storage</strong> as a filing cabinet in the basement. It holds everything securely, but takes time to walk down and search through.
-            <br><br>
-            Think of <strong>RAM (In-Memory)</strong> as the sticky notes on your monitor. You can only fit a few of them (low capacity), and if the wind blows them away they are gone (volatile), but you can read them instantly without getting out of your chair.
+            Think of <strong>Disk Storage</strong> as a filing cabinet in the
+            basement. It holds everything securely, but takes time to walk down
+            and search through. <br /><br />
+            Think of <strong>RAM (In-Memory)</strong> as the sticky notes on
+            your monitor. You can only fit a few of them (low capacity), and if
+            the wind blows them away they are gone (volatile), but you can read
+            them instantly without getting out of your chair.
           </p>
         </div>
 
         <div class="premium-box box-orange">
           <h3>Important Terms</h3>
           <ul>
-            <li><strong>Volatile:</strong> Memory that loses its data when the system powers down.</li>
-            <li><strong>Random Access:</strong> The ability to access any item of data in a constant amount of time (O(1)), regardless of its physical location in the memory.</li>
-            <li><strong>Key-Value Store:</strong> A database paradigm resembling a giant dictionary or hash map.</li>
+            <li>
+              <strong>Volatile:</strong> Memory that loses its data when the
+              system powers down.
+            </li>
+            <li>
+              <strong>Random Access:</strong> The ability to access any item of
+              data in a constant amount of time (O(1)), regardless of its
+              physical location in the memory.
+            </li>
+            <li>
+              <strong>Key-Value Store:</strong> A database paradigm resembling a
+              giant dictionary or hash map.
+            </li>
           </ul>
         </div>
 
         <div class="premium-box box-green">
           <h3>Key Takeaways</h3>
           <ul>
-            <li>We trade capacity and persistence for raw speed when using RAM.</li>
-            <li>Redis and Memcached are the industry standards for software-based, in-memory caching.</li>
-            <li>These tools are "NoSQL" because relational overhead (joins, constraints) defeats the purpose of raw speed.</li>
+            <li>
+              We trade capacity and persistence for raw speed when using RAM.
+            </li>
+            <li>
+              Redis and Memcached are the industry standards for software-based,
+              in-memory caching.
+            </li>
+            <li>
+              These tools are "NoSQL" because relational overhead (joins,
+              constraints) defeats the purpose of raw speed.
+            </li>
           </ul>
         </div>
 

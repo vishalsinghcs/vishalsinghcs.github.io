@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Search Problem</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="../11-Background Tasks and Task Queues/interview-questions.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="02-Inverted Index.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        
+        <div class="breadcrumb">
+          <a href="../index.html">Home</a> &gt; 12 - Elasticsearch &gt; The Search Problem
+        </div>
+
+        <h1>The Search Problem</h1>
+        
+        <h2>Definition</h2>
+        <p>The search problem refers to the difficulty of quickly and accurately finding relevant information within a massive dataset using traditional relational database queries.</p>
+
+        <h2>Why do we need a better solution?</h2>
+        <p>In a typical relational database setup, a basic text search is implemented using the <code>ILIKE</code> operator with wildcard percentage symbols (e.g., <code>SELECT * FROM products WHERE name ILIKE '%laptop%'</code>). While this works fine for a few thousand records, it fails completely at scale (millions of records) due to severe latency and a lack of relevance ranking.</p>
+
+        <h2>The Librarian Analogy</h2>
+        <p>Think of a relational database as a librarian who knows exactly where every book is located but has one fatal flaw when searching for a specific topic: they have to scan every single book one by one.</p>
+        
+        <ul>
+            <li>If you ask for books about "machine learning," the librarian examines the first book, the second book, and so on until a match is found.</li>
+            <li>In a library with millions of books, this sequential scanning process takes an unacceptable amount of time.</li>
+        </ul>
+
+        <h2>Disadvantages of Traditional Search</h2>
+        <ul>
+            <li><strong>Latency at Scale:</strong> Scanning every row and performing character-by-character pattern matching is painfully slow (taking seconds instead of milliseconds).</li>
+            <li><strong>No Sense of Relevance:</strong> A database cannot determine which results are more important. A book with the term in the title is treated the same as a book where the term is mentioned once on the last page.</li>
+            <li><strong>Fragile Queries:</strong> Traditional queries break when users make typos. Searching for "laptpo" will yield zero results even if the intended query was "laptop."</li>
+        </ul>
+
+        <div class="nav-buttons bottom">
+          <a href="../11-Background Tasks and Task Queues/interview-questions.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="02-Inverted Index.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>Treat relational database text search like reading an entire dictionary from A to Z just to find a single definition. It's exhaustive but fundamentally unscalable for real-time applications.</p>
+        </div>
+        <div class="premium-box box-amber">
+          <h3>Important Terms</h3>
+          <p><strong>Latency</strong> — The time it takes for a system to process a request and return a response.</p>
+          <p><strong>ILIKE Operator</strong> — A SQL operator used for case-insensitive pattern matching.</p>
+        </div>
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Relational databases use sequential pattern matching for text searches.</li>
+            <li>This approach scales poorly as data volume grows into the millions.</li>
+            <li>Users expect search results in milliseconds, not seconds.</li>
+          </ul>
+        </div>
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li>Search using <code>ILIKE '%term%'</code> works for small datasets but fails at scale.</li>
+            <li>Traditional DBs lack relevance ranking.</li>
+            <li>Typo tolerance is practically impossible with standard SQL pattern matching.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

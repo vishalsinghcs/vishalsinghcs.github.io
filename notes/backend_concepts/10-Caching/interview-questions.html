@@ -4,99 +4,320 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Interview Questions: Caching</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../styles.css">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../styles.css" />
   </head>
   <body>
-    <div class="page-wrapper" style="max-width: 900px; display: block; margin: 0 auto;">
+    <div
+      class="page-wrapper"
+      style="max-width: 900px; display: block; margin: 0 auto"
+    >
       <main>
         <div class="nav-buttons">
-          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <a
+            href="../index.html"
+            class="nav-btn back"
+            aria-label="Back to Index"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <line x1="19" y1="12" x2="5" y2="12"></line>
               <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
           </a>
           <a href="mind-map.html" class="nav-btn prev" aria-label="Previous">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <polyline points="15 18 9 12 15 6"></polyline>
             </svg>
           </a>
-          <a href="#" class="nav-btn next" aria-label="Next (Coming Soon)" style="opacity: 0.5; cursor: not-allowed;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <a
+            href="../11-Background Tasks and Task Queues/01-Introduction and Workflow.html"
+            class="nav-btn next"
+            aria-label="Next"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
           </a>
         </div>
-        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 10 - Caching &gt; Interview Questions</div>
+        <div class="breadcrumb">
+          <a href="../index.html">Home</a> &gt; 10 - Caching &gt; Interview
+          Questions
+        </div>
 
         <h1>Interview Questions</h1>
         <p class="lead">
-          10 - Caching: Network Caching, In-Memory DBs, Caching Strategies, Eviction Policies, and Backend Use Cases.
+          10 - Caching: Network Caching, In-Memory DBs, Caching Strategies,
+          Eviction Policies, and Backend Use Cases.
         </p>
 
-        <p class="muted" style="margin-bottom: 3rem;">
-          These questions test your ability to reason about caching architectures, memory management, data consistency, and edge-case failures in a high-traffic production system. The goal is engineering thinking, not recitation of terms.
+        <p class="muted" style="margin-bottom: 3rem">
+          These questions test your ability to reason about caching
+          architectures, memory management, data consistency, and edge-case
+          failures in a high-traffic production system. The goal is engineering
+          thinking, not recitation of terms.
         </p>
 
-        <div class="interview-box" style="margin-bottom: 2rem;">
-          <h3 style="color: #111;">1. Scenario-based Questions</h3>
-          <ul style="color: #333;">
-            <li style="margin-bottom: 1rem;">Your Redis cache goes down in production entirely. Because you implemented a Cache Aside (Lazy) strategy, the application gracefully falls back to querying the primary PostgreSQL database. However, within 60 seconds, your entire platform crashes. Walk through the cascade of failures that caused the crash, and how you would redesign the system to survive a complete cache failure.</li>
-            <li style="margin-bottom: 1rem;">You deployed a critical bug fix to your frontend CSS file. Users are complaining that the UI looks completely broken. You check the server, and the new file is definitely deployed. You realize the CDN edge servers are serving the old CSS file. What exactly is happening, why did the CDN do this, and what is the immediate fix and long-term architectural solution?</li>
-            <li style="margin-bottom: 1rem;">You implement rate limiting using Redis. A middleware checks the <code>X-Forwarded-For</code> header and increments a counter. Suddenly, your customer support gets flooded with complaints that <em>every single user</em> from a specific corporate office is being blocked with a <code>429 Too Many Requests</code> error, even though no individual user is exceeding the limit. What is the networking root cause of this, and how do you fix your rate limiter?</li>
-            <li style="margin-bottom: 1rem;">A celebrity makes a viral post on your platform, instantly driving 500,000 users to view it simultaneously. The post is not in the cache yet. Due to your Lazy Caching strategy, 500,000 requests miss the cache and hit the database to compute the post's stats at the exact same millisecond. This completely locks the database (a Cache Stampede). How would you modify your caching strategy to prevent this specific scenario?</li>
-            <li style="margin-bottom: 1rem;">Your startup decides to switch from Lazy Caching to Write-Through caching for user profiles to ensure data is never stale. A week later, latency metrics for the "Update Profile" endpoint show an increase from 50ms to 400ms. What are the specific architectural reasons why a Write-Through cache slows down write operations, and under what conditions is this trade-off acceptable?</li>
-            <li style="margin-bottom: 1rem;">You configured Redis with a "No Eviction" policy. Over a period of six months, the 16GB of RAM gradually fills up to 100%. What exactly happens to your backend application the moment a user attempts to log in and create a new session token, and how does this contrast with what would happen under an LRU policy?</li>
-            <li style="margin-bottom: 1rem;">Your infrastructure team migrates your primary API servers to a new AWS region, completely changing their IP addresses. The DNS records are updated successfully. However, 15% of your global users report they cannot access the app for the next 24 hours. Walk through the hierarchy of DNS caching (OS, Browser, Resolver) to explain why this happened and what DNS configuration you missed prior to the migration.</li>
-            <li style="margin-bottom: 1rem;">An external Weather API charges you $0.01 per request and allows 1000 requests per minute. You implement API caching with a 60-minute TTL. Your bill for the month comes back at $50,000 (meaning millions of requests were made). Upon investigation, you realize you cached the data based on the exact latitude and longitude down to 8 decimal places. Why did this caching strategy fail to protect your billing, and how would you redesign the cache key structure?</li>
+        <div class="interview-box" style="margin-bottom: 2rem">
+          <h3 style="color: #111">1. Scenario-based Questions</h3>
+          <ul style="color: #333">
+            <li style="margin-bottom: 1rem">
+              Your Redis cache goes down in production entirely. Because you
+              implemented a Cache Aside (Lazy) strategy, the application
+              gracefully falls back to querying the primary PostgreSQL database.
+              However, within 60 seconds, your entire platform crashes. Walk
+              through the cascade of failures that caused the crash, and how you
+              would redesign the system to survive a complete cache failure.
+            </li>
+            <li style="margin-bottom: 1rem">
+              You deployed a critical bug fix to your frontend CSS file. Users
+              are complaining that the UI looks completely broken. You check the
+              server, and the new file is definitely deployed. You realize the
+              CDN edge servers are serving the old CSS file. What exactly is
+              happening, why did the CDN do this, and what is the immediate fix
+              and long-term architectural solution?
+            </li>
+            <li style="margin-bottom: 1rem">
+              You implement rate limiting using Redis. A middleware checks the
+              <code>X-Forwarded-For</code> header and increments a counter.
+              Suddenly, your customer support gets flooded with complaints that
+              <em>every single user</em> from a specific corporate office is
+              being blocked with a <code>429 Too Many Requests</code> error,
+              even though no individual user is exceeding the limit. What is the
+              networking root cause of this, and how do you fix your rate
+              limiter?
+            </li>
+            <li style="margin-bottom: 1rem">
+              A celebrity makes a viral post on your platform, instantly driving
+              500,000 users to view it simultaneously. The post is not in the
+              cache yet. Due to your Lazy Caching strategy, 500,000 requests
+              miss the cache and hit the database to compute the post's stats at
+              the exact same millisecond. This completely locks the database (a
+              Cache Stampede). How would you modify your caching strategy to
+              prevent this specific scenario?
+            </li>
+            <li style="margin-bottom: 1rem">
+              Your startup decides to switch from Lazy Caching to Write-Through
+              caching for user profiles to ensure data is never stale. A week
+              later, latency metrics for the "Update Profile" endpoint show an
+              increase from 50ms to 400ms. What are the specific architectural
+              reasons why a Write-Through cache slows down write operations, and
+              under what conditions is this trade-off acceptable?
+            </li>
+            <li style="margin-bottom: 1rem">
+              You configured Redis with a "No Eviction" policy. Over a period of
+              six months, the 16GB of RAM gradually fills up to 100%. What
+              exactly happens to your backend application the moment a user
+              attempts to log in and create a new session token, and how does
+              this contrast with what would happen under an LRU policy?
+            </li>
+            <li style="margin-bottom: 1rem">
+              Your infrastructure team migrates your primary API servers to a
+              new AWS region, completely changing their IP addresses. The DNS
+              records are updated successfully. However, 15% of your global
+              users report they cannot access the app for the next 24 hours.
+              Walk through the hierarchy of DNS caching (OS, Browser, Resolver)
+              to explain why this happened and what DNS configuration you missed
+              prior to the migration.
+            </li>
+            <li style="margin-bottom: 1rem">
+              An external Weather API charges you $0.01 per request and allows
+              1000 requests per minute. You implement API caching with a
+              60-minute TTL. Your bill for the month comes back at $50,000
+              (meaning millions of requests were made). Upon investigation, you
+              realize you cached the data based on the exact latitude and
+              longitude down to 8 decimal places. Why did this caching strategy
+              fail to protect your billing, and how would you redesign the cache
+              key structure?
+            </li>
           </ul>
         </div>
 
-        <div class="interview-box" style="margin-bottom: 2rem;">
-          <h3 style="color: #111;">2. "What if?" Questions</h3>
-          <ul style="color: #333;">
-            <li style="margin-bottom: 1rem;">What if hardware RAM was completely non-volatile (persistent) and as cheap as Disk storage, allowing you to store petabytes of data in memory? How would this fundamentally change the way we architect databases and caching layers? Would we still need Redis?</li>
-            <li style="margin-bottom: 1rem;">What if CDNs had no concept of TTL (Time to Live) and simply cached everything forever until manually purged? Trace the operational nightmares this would cause for a heavily dynamic platform like Amazon or Twitter, specifically focusing on deployments, data accuracy, and edge node storage capacity.</li>
-            <li style="margin-bottom: 1rem;">What if DNS caching didn't exist at the Operating System or Browser level, and every single HTTP request required a full recursive resolution starting from the Root servers? Explain the impact on global internet latency, the load on top-level domain servers, and the potential security vulnerabilities.</li>
-            <li style="margin-bottom: 1rem;">What if the only caching strategy available was Write-Through, and Lazy Caching (Cache Aside) was impossible? Explain which specific types of applications would become financially and computationally unscalable, and why.</li>
+        <div class="interview-box" style="margin-bottom: 2rem">
+          <h3 style="color: #111">2. "What if?" Questions</h3>
+          <ul style="color: #333">
+            <li style="margin-bottom: 1rem">
+              What if hardware RAM was completely non-volatile (persistent) and
+              as cheap as Disk storage, allowing you to store petabytes of data
+              in memory? How would this fundamentally change the way we
+              architect databases and caching layers? Would we still need Redis?
+            </li>
+            <li style="margin-bottom: 1rem">
+              What if CDNs had no concept of TTL (Time to Live) and simply
+              cached everything forever until manually purged? Trace the
+              operational nightmares this would cause for a heavily dynamic
+              platform like Amazon or Twitter, specifically focusing on
+              deployments, data accuracy, and edge node storage capacity.
+            </li>
+            <li style="margin-bottom: 1rem">
+              What if DNS caching didn't exist at the Operating System or
+              Browser level, and every single HTTP request required a full
+              recursive resolution starting from the Root servers? Explain the
+              impact on global internet latency, the load on top-level domain
+              servers, and the potential security vulnerabilities.
+            </li>
+            <li style="margin-bottom: 1rem">
+              What if the only caching strategy available was Write-Through, and
+              Lazy Caching (Cache Aside) was impossible? Explain which specific
+              types of applications would become financially and computationally
+              unscalable, and why.
+            </li>
           </ul>
         </div>
 
-        <div class="interview-box" style="margin-bottom: 2rem;">
-          <h3 style="color: #111;">3. Debugging Questions</h3>
-          <ul style="color: #333;">
-            <li style="margin-bottom: 1rem;">Users are reporting a severe security issue: after logging in, they occasionally see the profile dashboard of completely random users. You are using Redis to store session tokens, mapping `session_id -> user_id`. You verify the token generation is perfectly secure. What is the most likely bug in how your middleware reads or writes to the cache that would cause cross-contamination of sessions under high concurrency?</li>
-            <li style="margin-bottom: 1rem;">You implement a Redis-based rate limiter using a simple key-value counter (<code>IP_ADDRESS: count</code>) with a 60-second TTL. However, malicious bots are successfully making thousands of requests per minute without getting blocked. When you check Redis, the counter for their IP never goes above 1, but the TTL keeps resetting to 60. What is the logic flaw in how your code interacts with Redis?</li>
-            <li style="margin-bottom: 1rem;">Your monitoring tools show that the primary Postgres database is completely idle, yet users are experiencing 500 Internal Server Errors when trying to load their dashboards. The cache server is maxed out on memory and CPU. Given that you use a Lazy Caching strategy, trace the request path to identify where the failure is occurring and why the fallback to the database isn't happening.</li>
+        <div class="interview-box" style="margin-bottom: 2rem">
+          <h3 style="color: #111">3. Debugging Questions</h3>
+          <ul style="color: #333">
+            <li style="margin-bottom: 1rem">
+              Users are reporting a severe security issue: after logging in,
+              they occasionally see the profile dashboard of completely random
+              users. You are using Redis to store session tokens, mapping
+              `session_id -> user_id`. You verify the token generation is
+              perfectly secure. What is the most likely bug in how your
+              middleware reads or writes to the cache that would cause
+              cross-contamination of sessions under high concurrency?
+            </li>
+            <li style="margin-bottom: 1rem">
+              You implement a Redis-based rate limiter using a simple key-value
+              counter (<code>IP_ADDRESS: count</code>) with a 60-second TTL.
+              However, malicious bots are successfully making thousands of
+              requests per minute without getting blocked. When you check Redis,
+              the counter for their IP never goes above 1, but the TTL keeps
+              resetting to 60. What is the logic flaw in how your code interacts
+              with Redis?
+            </li>
+            <li style="margin-bottom: 1rem">
+              Your monitoring tools show that the primary Postgres database is
+              completely idle, yet users are experiencing 500 Internal Server
+              Errors when trying to load their dashboards. The cache server is
+              maxed out on memory and CPU. Given that you use a Lazy Caching
+              strategy, trace the request path to identify where the failure is
+              occurring and why the fallback to the database isn't happening.
+            </li>
           </ul>
         </div>
 
-        <div class="interview-box" style="margin-bottom: 2rem;">
-          <h3 style="color: #111;">4. Design Questions</h3>
-          <ul style="color: #333;">
-            <li style="margin-bottom: 1rem;">Design a "Trending Topics" caching system for a platform like X (Twitter). The raw data is millions of tweets per minute. You need to serve the top 10 trends to users instantly. Detail the architecture: How is the computation offloaded? How does data get into the cache? What is the cache key structure? What eviction policy is used, and how do you ensure the UI updates seamlessly without users seeing stale trends?</li>
-            <li style="margin-bottom: 1rem;">Design a CDN caching strategy for a global e-commerce site. You have static assets (images, JS, CSS), semi-dynamic data (product catalogs, pricing during a sale), and highly dynamic data (user shopping carts, checkout sessions). Detail exactly how you would configure edge caching rules, TTLs, and cache-busting strategies for each of these three data types to balance speed with perfect data accuracy.</li>
-            <li style="margin-bottom: 1rem;">Design an external API rate limit cache. Your backend consists of 50 horizontally scaled Node.js servers, all making requests to a 3rd party AI API that absolutely hard-limits you to exactly 500 calls per minute globally. If you hit 501, your account is banned. Detail how you would use Redis to design a distributed, atomic counter that guarantees no race conditions across the 50 instances can breach the 500 limit.</li>
+        <div class="interview-box" style="margin-bottom: 2rem">
+          <h3 style="color: #111">4. Design Questions</h3>
+          <ul style="color: #333">
+            <li style="margin-bottom: 1rem">
+              Design a "Trending Topics" caching system for a platform like X
+              (Twitter). The raw data is millions of tweets per minute. You need
+              to serve the top 10 trends to users instantly. Detail the
+              architecture: How is the computation offloaded? How does data get
+              into the cache? What is the cache key structure? What eviction
+              policy is used, and how do you ensure the UI updates seamlessly
+              without users seeing stale trends?
+            </li>
+            <li style="margin-bottom: 1rem">
+              Design a CDN caching strategy for a global e-commerce site. You
+              have static assets (images, JS, CSS), semi-dynamic data (product
+              catalogs, pricing during a sale), and highly dynamic data (user
+              shopping carts, checkout sessions). Detail exactly how you would
+              configure edge caching rules, TTLs, and cache-busting strategies
+              for each of these three data types to balance speed with perfect
+              data accuracy.
+            </li>
+            <li style="margin-bottom: 1rem">
+              Design an external API rate limit cache. Your backend consists of
+              50 horizontally scaled Node.js servers, all making requests to a
+              3rd party AI API that absolutely hard-limits you to exactly 500
+              calls per minute globally. If you hit 501, your account is banned.
+              Detail how you would use Redis to design a distributed, atomic
+              counter that guarantees no race conditions across the 50 instances
+              can breach the 500 limit.
+            </li>
           </ul>
         </div>
 
-        <div class="interview-box" style="margin-bottom: 2rem;">
-          <h3 style="color: #111;">5. Architecture &amp; Trade-off Questions</h3>
-          <ul style="color: #333;">
-            <li style="margin-bottom: 1rem;">A junior engineer asks: "Instead of running a separate Redis server which adds network latency, why don't we just store the cached data in a Javascript <code>Map()</code> or object directly in the Node.js memory?" Compare and contrast in-memory application variables vs a dedicated Redis cache regarding horizontal scaling, persistence, memory limits, and state sharing. When is the junior engineer's approach actually the right choice?</li>
-            <li style="margin-bottom: 1rem;">You are architecting the caching layer for two different features: (A) The checkout inventory system where product stock counts must be perfectly accurate, and (B) The comments section on a blog post. Analyze the trade-offs between Lazy Caching and Write-Through caching for both scenarios. Defend your choice of strategy for each feature based on consistency requirements and write-heavy vs read-heavy patterns.</li>
+        <div class="interview-box" style="margin-bottom: 2rem">
+          <h3 style="color: #111">5. Architecture &amp; Trade-off Questions</h3>
+          <ul style="color: #333">
+            <li style="margin-bottom: 1rem">
+              A junior engineer asks: "Instead of running a separate Redis
+              server which adds network latency, why don't we just store the
+              cached data in a Javascript <code>Map()</code> or object directly
+              in the Node.js memory?" Compare and contrast in-memory application
+              variables vs a dedicated Redis cache regarding horizontal scaling,
+              persistence, memory limits, and state sharing. When is the junior
+              engineer's approach actually the right choice?
+            </li>
+            <li style="margin-bottom: 1rem">
+              You are architecting the caching layer for two different features:
+              (A) The checkout inventory system where product stock counts must
+              be perfectly accurate, and (B) The comments section on a blog
+              post. Analyze the trade-offs between Lazy Caching and
+              Write-Through caching for both scenarios. Defend your choice of
+              strategy for each feature based on consistency requirements and
+              write-heavy vs read-heavy patterns.
+            </li>
           </ul>
         </div>
 
         <div class="nav-buttons bottom">
           <a href="mind-map.html" class="nav-btn prev" aria-label="Previous">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <polyline points="15 18 9 12 15 6"></polyline>
             </svg>
           </a>
-          <a href="#" class="nav-btn next" aria-label="Next (Coming Soon)" style="opacity: 0.5; cursor: not-allowed;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <a
+            href="../11-Background Tasks and Task Queues/01-Introduction and Workflow.html"
+            class="nav-btn next"
+            aria-label="Next"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
           </a>

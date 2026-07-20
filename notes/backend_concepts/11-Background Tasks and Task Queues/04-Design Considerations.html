@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>04 - Design Considerations and Best Practices</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="03-Types of Background Tasks.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="mind-map.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 11 - Background Tasks and Task Queues &gt; Design Considerations & Best Practices</div>
+
+        <h1>Design Considerations & Best Practices</h1>
+        <p class="lead">How to build resilient and scalable task queues for production.</p>
+
+        <h2>Design Considerations at Scale</h2>
+        <ul>
+            <li><strong>Idempotency:</strong> Tasks must be safe to execute multiple times. If a task fails midway and is retried, it should start cleanly from 0% or safely overwrite previous partial states without side-effects (e.g., using database transactions with rollbacks).</li>
+            <li><strong>Error Handling:</strong> Implement robust catch blocks to log exactly why tasks fail, allowing the broker to retry appropriately.</li>
+            <li><strong>Monitoring & Alerting:</strong> Continuously monitor queue length, successful completions, and failure rates using tools like Prometheus and Grafana. Set up alerts for spiked queue lengths.</li>
+            <li><strong>Scalability:</strong> Design the system so you can add more consumer nodes horizontally to increase processing power during traffic spikes.</li>
+            <li><strong>Ordering:</strong> If task sequence matters strictly, ensure your broker supports ordered delivery (e.g., FIFO queues).</li>
+            <li><strong>Rate Limiting:</strong> Protect external 3rd-party APIs (like email providers) by rate-limiting your workers to avoid hitting usage limits.</li>
+        </ul>
+
+        <h2>Best Practices</h2>
+        <ul>
+            <li><strong>Keep Tasks Small and Focused:</strong> A task should do one thing. If one part fails, it shouldn't force unrelated operations to restart. Use Chained Tasks for complex workflows.</li>
+            <li><strong>Avoid Long-Running Tasks:</strong> If a task takes minutes, break it down into smaller, more manageable chunks.</li>
+            <li><strong>Graceful Failure:</strong> Configure sensible retry limits (e.g., max 5 retries with exponential backoff) rather than retrying indefinitely.</li>
+        </ul>
+
+        <div class="nav-buttons bottom">
+          <a href="03-Types of Background Tasks.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="mind-map.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+      
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>Design your tasks assuming they will fail and be retried. The worker environment is chaotic; idempotency is your shield against that chaos.</p>
+        </div>
+        <div class="premium-box box-amber">
+          <h3>Important Terms</h3>
+          <p><strong>Idempotency</strong> — A property stating that an operation can be applied multiple times without changing the result beyond the initial application.</p>
+        </div>
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Idempotency is the golden rule of distributed background tasks.</li>
+            <li>Never cram an entire complex workflow into one mega-task.</li>
+          </ul>
+        </div>
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li>Always design tasks to be idempotent.</li>
+            <li>Use exponential backoff for retries.</li>
+            <li>Monitor queue lengths and worker health.</li>
+            <li>Keep tasks granular and focused.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

@@ -436,670 +436,389 @@ After creating notes files, add links to those in the index.html file
 
 Now convert the following lecture transcript into the notes described above and write concepts taught in this lecture.
 
-Transcript for lecture 16. Error Handling and Building Fault Tolerant Systems:
+Transcript for lecture 18. Logging, Monitoring and Observability:
 
 
 
 
-
-In the world of back-end development, errors are not just problems to solve.
-They are a normal part of building applications. And every developer needs
-to understand that errors will happen. And the key is to being ready for them,
-being ready to detect them, being ready to fix them. And here is a reality. Your
-database queries, they will sometimes fail. your external APIs, they will sometimes time out and your users will
-sometimes send bad data which will break your APIs if you're not ready for them or if you are not expecting them and
-your business logic will hit unexpected edge cases sometimes. So the question is
-not whether errors will happen but how you will handle them when they actually
-do. So in this video there are no tools that I want to talk about. There are no
-frameworks, there are no examples, code snippets, nothing. It is a mindset. When
-you are a backend engineer, when you're responsible for executing your core business logic, when you're responsible
-for making sure every single transaction, every single user activity
-goes seamlessly. Then you need a particular mindset, a fault tolerant
-mindset so that you are prepared for the worst and you know how worse it can get
-and there are some things that you need to keep your eyes on and there are some
-tips on how to detect them and how to prevent them. What are the best practices people usually implement?
-whether it's a startup, whether it's a big enterprise or open-source
-repositories, etc., etc. Let's start with what are the different types of
-errors that you might encounter in your day-to-day life as a backend engineer.
-The first type, I think this is the most common type, which logic errors. Logic
-errors. Now, these are the sneaky ones. It's not always very easy to detect them
-or to fix them. Logic errors are probably in my experience the most
-dangerous type because they don't crash your application as such but they just
-make it do the wrong thing. Your code which you have written it runs fine but
-the results are incorrect. The results are unexpected. So to take an example
-let's say we have an e-commerce store. you are a back end engineer in a
-e-commerce kind of SAS application and this store that accidentally applies a
-discount twice and that gives customers negative shipping costs. The app does
-not really crash in this particular scenario. But now your uh platform, the
-platform that you are working for as an engineer, your platform is losing money
-and it is losing money on every single order because of this one logic issue.
-Now these errors can go unnoticed for weeks and even months while quietly
-causing problems if you don't you're not monitoring them or if your users are not
-reporting them and your platum is just facing more and more loss every single
-week. So when do they actually happen and why do they happen? Some of the common scenarios are for example if you
-let's say misunderstand requirements or you implement algorithms
-incorrectly or if you just don't think about edge cases. So these are some of
-the usual scenarios when logic errors occur. The first thing is
-misunderstanding requirements. Let's say your typical sprint cycle follows by
-having a one-on-one discussion with your client or with your product managers and
-during those discussions some of the points came across a little confusing and you noted down the requirements
-which were not the intended ones. So you went ahead and implemented those and
-that went straight to production and with lack of testing it also went to the users and it started causing problems.
-So misunderstanding requirements is a pretty common one. Then you might have
-uh let's say it's a very complicated algorithm depending on the user's behavior and depending on the user's
-past purchase history. You are issuing different different discount codes and different different discount workflows.
-And in those complicated algorithms you made uh one slight miscalculation and
-that in turn caused all this discount related loss in your platform. Or it
-might be that you did not expect a particular user activity, a particular user behavior in a payment workflow in a
-discount based workflow and that caused some issue. So these are some of the
-scenarios where logic related errors might occur and they are pretty dangerous ones. If we are talking about
-payments or monies or uh security in that aspect, they can corrupt data and
-they can produce wrong business results over time without getting detected. So
-that's all about logic errors. Second type is database errors. Now database
-errors can bring your entire system down since most backend apps they rely
-heavily on their database. And these errors range from a simple connection problem to complex issues like deadlocks
-and transaction related issues. And connection errors happen when your app
-cannot talk to your database. Your back end throws a couple of 500 errors and your front end just shows empty screen
-everywhere. Or it can also be because the network is down and the database
-server is overloaded. Or you have run out of connection pools. We you make use
-of this concept called connection pools so that your back end can hold a couple
-of open connections to your database server open TCP connections so that it
-does not have to do the whole process of TCP handshake and all every time a new request comes. So database pooling is
-kind of an optimization to prevent uh TCP connection based setup costs. So in
-a pooling based setup that can also cause an error and when these errors
-happen your app basically cannot really function because your back end needs to
-interact with the source of the data to send something to the front end to and
-the front end needs something to show right. So if your database is down if your database is throwing error then
-your whole platform your whole app cannot really function properly. That's about the first kind of database errors
-which I just mentioned are connection errors. Connection errors. Second thing can be about constraint violation. Now
-this is something which is not very apparent. By constraint violation I mean that you are trying to perform some kind
-of operation which breaks the database rules. For example, you might try to
-create a user with an email that already exists. In that case, your database just throws a unique constraint error. And if
-we'll come back to that in the later part of the video, but if you are not properly handling that error, the unique
-constraint error and you're not sending a properly formatted message to your user to your front end, then that error
-might bubble up to your to your main process and it might throw a 500 error
-to your front end. So that is one kind of constraint violation, the unique constraint violation. If you're trying
-to create a user with the same email or it can also be that you are trying to reference a customer that does not
-really exist in another table. For example, you have two tables. One is
-customers and second is orders. So in the orders table you have a field called
-customer ID and this is a foreign key to this table and this is let's say not
-nullable and you are trying to insert a new record into the orders table with a
-customer ID which does not really exist in the customer table and since it is a foreign key and you are referencing the
-customers table the database throws an error if it cannot find a associated
-entry in the customer's table. So that can also be a cause of constraint
-violation. And the reason for these kinds of violation, the constraint violation is usually lies in your
-validation layer. If you're not properly handling all the edge cases both in your front end and your back end, then these
-kinds of constraint violation error might occur. So that is something to keep in your mind in order to avoid the
-database constraint violation related errors. Then you have to make your validation layer stronger. But of course
-the constraint violation errors like unique key errors they cannot be avoided. Only the database knows whether
-a new entry a new email is unique or not. So for those use cases of course you have to focus on your error
-formatting. How to send a properly a user-friendly message to your front end so that your front end can show a proper
-message that try a different email this email already exists something like that. And then in the database we have
-another kind of error which is called query errors. Query errors basically happen when your SQL is malformed. For
-example, you are trying to access tables that don't exist because you made a typo
-in your SQL query. Let's say you wrote a query something like select star from
-customers. This is a proper query. But instead of writing this, you ended up writing something like you made a typo
-and that caused an error that this table that you are trying to query from this does not really exist. So that is a
-error which happened because of a typo a malformed SQL query or it can also happen when your queries are too complex
-and they time out etc. deadlocks. Deadlocks are another reason. Deadlocks
-are particularly tricky and they occur when multiple database operations are
-waiting for each other and they create kind of a circular dependency. Now
-that's where we have a dreadlock kind of situation. So that's also something you have to be worry about. Next we have
-external service errors. uh most of the modern apps that we have uh these days
-SAS applications mostly that we are talking about they depend on a lot of external services external services like
-uh payment processors or email providers or let's say cloud storage stoages like
-object storage like S3 or radius or let's say you are using a external
-provider something like oz0ero or clerk for your authentication system so that
-is also an external dependent dependency and each one of these external dependencies is a point of failure that
-you don't really have any control over and that is a big problem and you cannot
-really avoid that. It's not like you can abandon using any external dependency that's not possible because you have to
-build a lot of systems from scratch a lot of complex systems that people have spent years of effort on. So that is not
-really something that is practical. So you have to expect that all these external services might fail and you
-have to be prepared that when they fail these are the things that we are going to do to make it up for our users and
-couple of reasons why these external services might fail. First thing is of course network. This is how we from our
-backend application connect to an external services either through HTTP or through TCP or through websocket any
-other kind of connection. But the backbone the medium is of course the network the internet and the internet is
-not really perfect. So you'll have to deal with things like connection timeouts and DNS failures and network
-partitions. This is affected by your routing etc. Partitions right and you
-need to expect this and you need to plan for them. For example, let's say you are
-using a authentication provider something like clerk or something like ozero. Another thing to keep in mind
-when you're using an external provider is authentication errors happen when external services like clock or ozero
-they reject request due to either because bad credentials the username password is not correct the email is not
-correct or expired tokens or insufficient permissions etc. So just because you're using an external
-services for your authentication is not secure enough in itself because you are
-using them as an integration you still have your own back end they are not standalone and in your own back end you
-can cause security issues security issues like you might expose sensitive
-user informations in your logs etc. So that is something that you have to keep in your mind since we are talking about
-external dependencies authentication etc. I just thought of mentioning this point. Now, next thing is rate limiting.
-When you are using external services, let's say you are integrating some kind of AI functionality and you are using an
-open AI key or you are using something like resend for your emails etc. And
-these external services they pretty much all of them have this functionality called rate limiting. And rate limiting
-exists so that their users so our external services let's say an email
-provider like resend and we are their users business users but still users we
-cannot abuse them. They prevent malicious users who send abnormal amount
-of request in a particular time frame and they have mechanisms rate limiting
-mechanisms implemented so that they can prevent uh users like us and users with
-bad intentions and for some reason let's say your platform because of some kind
-of user activity in your platform or let's say some kind of logic errors you ended up hitting their API a abnormal
-amount of times. and it started failing because and their rate limiting algorithm triggered and they started
-blocking you or sending you 4 to 9. So we get the response code 4 to9 when we
-make too many requests. It means too many requests and you started getting this error code 429. So in these kinds
-of scenarios you have to expect them from beforehand and you have to be ready for them. And by be ready for them, I
-mean you have to implement strategies. Strategies like let's say exponential
-backoff. Exponential backup is a pretty common strategy that we usually implement in case of rate limiting
-related errors. For example, once we start getting 4 to9 requests. So we have
-a condition in our error handling logic that if we start getting 4 to 9 then
-wait for a minute wait for 2 minutes then try again. If you still get 4 to 9
-then wait for double that amount of time. If we previously waited for 2 minutes now we'll wait for 4 minutes and
-we'll try again and until we start getting successful responses we'll keep
-doing this. That's why it's called an exponential backup strategy. So in order to deal with rate limiting errors you
-have to implement these strategies. Strategies like exponential backoff. And the last one when you are dealing with
-external dependency the most inevitable one is service outage or service going
-down. Now this we see pretty much happening every once in a while. Let's
-say some major cloud provider something like GCP or something like some services of AWS face some kind of issue some kind
-of incident and they go down and when they go down a lot of their clients go down and we have this u chaos in the
-internet in the Twitter that this service is down these users are complaining etc. So external services
-going down is something we as software engineers don't really have a lot of
-control over. They are inevitable and sometimes they go down because of
-unexpected incidents or sometimes they go down because of maintenance and your app your back end needs to handle these
-kinds of errors also gracefully either with fallbacks you have to have let's
-say your radius service goes down then you should have a second layer of backup
-something like in-memory caching or a second radius node etc like some kind of
-fallback so that your app can handle that gracefully and without affecting
-any kind of major user functionality like payments or something like order processing etc. In the next category we
-have and this is a famous one input validation errors and these are
-something which happen because of users in our platform because of the consumers
-of our platform. Input validation errors happen. They happen because users uh
-send bad data that does not really meet our requirements, meet our system requirements, meet our rules and the
-validation layer which throws these errors. This is our first line of defense against any kind of bad data or
-malicious inputs since we are detecting at the entry point in our backend application and we are just throwing
-errors if something does not meet our requirements. And there are different types of rules that we usually enforce.
-If you watch the validation video in this playlist, then you'll have a much
-deeper understanding about the different kinds of validation that we like to do. But usually it's something like format
-validation where we check if let's say an email is an appropriate email format or not, whether a phone number looks
-like a phone number or not, or a date is an appropriate date or not, etc., etc.
-And you need to be clear even if it's some kind of custom data we need to be clear what exact format that we are
-expecting and we should only accept that format for the sake of security for the
-sake of fall tolerance. We also have range validations that handles numeric inputs whether the maximum amount is too
-high or the minimum amount is too low etc or if the string is too long or if
-it is too short. If the array has at least three items or if the array has more than 100 items, things like this
-are called range based errors. We also have required field validation and this
-check if a particular field which is mandatory for a particular operation to
-happen is present or not. If they are not present then we throw an error and usually in these kinds of errors we
-throw a 4handed which is a bad request error from back end and these kinds of
-errors are the easiest ones to expect and the easiest ones to handle because
-we already know the requirements of our data and we just enforce those rules at
-the entry point of our backend application and if anything seems off we just throw an error right unlike the
-other kinds kinds of errors that we saw above which are external dependency which we don't really have any control
-over logic errors which are hard to detect. It's a validation errors are the
-easiest ones to handle. So make sure you have a very robust validation layer.
-Does not matter what kind of backend app that you are building. Next up we also have configuration errors. What does
-this mean? Configuration errors can prevent your app from starting if you
-have that kind of setup in your app, which you should have. And they also can
-make your production environment behave unexpectedly. And these kinds of errors, configuration errors, they usually show
-up when you are moving between your development, your staging and your production environment. For example,
-while development, you added a particular environment variable. Let's say something like open AI API key. You
-added this in your env file and you raised APR and it is merged and you
-forgot to add this particular variable in whatever your production environment
-variable flow is whether it is manual or whether it is coming coming from AWS parameter store etc etc and you just
-forgot to add that there and the deployment went successful from this point. If you forgot to add that two
-things can happen. If you are checking at the start of your application, you're
-validating the presence of all the required environment variables. If you have that kind of setup in your back
-end, then your app fails to start. And I think this is the best case scenario.
-That's why if you are building a backend app, make sure your environment variable or your configuration settings whatever
-that you are reading either from environment variables or from remote stores whatever all these variables
-which are required for your app to function properly which are not optional. Make sure you validate them at
-the first step before your server starts. And if any of them are missing, if any of them are corrupt, then fail
-your app there. So that when you make a new deployment and since most of the deployments have kind of a setup like
-blue green deployment where unless the new deployment is successfully starts,
-the previous deployment does not really stop. So if you push something and a new
-deployment starts and it fails, your previous deployment is still running and
-uh your app is not really down. As compared to another scenario where you're not doing this kind of setup
-setup where at the start of your app you're checking all the required environment variables, the configuration
-variables are present or not and you're not throwing any kind of error. You're not stopping your app. But because of
-this kind of setup, what happens in your API handlers? API handlers which make
-use of this new OpenAI service to make an API call to the OpenAI servers to
-let's say generate some kind of image or something. So when that API is finally
-hit by some user then uh this service is triggered and since that service tries
-to access this particular configuration variable which is open a API key and it cannot find it and it errors out and
-your users get a 500 errors fails during runtime and this is the worst case
-scenario. We always prefer to crash our app at the start before it it starts to
-serve real users as compared to this. This is a bad scenario is something
-which should not happen. So that's all about configuration errors. It happens
-when we are moving between development, staging, production and it is pretty common. So in order to prevent these
-kinds of errors, make sure you have this kind of setup where before you start your app, you are validating all your
-required configuration variables. In the next video in the series, we are talking about configuration management of
-backend apps. So there we'll do a deep dive on what kind of configuration that we need, where to store them etc etc.
-But just to give a high level advice that make sure you validate your configuration variables before your
-server starts so that you can avoid these sneaky kind of errors while your
-application is running your while your back end is running. Now let's talk about prevention. Since we discussed
-what are the different kinds of errors that might happen and what are the things that you have to keep an eye on
-have to make a note of. Let's see what we actually can do. So in my opinion one
-of the best strategy is finding errors before they spread. This is the best
-strategy does not matter what environment that we're talking about whether we are talking about front end backend infrastructure does not matter.
-Finding errors the moment they happen before they cause any actual damage that
-is the best strategy a any kind of system can have the best kind of error
-handling. So this is the key point in this video which is the best error
-handling starts before error happens. This is your key strategy and it should
-be the best kind of error handling. It starts before errors happen. So health
-checks are fundamental in this. They continuously monitor your system. We
-typically have if you are talking about monitoring your servers HTTP servers then we expose a endpoint something like
-health or something like status in an endpoint which will return some kind of
-generic response that it is okay. The key thing is not the response it returns
-the response code is important. As long as it returns a 200 response code it
-means that it's running. If it's returning something like 400 or something like 500 then something is
-wrong. So that's why you make use of health checks so that any external service any external tool can keep
-pinging keep hitting this particular endpoint to make sure that it is active.
-It is error-free. But this only checks whether they are running or not your services and your servers are running or
-not. But that is in itself not enough. You should not just check if the
-services are running. You should also check and you should also verify that they are really doing their job. And
-when we are talking about that, first thing that comes to mind is databases. To make sure that your back end is doing
-its job, the primary component that comes to mind is databases. And for that we also have database based health
-checks. and database based health checks they test connectivity whether we are
-whether we can successfully connect to our databases or not and things like query performance if some of the queries
-which used to take let's say 500 millconds they have suddenly started taking 4 seconds or 5 seconds then there
-is something wrong or the data integrity things like that a simple ping or a
-simple health check endpoint which only checks that our server is running or not
-that in itself is not enough. Running a representative query and checking the
-results how much time it took and how much time it takes on average etc etc.
-And the second thing in our pack is of course the external services. Now we
-should also implement some kind of health check kind of functionality for
-our external services to make sure that we can successfully connect to them and they are functioning as they are
-supposed to function. For example, for payment processors, you can implement
-test transactions so that when an actual transaction happens from a user side, we
-already know that since the last test transaction 5 minutes back was successful, then we are good to go. when
-it comes to real transactions with real users. Same way for email services, send
-test messages to your internal email addresses to make sure that the emails are delivering and your connectivity can
-be established with the external service etc etc. Same way for authentication services, you can generate test tokens.
-You can test those tokens against validation endpoints that your authentication service exposes. And that
-way you can verify that your authentication service is functional. And the last thing is core
-functionality. These tests basically involves that your configuration. As I mentioned just before this point that at
-the start of the app we should make sure that all the required configuration variables are present. If they're not
-present then we are stopping at that point and showing a meaningful message so that whichever operator the wagon
-operator the infrastructure operator they can appropriately configure those variables and start the service again
-successfully. So making sure that the configuration is properly loaded. The caches some of the default caches the
-caches which are necessary to run on production workload they are populated
-and some of the internal data structure whether it's about configuration or about external service etc etc they are
-consistent. So these are called some of the core functionality. So we should also keep an eye on these things. So all
-of this combined we can say that these are proactive error detection ahead of
-time making sure we are already prepared for all these worst case scenarios and
-we have methodologies to prevent them and if they occur to fix them. So that's
-why we call all of these as proactive error detection. Then one of the major
-components especially when we are talking about error handling and fault tolerant systems then this is something
-which will always show up which is monitoring and observability. Now this
-is a huge topic logging monitoring and observability and we have I think the
-next to next video in this series is going to be about logging monitoring and observability that's why I don't want to
-spend much time here in this video which is all about the mindset that we need to
-deal with errors right it's nothing concrete just a scope to touch base upon
-that's why we are not going to talk much about monitoring and observability in this video but The whole idea about
-monitoring is it detects errors quickly and while they are happening and it
-provides enough context for us to debug those errors. One point to keep in mind
-in that area is don't just track if for people who are already familiar with
-practices of monitoring and observability. One of the advices is to don't just track error rates. Also
-monitor performance metrics that might indicate problems before they cause failures. One of the early telltale
-signs before a system is going to break is the performance implications. If you
-are seeing the degradation of performance in some of your services, then it might mean that they are going
-to fail soon. So by monitoring performance we can successfully avoid
-some of the failures. Uh your monitoring setup should track different types of errors across different parts of your
-application including uh HTTP errors, database errors, external service
-failures, business logic errors. It should cover everything your monitoring setup whatever service that you are
-using for monitoring or whatever methodology that you are implementing in your back end. It should try to cover as
-many sources of errors as possible. And when we are talking about performance metrics or performance monitoring, it
-should track things like response times or resource usage and throughput, your
-business metrics monitoring. It should keep track of performance indicators, things like a sudden drop in successful
-transactions, assuming you are running some kind of e-commerce uh back end. Then in a scenario like where the rate
-of successful transaction suddenly drops and you're seeing a lot of failed transactions then it might indicate some
-kind of technical problem even though the error rates are normal. That's why tracking business metrics metrics like
-transactions successful authentications etc etc that's also important. Then
-logging good practices they provide information you need to understand and debug errors. You should implement
-things like structural logging formats like JSON logs which can be easily passed and more metadata can be added to
-it and tools like Graphana or Loki. These external tools which are meant to
-be log aggregation tools they can take those logs the JSON logs and they can
-appropriately parse them and you can explore your error rates in a visual dashboard kind of setup. You can search
-through them, you can store them in external storage etc etc. So that's pretty much all about monitoring and
-observability on a very high level. We are going to dive deep into that the
-tools that are usually used etc etc in a future video but for now when it comes
-to error rates and a fall tolerant system monitoring and observability is a
-key part to that. That's why we had to mention it here. And next up I want to talk about some of the philosophies that
-have always helped me especially in the scenario of error handling or building robust systems. First thing is immediate
-error response. Now when an error happens your immediate response that
-determines whether it becomes a minor issue or a major failure and the
-strategy depends on the error type and the context of that error. For example,
-for recoverable errors, things that we already talked about the email sending
-workflow. Let's say you have in an external service something like resend or sending an email and that service
-failed. Now you are in a situation of error handling. And if you think about it, it is a recoverable error. Sending
-an email is not something that has to happen uh under milliseconds. We can afford some kind of delay. So in
-scenarios like these for recoverable errors, retry mechanisms or exponential
-backup strategies they are a good solution and they work well for network
-errors or temporary resources or let's say we have run out of database
-connections in our database. So in these kinds of network errors or resource
-utilization kind of errors in these kinds of errors retry mechanisms exponential backup strategies they work
-quite well from my own experience but something that you have to be careful about is not to overwhelm already
-stressed systems. So should keep the error handling logic, whatever retrying
-logic, whatever exponential backoff logic that you're implementing, the resource overutilization logic that you
-have implemented, they should not add more stress to your system since your system is already under stress. That is
-something that you have to keep an eye on. And the second is nonreoverable
-errors. The first one is that we talked about sending an email or running out of database connections in our pool. So
-those are called recoverable errors. But talking about non-reoverable errors, the
-strategy that works best is containment and graceful degradation. Containment
-and graceful. In this we usually do solutions like
-switching to cast data or disabling non-essential features or providing
-alternative functionality providing some kind of backup as a fallback and
-containing the scope of that damage. So that is a key strategy that we try to
-implement in the cases of non-reoverable errors. So that's about immediate error
-responses. How should you react to two different kinds of errors. One is recoverable errors and the second is
-non-reoverable errors. The second thought or the second key idea is error
-recovery strategies. Now this depends of course on the error nature and the
-functionality criticality. But automatic recovery can handle many errors without
-human interventions. For example, if a service has failed and it is in a state
-of not responding to any kind of requests etc etc then restarting that
-service automatically having some kind of tool or some kind of setup in our workflow for restarting that service or
-that particular process works pretty much all the time. Then implementing
-cleanup functionality like cleaning up corrupted caches. If we have problem
-related to caches or switching to a backup systems that also works most of
-the time but you should design these things carefully because some of the times these things might make the
-problems worse. You have to adopt a trial and error based strategy. Try these things. Try to reach that error
-threshold ahead of the time and see what works for you. What kind of error
-recovery strategy works for what kind of service. Now for some other kinds of
-services, manual recovery is pretty much necessary because it requires human
-judgment and human decision making. So for these kinds of errors which needs a
-manual intervention, I should plan to document these processes. So that all
-your team members and your new hires are aware of these kinds of workflows. What
-to do in a situation of incident or any kind of uh service failure and you
-should test them so that you are already prepared. you know that they are definitely going to work when the
-situation arises and they can be executed quickly especially in a stressful situation where taking
-decisions quickly is the key to providing a better user experience to
-your user base and in scenarios like these one of the key things to keep in mind is not to corrupt your data. So
-data recovery strategies data is the most important part in your application because all the other things are
-basically the code that is running the services that are running but the only tangible thing is the data that you hold
-the data of your user the data of all your transaction of your orders or whatever kind of platform that you are
-building. So data integrity should be one of your number one priorities. So this should involve taking backups at
-the key moments and restoring from backups, replaying transaction logs using specialized recovery tools. Third
-thing is propagation control. Not all errors should be
-handled exactly the moment they occur. Sometimes errors need to propagate up to
-higher levels when there is more context to the error. And we also use the word
-stack trace in scenarios like these. But you should have this kind of setup where
-you are intentionally bubbling up your errors to a particular process, the primary process or the secondary
-process. But you should have the whole bubbling workflow in your control. Otherwise, this might spread to other
-services or it might shut down your main service. We have this concept called
-exception handling in most programming languages. whether we are dealing with JavaScript or Python where we have this
-exception based workflow we we handle errors using try catch. So these
-exception handling hierarchies provide the structure for error propagation. So
-catching lower level exceptions and wrapping them with enough context and bubbling them up to higher level
-exceptions so that we have more business context so that we have enough
-information in our hands so that we can log the appropriate data. We can send a meaningful error to our front end or if
-we need to we can trigger some kind of recovery strategy at that point. So
-planning this whole thing bubbling up the low-level error up to our highle
-process with enough context that is something which is pretty common that we
-implement in pretty much all our backend applications. We also have a different name for this which is called global
-error handling and we'll come back to that in the next point. So error boundaries these boundaries where the
-last point where we stop the errors from propagating further these error
-boundaries in service architecture especially they prevent errors in one
-service from affecting others. So that's the reason we should aim to use separate
-processes and implement timeouts things like timeouts which protect service level boundaries and use things like
-message cues to decouple different different services instead of having them in the same process. uh we should
-implement things like rabbit MQ different other kinds of message Q- based architecture so that we have a
-asynchronous communication between two different services so that a bug in one
-service does not cause the failure of another service now coming back what I
-like to call as the final safety net global error handling final safety net
-is one of my favorite error handling mechanisms something which I pay a lot
-of attention to in pretty much every backend app that I have built with is
-because this is one of those modules which you spend a lot of time initially when you're setting your whole platform
-up when you are getting to know the features that you might need the services that you are using etc etc but
-from that point on you only make slight tweaks or add more conditions to check
-etc etc but this is a one-time effort And this is a single effort which pays a
-lot in the future, not even in the distant future, the immediate future
-because this is the most important error handling strategy you can implement in a
-backend app. A global error handling workflow. So this is how it typically works. I want to explain this global
-error handling workflow using real life workflows that we typically use in backend apps. So from our earlier videos
-that we already know in a very common backend architecture we usually have the
-first entry point is of course the routing layer. From there we reach the
-handler. The routing layer decides which handler is going to take care of a
-particular request. And the handler deals with taking or extracting whatever
-data from that payload that we're receiving the performing operations like
-des serialization and validation and binding etc etc. And once it has all the
-appropriate data it calls a particular service method we call it service
-because in a typical service method we might make use of one or more repository
-methods. So service method is basically an orchestrator for different repository
-methods. Now what do we mean by repository method? These are the leaf nodes in a backend function which
-usually do one thing and usually that is running a database query. So we might
-have functions like get user by id that is a repository method and a service
-might fetch a particular user by its ID and then it might do additional
-operations like it can fetch all the users posts in the same service method
-by calling a different repository method. So one service which returns a user and all its posts can call two
-repository method. That's why we have made this separation so that repository methods are unit level. We try to keep
-their scope limited to one single kind of database operation and we let the
-service the concerned service decide what repository method and how many
-repository method that it wants to call etc. So in this architecture that most
-back end apps follow when we are talking about error handling let's say in the repository layer so the route that we
-are talking about let's say we we have a a good readads kind of platform which is
-a to oversimplify it a book management book management platform and in a
-typical endpoint of a book management platform that we are trying to create a
-new book. That's what we want to do. It is a endpoint, an API endpoint. To
-create a new book and to create a new book, we want a couple of fields in our
-payload. The first thing is name. Then name of the book, which is a mandatory field that we need to insert into the
-database or let's say some optional field called description. So these are the two fields that we need to create a
-new book. So there are different types of errors that can happen in this particular API. So first thing is let's
-say so let's say in the entry point at this point in our handler since the handler performs operations like
-validation etc then validation etc and we have a business rule that the name of
-the book cannot exceed more than 500 characters. We have this rule in our violation layer and the user has sent a
-new book name which is around 700 characters. So the data the payload
-reaches our handler and in our handler when the validation fails you want to of
-course error out and return a meaningful error to the user. So that is one kind
-of error that can happen. Now going inside we let's say passed the service
-layer and we finally reached the repository layer and in the repository layer we have created a function a
-function called insert new book and in that function we are running this insert
-query using SQL we are using posgress imagining and we try to insert this new
-book but we get a database error which is a unique constraint violation error
-which says that a book with this particular name already exists in our table in our books table that's why this
-operation cannot be performed and we get a database level error so that is a different kind of error that we might
-get so these are the two different kinds of errors we might get in a single API endpoint but the whole point of global
-error handling is there are a couple of advantages to it but the pattern usually works by does not matter in what level
-we uh get a new error or what kind of error that is. Usually what we try to we
-try to bubble that error up up to our global error handler middleware. Usually
-we try to keep our global error handling in a middleware layer so that it has
-access to all the incoming requests and all the outgoing responses. So the aim
-is to does not matter at what layer we get a particular type of error. We try
-to bubble that error up. So if it is a exception handler kind of language let's
-say something like JavaScript or Python we just throw that error and we catch that error in our middleware in our
-final error handler or if it's a language like Go where we return the
-error then we keep returning the error from our repository to our service to
-our handler until it reaches our middleware layer and the plan is to from
-all these different places that a error can arise and an error can be thrown
-from for example from our repository layer we might throw database errors
-from our service layer we might throw our internal errors and from our handler
-layer we might throw validation related errors and in every single programming language we have this ability to create
-custom errors. So in our final global error handler middleware what we try to
-do we read the error and depending on what kind of error that is we perform different different kinds of operation
-and we return a particular kind of an error response back to the user assuming
-it's an userfacing backend application. For example, if it is a validation error, we return an error response back
-to the user with the response code of 400 and whatever validation error messages they need to fix their data. So
-the first kind can be a 400 error. We return a new HTTP message with the
-response code of 400 which means bad request. And we attach all the form
-field related errors or any kind of business logic error etc. and we let the user fix them that came from the handler
-layer. Second thing, the other scenario that we talked about where the name of the book already exists in our books
-table that's why our database threw us a unique constraint violation error and
-for that in the global error handler middleware we got a new error which is a
-database error. Now even for a database error we'll have different different
-ways to deal with them and different different kinds of message formats to
-send to the user. For example, for this use case for a unique constraint
-violation kind of error the ideal response since it is an error which was
-thrown because of some data sent by the user. So ideally we can send something
-like a HTTP error with a response code of 400 which is for bad request. We are
-saying that this payload is a bad request and because in the message we
-can say that this is for the code HTTP code and in the message field in HTTP
-error we'll have an structure. So some of the usual fields in an HTTP error structure is a code the HTTP status code
-which is 400 in this case a message or any other form field related error data
-which we usually send in a array in an array of dictionaries or array of objects or an array of JSONs. So in the
-message field we can say that this this book already book already exists in our
-database or just book already exists and this we did for a unique constraint
-violation error. Same way let's say there is a different API endpoint for
-fetching the details of a single book. So there is a URL in the front end a
-user can go to this particular books and in the book 1 2 3 when this is our front
-end domain and when they navigate to this particular route what we want to do
-we in the front end we want to show the details of the book and for the front end to be able to show the details of
-the book it has to call an API and our back end serves that API uh in a similar route in the back end also we have this
-particular route And the front end makes a request to this particular route the books route with the path parameter of 1
-2 3. So it reaches the handler uh it goes through there is no particular validation that we want to do for this
-particular request since there is no body and the ID is a number and that
-passes the validation layer. It passes the service layer and it finally reaches the repository layer. In the repository
-layer what we do? We run a select query. So we do select star from books where
-the ID of the book is 1 2 3. Right? You can add a valid SQL query here. But for
-the sake of this example, this is what you want to do. You want to select a particular book from the books table
-whose ID is 1 2 3. Now assuming that because of some malformed link or
-someone trying to scam our user for any kind of reason the front end the user in
-the front end reach this particular route but this book with this ID does
-not really exist in our platform and the front end made a request with this particular ID and we reached our
-repository layer and we ran this particular query and because the book
-does not exist the database through us a no rows. So most of the drivers database
-drivers especially in the relational database field has this particular common error which is no rows. If for a
-particular SQL query especially for a select query there are no rows for those
-conditions the driver will throw an error right there are no rows and what we did we just bubbled it up so that our
-global error handler can deal with it. So that's why we reached here. So the first kind of error that we talked about
-that the global error handling middleware has to deal with is unique constraint violation error and same way
-the second kind of error that we just talked about is no rows error. So the
-global error handling middle sees that it is a database error and it is not a uni constraint violation error. It is a
-no rows returned kind of error. So for this use case the data the error
-handling middleware can see that it is a route where a particular resource with a
-particular ID was requested but the database through error response and
-because of this it can finally deduce that this particular resource does not really exist in our database and for
-that kind of scenario we have an appropriate error code which is the 404. We use the 404 response code in HTTP
-errors when we are trying to request a particular resource but that resource does not really exist. At this point the
-error handling middle finally throws an error with the code 404 and the message
-that the book with ID 123 does not exist. That is the second kind of database error. Another different kind
-of database error that comes to mind is a foreign key violation error. So let's
-take a scenario where we are talking about a book management platform. So in a particular endpoint we are creating a
-new book with a new author and for that endpoint for that API to work
-successfully there has to be an existing author and we have to pass the author ID in the post payload in our body. So we
-send a payload with the book name, the book description which is optional and an author ID. It passes our validation
-layer and it finally reaches our repository layer. And in our repository layer, we are inserting we are running
-an insert query. Insert into books name, description, author ID with values
-whatever the values the user has passed. But for some reason the user or the
-front end has passed an author ID which does not really exist in our database. And since in our database the books
-table for the author id field for the author ID column the constraint is it is
-a foreign key which references a row particular row in our authors table and
-since there are no authors with that particular author ID our database throw us an error. This particular query
-breaches the foreign key reference violation error whatever. So that can be another kind of database error that our
-global error handling middleware has to deal with. So for that scenario, what can we do? If you think about it, the
-front end passed a ID which does not exist. The resource does not exist in
-our database. So we can throw a 404 saying that this author ID does not
-really exist. That's all about global error handling middle. This is a final
-safety net that I like to call it where we can come up with and define different
-different kinds of error that our platform has to face throughout its life
-cycle and we define all these rules about how to deal with those errors and
-what kind of responses to return to our users. So it has two major advantages.
-The first one is of course more robust and secure because it does not matter
-where in which layer an error occurs. We are handling it in our final gateway in
-our final middleware. It is considered more robust since there is no way we'll
-forget some kind of condition because if let's say for a unique constraint
-violation error if we did not have a global error handling middleware and we let the layers where the error actually
-occurred to send a meaningful error message to our users in that kind of scenario. Let's say in our repository
-layer unique constraint violation error occurs. So it is the responsibility of the repository layer to send a bad
-request error to our user saying that this book already exists in our database. But for a particular
-repository method, let's say we forgot to add that condition and the database function through an error. And since in
-most of the backend setups if a particular error is not appropriately handled or appropriately identified and
-dealt with what we do we convert that error into a 500 error which basically says that internal server error we don't
-really know what happened something just went wrong so try again sometimes later. So the user instead of getting a
-meaningful error message like the book already exists in our database it will get a 500 internal server error
-something went wrong. So that is the problem uh with not having a global error handler and not having all your
-error handling logic in a single place that sometimes we forget to add all the conditions. So in scenarios like those
-having a final safety net which catches all the different kinds of errors that has a possibility to arise. The second
-thing is connected to the same point only which is reducing redundancy. If we
-don't have a central point of error handling logic, then all these different kinds of error handling logic that we
-have in a single file or a single function, we have to spread them out in
-all different layers and we have to let that particular layer to handle those
-kinds of error. For example, let's say we discuss three different kinds of database error that might occur in a
-particular SQL query. So if we did not have a centralized error handling logic
-then for each repository method in every place where we are executing an SQL
-query we have to call a particular function or we have to add all these conditions that this is not a unique
-constant violation error. This is not a foreign key violation error etc. And if it is that error then deal with it that
-way. So that significantly increases the redundancy of our code and it is also
-prone to more bugs. Those are the two major advantages of having a global
-error handling logic in a single place. Since we are talking about error handling, the last two things that I
-want to bring up is which is mostly related to the security aspect of error
-handling. So first thing that you have to keep in mind is you have to be very mindful about what kind of error
-messages that you are exposing to your users to your consumers. What kind of
-details are leaving your backend app which might compromise the security of
-your application which might expose information about some of your users which can fall into wrong hands and they
-can perform or compromise the security of your users which are equally bad. Whether it is compromising the security
-of your platform or compromising the security of your users, it is equally bad. In fact, compromising the security
-of your users is worse than your platform because that harms your
-goodwill, your trust in the market, etc., etc. Now, it can happen in a
-couple of places. The first one is you have to make sure that whatever default
-error handling mechanism in your back end is whether it is in the global error handler or whatever place you are
-keeping it in it is not leaking any kind of internal details back to the consumer. For example, let's say you
-your database threw some kind of unique constraint violation error or some kind of database error which has some details
-about the table names or the indexes or the constraint etc etc the internal
-details of your database. So in your global error handling middleware, if you're just taking whatever error that
-has bubbled up from your lower layers, for example, in this case, the repository layer and you're sending that
-message back to the user in the message field of your error structure, then that can cause severe damage to your
-platform. Because for advanced users, for malicious users, they can take details like your table names, your
-constraint names, etc., etc. from your database internal details and they can try more advanced attacks, more advanced
-forms of SQL injection. They can just make your platform a target and they can
-actively come up with more and more strategies to bypass your security and
-it will be harder for you to prevent those kinds of attacks. So that is the reason in all the error messages try to
-have as much control as you can over the messages. So try to understand what kind
-of error is being thrown from whatever layer it is being thrown from and generate a message which is meant for a
-user. For example, as I talked about in your default error handling logic instead of throwing a 500 and attaching
-whatever message that bubbles up from your lower layers add 500 and in the message just say something went wrong.
-Since if you have reached 500 which is a default error handling mechanism which
-means that in the previously you have tried to check whether it is a validation layer whether it is a uniconent validation error whether it is
-a business error etc etc you have checked all the different kinds of errors and finally you have reached this
-stage where you don't really know what kind of error that is. So for that kind
-of situation you don't really want your user to know what kind of error was thrown. So it most probably has some
-kind of internal details in the error message and that is why in the default error handling logic you always want to
-have a generic message something like something went wrong or the default
-error message in most library which is internal server error that is one aspect
-the second aspect is let's say we are dealing with a authentication or authorization module let's say it is a
-login endpoint you are expecting expecting an email and password and after you get the email and password
-from the post request body you'll take that you'll check from the email whether a user exists or not if the user does
-not exist you'll send an error and then if the user exists you proceed you check
-whether the password is correct or not if the password is correct you'll throw an error etc etc that's what comes to our mind when we think about a login
-endpoint but here also when we are talking about error handling Something
-that you have to keep in mind is authentication is one of the most targeted modules in most of the apps
-that attackers malicious users usually like to target. So in this case you have
-to follow some of the security practices. This particular resource which is called OAS cheat sheet. This
-resource has good practices and advices for a lot of different kinds of
-workflows. For example, authentication, you'll get these different different advices that don't do this, don't do
-this, this will compromise your platform in this way, this will compromise your users in this way, etc. So, you can
-follow some of the security practices whatever is relevant to your use case from a a resource like this. But uh the
-whole idea is let's say we are talking about a sign-in endpoint or a login endpoint and in the first step you took
-the email which was provided in the body and you checked that whether a user with this particular email exists or not. So
-if the user does not exist with that email instead of saying a user with this email does not exist you should return
-an error response which says that invalid username or password invalid email or password so that we can avoid
-scenarios scenarios like let's say you have a malicious user who is trying to bypass some of the accounts of our legit
-users or harmless users. So what strategy they are trying to come up
-with? So they are trying different different email addresses and with various passwords. If you are returning
-very detailed error messages like a user with this email does not exist or your
-password is incorrect then what they can do they can implement a step-by-step approach for this attack. And what they
-can do first they will try different different emails with a single password
-and for each email they'll keep getting this message that a user with this email does not exist a user with this email
-does not exist and finally when they hit an email for which a user exists since
-we are naively returning error messages they will get an error message saying that your password is incorrect since
-they are able to find an email for which a user already exists in our platform.
-Now they are getting an error message which says that your password is incorrect and now they have an email
-which they know that a particular user exist with this email. Now they can try different different passwords uh common
-passwords which have better chances of getting a hit and with that they are
-able to compromise the security of our platform. So just using error messages just using the weakness in our error
-handling mechanism attackers malicious users can compromise our security and
-the security of our users. So that is the reason try to follow security best practices when it comes to error
-messages. And the second thing which comes to mind is especially in the aspect of security is logs. On a very
-high level, the idea is try to not expose the sensitive information like
-user's email, users passwords, their API keys or their credit card numbers, etc.,
-etc. in your logs, logs which you think are limited to your own servers, your
-own infrastructure, which are not getting leaked to any kind of external
-malicious user. But that's not how it always works. In most of the major data
-breaches, what happens since major companies use external services, multiple services to manage their logs
-because for a particular company which has a fair amount of user traffic, they
-generate hundreds of GBs of logs every day, right? And they have to use multiple services, storage services,
-analysis services, observability services, different kinds of services to manage their logs efficiently. So what
-happens in these major data breaches the company's logs gets leaked and from
-these logs if they are not following best security practices like not logging users credit card numbers not logging
-users emails not logging users passwords API keys etc etc that detail gets leaked
-and hundreds of malicious users have access to them in case of errors let's say authentication error occurs you
-should not log any sensitive information about the user always log user's ID ID
-instead of their email and only correlation ID so that you have enough context. That's pretty much all I have
-to say about error handling and creating fall tolerant systems. This is mostly theory just a couple of ways of looking
-at systems and making the systems more robust and keeping our mind open for
-different kinds of errors and different kinds of error handling mechanisms.
+Logging, monitoring and observability. This is a huge topic and each portion
+itself. If we talk about logging or if we talk about monitoring and if we talk
+about observability, they themselves are deserving enough to get their own
+discussion, get their own video. But this is also one of those topics where not everything is predecided. Uh there
+are no rules. It's more of a spectrum. These are obviously practices logging, monitoring and observability. I will get
+to why do we need this and what are these exactly but these are practices which most companies most individuals
+startups they implement in a spectrum. We can never say that our product our
+company follows all the good logging monitoring and observability practices. There is no such thing as that. So given
+that we just wanted to put that information out there so that we don't uh feel intimidated uh later on when we
+see all these different different keywords practices products and tools
+that get used all over the industry. Now what is what are these terms? What is
+logging? What is monitoring and what is observability? uh as I said this since this is a huge topic I don't want to
+spend hours discussing these uh even though we can spend hours uh these
+topics are huge but we'll keep this to limited since uh these are more of a practices than theory I'll also show
+more code in this video even though from the start of this series I have kept
+this as a rule that we won't look at code but this is one of those videos where if you don't look at code this
+does not really make any sense All these practices they are pretty closely related to code, how we implement them,
+how we follow these practices. That's why we'll look at code how these work in a real application. Now coming back to
+why do we need this? Now since we know that uh these days in modern uh internet
+all our backend applications, all our fullstack applications they run in a
+distributed environment and they run in different different servers. They run in different different regions and our
+users are spread across the whole world. Given these scenarios, we need practices, we need tools and we need
+methodologies so that we can keep track of what's happening in all our services,
+in all our infrastructure tools and everything. And what do I mean by keep
+track? There are a couple of uh parameters we can keep track of. There are a lot of parameters but we can boil
+them down to some of the important ones. Now logging basically means we record
+record. So it's kind of a record all the events that are happening in our
+application. Again these practices login monitoring and observability these also
+apply for front-end applications your web applications but we will keep the
+discussion limited to backend applications. As I was saying, logging is basically recording all the important
+events, all the suspicious events, all the security related events. Pretty much
+every important event that happens in our application, in our back end application, we want to record that
+event with some metadata. Metadata basically means what was the user ID
+which triggered this particular request and what was the latency of this request and what particular method what
+particular function was triggered for this request and all these different different media that will come in handy
+when we are actually trying to understand our system. So the first thing the first component of this whole
+methodology is logging which is basically recording all the events from the whole life cycle of requests and our
+application execution. The second thing is monitoring. Monitoring basically is exactly the same as the way it sounds.
+We want some way of keeping track. We cannot simplify it more than that. We
+want to monitor the state of all our applications, our backend application and different components of our backend
+application. The server's CPU, the server's uh memory, how many requests
+the server is processing per second at this particular time and what is the
+state of our database connections, how many database connections are open because we are using database pooling
+etc. Monitoring basically means having realtime data about our system. Not
+exactly real time but a few minutes differing because one thing about logging monitoring and observability all
+these practices these data even though there are tools where we can monitor in
+real time with a few milliseconds few seconds deferring but usually without
+traditional tools without traditional practices there is some kind of delay because uh we don't want to overwhelm
+our whole logging monitoring and observability systems with constant data with every millisecond with every
+second. So there is some kind of delay around 10 second or 15 seconds. Monitoring basically means that having
+real time data real time we mean 10 15 seconds of delay. Having realtime data
+about the state of our system that's all about monitoring and the next is
+observability. Now observability is in itself includes a lot of other practices
+and if you go by uh theoretical terms observability has uh three pillars. We
+like to call them as pillars because a system a backend system is can only be
+called observable if all these three practices if all these three components
+are in place. So those are one is basically logs. second metrics and third
+is traces. Now logs we already know logs are basically record of all the
+important event that is happening across our uh request life cycle our
+application startup application ending the whole phase metrics metrics is
+something which closely relates to monitoring I'll come back to this part a
+little later and same way traces traces you can imagine traces as transactions a
+trace basically means that we want some way of tracking at what point a request
+originated from one system. It can be a front- end system. It can be a load balancer or it can be starting from your
+backend application. From that point on, what are all the components? Uh let's
+say if you have a handler layer, you have a service layer, you have a validation layer, you have a repository
+layer and then the database layer. Using traces we can track uh when a request
+originated where it originated from and we can track all these components that
+it touched through while our backend application is was executing this particular request. A trace is basically
+a transaction including all the different components that it involves.
+Basically we'll come back to more formal definitions and more explanations a
+little later on but just for the starting part I gave a very high level
+introduction to logging monitoring and observability on a very high level now this whole practice of observability is
+uh pretty modern a few years it's only been a few years using a traditional
+monitoring let's say decade back the primary form of preventing errors or
+catching errors or any kind of error handling on an infrastructure level was mostly dependent on monitoring
+practices. But the problem with that is monitoring only tells you uh that there
+is a problem. We have different different tools. We have different different workflows to set up alerts
+using graphana. We'll come back to what are the tools we have available in our arsenal. But using all these tools,
+using all these monitoring methodologies, we can know we'll know that there are issues in our application
+and we'll get alerts and everything. But that's pretty much it. Uh we cannot
+really do anything about it. We'll just get informed that there is something wrong with your application. And with
+this whole new movement of observability, it will inform you that there is something wrong with your
+application. But it will also tell you exactly what is wrong with your application given that you have followed
+all the observability practices. You have implemented logs, you have implemented metrics and you have implemented traces. But that is the
+oneline definition and explanation of observability. Now let's uh drill down
+on different different components. The logging, monitoring and observability part. So the first one was logging and
+as I said logging is the practice of recording all the important events in
+our whole application life cycle. Examples like let's say a user logs in
+or we execute a database query or something fails and we log that error
+with time stamp with the user ID with the database query and everything all the context that we need to debug that
+error. You can think of logs as kind of a journal or a diary your backend
+application maintains so that when the time comes we will know what happened
+when happened and exactly why it similarly monitoring monitoring as I
+said it's uh getting real time data getting basically continuously checking
+the health and the performance of your system and tracking the patterns over
+time and giving an aggregation data that uh these this was the performance this
+was the behavior of your application over time including the current time right that is all about monitoring and
+the third one is observability we can call uh a system as observable if we can
+determine the internal state of the application by looking at different different parameters by looking at the
+external outputs that's when we call that a system is observable. Now, how do
+all these three things work together? They work together because each of them
+produce one concrete parameter that is useful when we are debugging our system,
+when we want to understand our system. For example, using logs, we will know that what happened, what exactly
+happened. Using monitoring, we'll know about metrics. We'll talk more about
+what exactly this term metrics mean. But using metrics we'll know about patterns
+and trends. Now the third one using observability we'll find traces. Traces
+is linked with observability. Traces as I said they are transactions and using these we can find out the interaction of
+different components component interactions. So this is uh if you have
+already worked in a production system which implements proper logging monitoring and observability this is how
+it works. Let's say we have uh set up some alert parameters that if our error
+rate goes beyond 80%. Something like this then we'll get an message in Slack
+that something is wrong with your API service. You should look into that. And
+from there we'll go to metrics. In metrics we'll see that metric is
+basically different different parameters different different realtime parameters and historical parameters that we can
+track about our system. Some of the examples are how many requests we have processed. How many requests have failed
+and failed basically means any request which gave the status code is more than
+200. We can consider that as failed request. Similarly, if let's say your
+application deals with to-do list, then how many to-dos we have created and how
+many of them failed. All these things, all these concrete numbers, when you're
+talking about numbers over either historical data or the current numbers in the last 30 minutes, in the last 1
+hour, these things are called metrics and we can preddecide these when we are configuring our whole logging monitoring
+and observable system. We can configure these things that these are the metrics that we care about both in our code and
+in our logging monitoring and observability whatever tool that we are using. So if you get an alert because
+your error rate just went above 80%. We get an error in slack using some kind of
+web hook then from there you'll look at the metrics and in the metrics you'll see that you are getting more errors is
+your error rate is more than 80%. From there you will jump into usually in
+systems uh whatever system that you are using either we have open source tools like graphana prometheus and jagger for
+traces and same way we have other tools like new relic which is something that
+we will see in this video which is kind of a one-stop solution if you don't want to go to the opensource route
+configuring all the opensource applications etc. So you if you're using something like Grafana which is an open
+source tool or New Relic dashboard is a proprietary software from the metrics we
+can immediately find the logs let's say it says from the metric it says that your error rate is more than 80%. And it
+will also show you that these are the logs related to that metric. Basically all the failed logs and from the logs
+you can directly jump into traces. Let's say you saw a log where it says 500 something and when you click on this
+it'll also show you traces. Basically for this log the request started at this function and then it traveled to this
+function then it traveled to this function and it failed at this particular point. And using this whole
+workflow you can find out exactly where things went wrong and you can instantly
+debug it. And that is the whole benefit of implementing this whole logging,
+monitoring and observability in your backend systems. Next up, we'll talk a little more about different different
+concepts in logging concepts in monitoring and different concepts in observability. But before that, let me
+tell you a little bit about the sponsor of this video is Seala. Seala is a
+platform as a service provider. If you have used services like Netlifi, Versel,
+Heroku, then there's an alternative to that. In Savala, you can deploy full
+stack applications and you can also deploy your databases. You can also deploy custom applications. Let's say we
+were talking about observability a while back. So if you want to deploy Graphfana or Prometheus and Jagger and open
+telemetry collectors then you can deploy all those applications by dockerizing
+them and you can connect all these applications to your back end using
+their internal network if you deploy them in the same region. After deploying the first time, you can connect your
+GitHub repository and the next time you push something to whatever your main branch is, it gets autodeployed using a
+GitHub bot. Savala uses Kubernetes under the hood uh using GCP with their premium
+network tier to completely abstract away all the complexity that you have to deal
+with if you had to do all these deployments manually using AWS or any
+kind of cloud providers. You never have to touch any kind of YAML files or
+manage any kind of containers. The platform supports three kind of build options. We have Nyx packs which by
+default supports more than 20 languages with better resource efficiency than
+traditional build packs. It also supports build packs for compatibility with Heroku. If your infrastructure is
+already in Heroku, then it also supports build packs so that your migration is as smooth as possible. And if you want to
+go the custom way, it also supports deploying your applications to docker file and giving yourself the complete
+control about how you want to configure and how you want to deploy your applications. It also provides this very
+useful feature if you are working in a team which is preview deployments. If you have used versel before, they also
+offer the similar kind of feature. And preview deployments basically means if someone one of the team members raise a
+PR then you will instantly get a domain and you can click on the domain and you can actually use your application with
+the all the changes from the new PR and then you can decide whether to merge the PR or to request for more changes and
+this comes in very handy if you are working in a team and also if you are a oneperson team you can quickly become
+more productive with this kind workflow. All your applications run on Google's infrastructure with Cloudflare's edge
+network. Your static assets get cached across 260 plus points of presence using
+the Cloudflare's edge network. The internal communication between services are free and the bandwidth costs is 33%
+less than Versel at just 0.10 per GB. So if that sounds interesting to
+you, if that sounds more cost effective to you, then you can get started with
+Savala by signing up with the below link you'll find in the description and you'll get $50 worth of credit free to
+try it out and decide for yourself if it makes sense or not. You'll stop spending hours fighting deployment and you'll
+actually start shipping features. Now coming back to our discussion logging.
+Let's talk a little bit about logging. What are the things that you have to keep in mind? Again this is very
+informal talk. We are not going to go with the definitions and all the different tools and components that you
+have to know about. I'll keep it practical. Whatever you have to know to get started and to get to far enough so
+that you can figure things out for yourself. And the first thing when we are talking about logging is levels.
+Logging levels this is something that you will see a lot in production systems when we are logging a particular event
+usually if uh your library supports that which it should then we assign a
+particular level to that log and these levels are usually let's say something
+like debug or info or warn let's say error or fat. These are the most common
+ones. At debug, we use the log level debug when we are in development and we
+are trying to basically debug something. We are trying to troubleshoot something and we need as much details about the
+behavior of the systems as possible. These debug logs can be a bit overwhelming. So that's why we only care
+about debug logs uh in development. We usually disable it in production. Then
+comes the info logs. Uh these are general application operations. The business events let's say you have a
+to-do application then if a to-do gets created then we use log.info to log that
+event general information or successful operations any kind of successful operation we can use the info level.
+Same way warning uh these are events uh which are in between info and error.
+This is not a successful operation and this is also not critical enough that we
+want to add it as an error. For example, if for a user the authentication fails
+then we just log that event as a warning that this user has typed a wrong
+password but this is not an error. This is not our fault. Right? So in those
+cases we can use the warn level. Same way for errors. Any kind of errors you can imagine the validation errors or if
+your database query fails all kinds of errors we log it as errors. This is the most common one. One of the reasons we
+use logging in the first place. Then comes the fatal. The fatal is uh pretty
+serious. Once you log something with the level fatal, your application mostly
+stops and it restarts depending on your infrastructure configurations. But fatal
+basically means that this is a very serious bug, a very serious issue and your application is shutting down. And
+that's all about levels. And we'll go through the code to get more intuition about log levels and everything. But
+let's just get through the theory part first and we'll see what it looks like. Then comes structured versus
+unstructured logs. We usually log in two different kinds of ways. The first kind
+is console logs. When you are in your development environment, when you are running your back end in your local,
+then we want to log whatever logs that we are recording throughout our
+application running. We want to log those in our console. Wherever you are running in your VS code console, in your
+terminal, whatever console, we want to log them. And we want to log them in a readable way in a more attractive way
+because it's easier to understand. It's easier to spot issues and it's easier to
+fix them. So during development we want to keep the logs readable. We want to keep the logs attractive with colors and
+all. And we want to make it human readable in the sense it should be plain
+text. The same way structural logging. Structural logging basically means JSON is the most popular format for
+structural logging. Instead of printing human readable text what we do we print the error in JSON format and it will
+have all the parameters that what is the status of the error what is the message of the error and all these things but if
+we do this in development environment uh it's hard to read and it's easy to miss
+issues miss errors in our system that's why we use JSON logging or structured
+logging in our production systems because in our production system. All
+these logs are either depending on your configuration are either getting parsed
+through some kind of log management application. Let's say we have ELK stack or if you are using the open-source
+tools like Loki, Promptale, Graphana, the whole graphana stack. All these logs
+are getting parsed. If they are in text format, then all these tools they'll have a hard time parsing it and they'll
+face a lot of errors. which is not efficient enough to parse a line of text
+and extract valuable parameters like the user ID, the request ID and things like that. That's why in production system we
+log in JSON format so that it's easy to parse and it's easy to extract all the valuable information. That's all about
+structured and unstructured logging. In development we use unstructured logging to make it userfriendly to make it easy
+to spot errors in development environment. In production, we log in JSON format so that it's easier for our
+tools, the log management tools to parse our logs and give us the valuable insights. Since we are mostly talking
+about practices, I think it is better to to show how they actually work instead of just talking in theory. Even though
+that's the whole point of this series, we'll make an exception for this video so that we have an easier understanding
+about this all complicated logging, monitoring and observability. This is the code of a to-do application and the
+back end is written in Go and this application tries to follow all the
+practices the logging monitoring and observability and we are using a tool called New Relic. If we look up new
+relic, this is a complete solution for logging, monitoring and observability
+needs of different different systems. We also have tools called graphana which is
+actually the front end part the dashboard part and the back end is usually dealt with Prometheus which
+actually builds all these metrics and all. These are the tools that's used in
+most of the enterprises. the graphana stack that we like to call with
+Prometheus, Graphfana, Promptale and Jagger for traces. But if you want a
+simple integration, a simple workflow, then something like New Relic makes more
+sense. If you don't have the team size, if you don't have the resources to maintain all these different open-source
+tools, then you can definitely go for something like New Relic. And that's exactly what I have done in for this
+application. Configuring all these logging, monitoring and observability is pretty complicated. If you don't have
+the experience, if you don't have the time for it, then going with a
+proprietary solution makes more sense. So with that context, let me show how we have implemented logging monitoring and
+observability in this system. How they actually work and with this we'll understand how different different parts
+of logging monitoring and observability work. So the first part if we see so
+another thing is uh please don't try to understand the code don't try to uh
+memorize the code and don't get overwhelmed the whole point of this video is just to show how the operations
+work how the practices work in the logging monitoring and observability topic not the code but we are just using
+the code. This is the file which creates a new logger before our application
+starts and it has a couple of configurations. The first thing that I
+want to show because we just talked about is different different levels of logging. We have a function called get
+log level which basically checks if we are in development mode which means that
+we are running in our local or if we are in production mode which means that we have deployed our application it's
+running in our infrastructure depending on that it either returns an info level
+or a debug level because in local we want more logs for debugging purpose and
+in production we want just the information related logs And using this
+function we can filter out we can configure that. The second thing is the structured versus unstructured logging
+thing. By default we have set the logging format as console because it is
+a development environment. But let's say we change it to JSON. And here instead
+of local we make it to now if we start the server task. As you can see that we
+are getting all the logs in JSON format and it's great for production
+environments but it's not very readable. If we go ahead and change it back to the
+development setup from env. This is what the development blogs look like as this
+is definitely more readable in our local environment. We can clearly see that the
+first log is about connecting to database. The second one started the background job server and the third one
+is starting the server right as compared to the earlier uh JSON format which is
+not very easy to understand but it's definitely easy to parse for other tools. Now the second thing that we
+talked about was monitoring and for that to work what we have done if we go to
+the router we have set up this middleware called uh Newelic middleware.
+If we go inside that is basically initializing a new middleware with
+wrapping our whole app. What happens exactly with this middleware is if we look at the source code every time a new
+request comes it does something the it instruments the whole request. Now if
+you are talking about observability two terms you'll hear very frequently. One
+is instrumentation. The second one is open telemetry. Instrumentation is basically the practice of actually
+measuring different different attributes of your function which is closely related to when we call a system
+observable. The second thing is open telemetry. Open telemetry is a standard. It is a recent addition and it provides
+a whole ecosystem of tools and SDKs and
+best practices and resources so that you can properly instrument your
+application. It does not matter what language that you're using whether it is NodeJS or Golang, Python does not
+matter. The community has built enough APIs, SDKs and tools for all the
+languages, all the major languages and it is an open standard even though we are using a proprietary tool like uh New
+Relic. We can definitely integrate an open telemetry collector so that we can have more control about how we are
+instrumenting our requests, how we are instrumenting our components. That is a side note. If we take a look at one
+function which is called create to-do. It is a service which creates a new
+to-do. And if you try to track down what exactly are we doing with the whole
+logging monitoring and observability workflow in the first statement after
+the function starts executing we are taking out the transaction which we have
+put inside a context. We have a middleware which is called enhanced
+tracing. And when this middleware is first triggered during the life cycle of
+a request, this is the first point of contact. Here we create a new transaction using we create a new
+transaction using the new relic method and we add some of the parameters like
+the service name which we take from our configuration. Then the environment
+whether it is local or production the IP address and the user agent the request
+ID we fetch the request ID and the user ID the user email tenant ID etc. All the
+information that we need during our logs, our traces, we add it inside this
+transaction and then what we do, we add this particular transaction into our
+context. So that when the request reaches the service method which is this
+method, we already have a transaction which we have saved inside our context.
+We can use that transaction to proceed further. What happens with this workflow is a single request will have a trace
+which will start from that middleware where we are creating the transaction then it will reach the validation layer
+then it will reach the service layer and all of this will be a single instance of a trace and that's how we'll be able to
+debug our issues. So in the first statement we try to take out the transaction from our context and this
+statement basically means that when this function returns we want to end this transaction for this particular segment
+which is the to-do create service. Then since we service layer we want to add two more attributes to this particular
+transaction. The user ID and the title of the to-do that the user has requested
+for. Then comes our login. As we have discussed before, we want to log every single important event in our
+application. That's why at this point we are logging that we are performing an
+operation which is called create to-do. This is the title of that to-do and we want to log this particular event. Same
+way if a priority is passed in the payload, the request payload that the
+user has sent, we are adding this attribute also to that transaction. It
+is available in the trace and we are also logging that. Then we are logging a message which is of info level that we
+are initiating the process of creating a new to-do and here we are doing some kind of validation with the children and
+parent relation. Same way here at this point we execute the database operation which creates the to-do and if we face
+any kind of error at this point we are logging that error again with the level
+of error we are adding this error to our trace using this particular transaction
+and we are also adding the attribute that this operation create so that we can know that for this operation the
+result is an error but if it is successful ful then we are adding that
+the operation is create and we have created a to-do with this particular ID.
+We are also adding a log with the level debug. We are printing logs with the
+debug level that a to-do was created successfully with this particular ID.
+This will not be visible in our production systems or our production log. And finally we are logging another
+important event which is a business event log for the operation to-do is
+created and all the associated metadata with it. The ID of the to-do with the
+title, the category ID and the priority. And this is how a workflow looks like
+with all the logging and observability. And we'll see the monitoring part just a
+bit in our New Relic dashboard. So going back let me change it back to JSON so
+that these logs are visible in our New Relic dashboard and I have made the log
+as JSON and change the value to production for the server. Uh this is
+the dashboard of New Relic and if we click on our application these are some
+of the data error rates that transaction time etc etc. Since there was no
+activity in the last 30 minutes, there was no data to display here. But let's
+trigger some requests here. Say for get all to-dos. This is the open API
+interface where we can test our APIs. And if we let if we fire this API a
+couple of times since we have not provided any token, we are getting an error of unauthorized. But we want to
+check if this error gets logged in our dashboard. trigger this a couple of times. Then going back, go to errors in
+our dashboard. Let's do a refresh here and going to the HTTP error type. Now
+here we can see that uh we have got a couple of unauthorized errors and these
+are the related logs as we have discussed before in our whole logging, monitoring and observability setup. All
+these things work together so that we have a complete understanding of our system so that we can debug better. So
+coming from our metrics, these things are called metrics. If we go here, if we
+go to the summary part, these are called the metrics. What is the average
+transaction time, the throughput, the errors, these are the metrics, actual numbers that we can see so that we can
+quantify the state of our system. And from the metrics, let's say from error,
+it's around 80% average. From the errors, we can find the logs. And if we
+click on this log, the unauthorized part, we can see all the information that was associated with this log. This
+is the name of our application. There's the environment that was running on.
+This is the error code who is unauthorized, the host name, the IP, the
+level of the error, the message, what is the method, the get method, what is the
+API route that we are trying to fetch, which is the /todos part and the span
+ID, the timestamp and everything related to this log. This part is called a log.
+And this is also connected to a trace. As I said, we have three pillars. One is
+logging, second is metrics and the third one is traces. Now if we click on this,
+this is the whole trace that we can look more into and get more information from
+here. Similarly, if we want to take a look at our transactions in transactions, we have in code uh at this
+part we are talking about transaction and we are adding more attributes. transaction and the whole path of the
+transaction that was getting tracked here and we can track and we can see the results of all those transaction from
+this dashboard. So if we click on this /todos we can get all these different
+data for this particular transaction different error rate the different response time and all these different
+data. Similarly, if we click on the go runtime, we can get more information
+about the system where our application backend application is actually running.
+This is the garbage collection time, the memory uses which is just 3 MB, the
+throughput and the average response time and all these different things. So, this
+is what I wanted to show in this video. The whole discussion about logging,
+monitoring and observability. This is just a practice and we implement these
+practices in a spectrum. We cannot say that a system is completely observable. It is logging and monitoring the 100% of
+the parameters. But we implement this in a spectrum and we have different
+different tools to record and measure them. If we are going with the open source route, we have Graphana, we have
+Loki, we have Prometheus, Jagger for the traces. And if we are going with a
+proprietary software so that our whole setup is a little more simplified then
+we have services like Newelic data dog etc etc. And using these services
+whether it is opensource or it is proprietary we can get all these different information about the state of
+our service the state of our application the state of our infrastructure
+different interaction of different different components and everything we can imagine. Of course, we have to
+actually implement that as we saw in our code to have that result in the first
+place. But assuming that we have done everything from our part in the code side, we'll have a complete
+understanding, a complete dashboard view in whatever software that we are using, it does not matter. But this whole
+workflow of logging, monitoring and observability is a collective effort. You as a developer have to do it on code
+level and the infrastructure people the devops people they also have to have the
+correct setup so that they can collect they can monitor all these metrics and they can collect all these logs and
+traces. So that's all there is to talk about logging monitoring and observability. There is not particularly
+skill that you have to learn but you have to keep in mind that this is a very important part of any production
 

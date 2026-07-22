@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scope of Configuration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="../13-Error Handling/interview-questions.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="02-Types of Configuration.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 14-Configuration Management &gt; Scope of Configuration</div>
+
+        <h1>Scope of Configuration</h1>
+        <p class="lead">Configuration management is the systematic approach to organizing and maintaining all the settings of a backend application.</p>
+
+        <h2>Definition</h2>
+        <p>Configuration management organizes all settings that control how an application runs in different environments. It acts as the DNA of the application, dictating its behavior without requiring code changes.</p>
+
+        <h2>Why do we need it?</h2>
+        <p>Modern backends run in complex distributed systems containing multiple services, databases, caches, and third-party integrations. Without a centralized strategy to manage configurations across these varied environments, teams face:</p>
+        <ul>
+          <li><strong>Configuration Chaos:</strong> Hard-coded values scattered throughout the codebase.</li>
+          <li><strong>Inconsistent Behavior:</strong> The application behaves unpredictably across different environments.</li>
+          <li><strong>Security Vulnerabilities:</strong> Exposed secrets such as database passwords or API keys.</li>
+          <li><strong>Debugging Nightmares:</strong> Inability to reproduce production issues due to unknown configuration states.</li>
+        </ul>
+
+        <h2>Beyond Passwords and Secrets</h2>
+        <p>A common misconception is that configuration management only involves storing database URLs and secret keys. Its true scope is much broader. It includes:</p>
+        <ul>
+          <li>Application startup and port settings.</li>
+          <li>Connections to external services and APIs.</li>
+          <li>Logging behavior (what is logged, where it is logged, and log levels).</li>
+          <li>Performance metrics and metric destinations.</li>
+          <li>Feature flags (dynamically enabling or disabling specific features).</li>
+        </ul>
+
+        <h2>Real-world Example</h2>
+        <p>In an e-commerce platform, configurations control whether a new checkout flow is enabled for a specific subset of users via feature flags. They also manage database connection timeouts, Stripe payment API keys, maximum connection pool sizes, and business rules like the maximum order amount.</p>
+
+        <div class="nav-buttons bottom">
+          <a href="../13-Error Handling/interview-questions.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="02-Types of Configuration.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+      
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>Think of an application's code as the engine of a car, and its configuration as the steering wheel, pedals, and dashboard settings. The engine provides the power, but the configurations dictate how the car actually drives and behaves in different conditions.</p>
+        </div>
+
+        <div class="premium-box box-amber">
+          <h3>Important Terms</h3>
+          <p><strong>Configuration Chaos:</strong> A state where application settings are hard-coded, scattered, and unmanaged, leading to inconsistent and unpredictable system behavior.</p>
+          <p><strong>Distributed System:</strong> A network of interconnected services, databases, and third-party tools that work together to form a modern application backend.</p>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Config management handles all settings for an application.</li>
+            <li>It prevents hard-coded values and security risks.</li>
+            <li>It goes far beyond just storing passwords.</li>
+            <li>Essential for managing distributed systems effectively.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li>Configuration is the "DNA" of the application.</li>
+            <li>Solves "Configuration Chaos" (scattered, hard-coded values).</li>
+            <li>Controls connections, logging, performance, and features.</li>
+            <li>Crucial for debugging across multiple environments.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

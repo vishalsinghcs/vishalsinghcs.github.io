@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Monitoring and Metrics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="02-Logging and Log Levels.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="04-Observability and Traces.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 15 - Logging, Monitoring and Observability &gt; Monitoring and Metrics</div>
+
+        <h1>Monitoring and Metrics</h1>
+        <p class="lead">Keeping a pulse on your application's health and performance patterns.</p>
+
+        <p>Monitoring is the practice of continuously checking the health and performance of your system. Instead of recording individual events (like logging does), monitoring aggregates data to show you patterns and trends over time.</p>
+
+        <h2>Real-time (with a slight delay)</h2>
+        <p>While monitoring tools aim to give you real-time data, there is usually a slight delay (around 10-15 seconds) in traditional setups. We intentionally introduce this delay to avoid overwhelming the observability infrastructure with constant data floods every single millisecond.</p>
+
+        <h2>Understanding Metrics</h2>
+        <p><strong>Metrics</strong> are the concrete numbers that power monitoring. We use metrics to quantify the state of our system.</p>
+        
+        <ul>
+          <li><strong>Infrastructure Metrics:</strong> The server's CPU usage, memory utilization (e.g., 3MB garbage collection time), and open database connections in the pool.</li>
+          <li><strong>Performance Metrics:</strong> Requests processed per second, average transaction time, and throughput.</li>
+          <li><strong>Business Metrics:</strong> How many "to-dos" were created today? How many requests resulted in a failure (status code > 200)?</li>
+        </ul>
+
+        <h2>Alerting based on Trends</h2>
+        <p>Once we have metrics configured, we can set up automated alerts. For example, if a metric indicates that the <em>Error Rate</em> goes above 80%, a webhook can fire an alert directly to your team's Slack channel so an engineer can immediately investigate.</p>
+
+        <div class="nav-buttons bottom">
+          <a href="02-Logging and Log Levels.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="04-Observability and Traces.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+      
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>If a <strong>log</strong> is a single receipt from a store purchase, a <strong>metric</strong> is the monthly financial report showing revenue trends.</p>
+        </div>
+
+        <div class="premium-box box-amber">
+          <h3>Important Terms</h3>
+          <p><strong>Metrics:</strong> Quantifiable measurements of system performance over time.</p>
+          <p><strong>Throughput:</strong> The number of requests your system can successfully process in a given timeframe.</p>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Monitoring reveals trends, not granular events.</li>
+            <li>A 10-15 second delay is standard to prevent system overload.</li>
+            <li>Metrics drive automated alerts (e.g., Slack notifications).</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>Infra:</strong> CPU, RAM, Network.</li>
+            <li><strong>Performance:</strong> Latency, Throughput.</li>
+            <li><strong>Business:</strong> Successful transactions, User signups.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

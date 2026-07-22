@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Types of Configuration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="01-Scope of Configuration.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="03-Storage and Sources.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 14-Configuration Management &gt; Types of Configuration</div>
+
+        <h1>Types of Configuration</h1>
+        <p class="lead">Not all configurations are created equal. Understanding the different types helps in determining their storage, security measures, and access patterns.</p>
+
+        <h2>1. Application Settings</h2>
+        <p>The most common kind of configuration that controls the core behavior of the backend application itself.</p>
+        <ul>
+          <li><strong>Log Level:</strong> `debug` for development, `info` for production.</li>
+          <li><strong>Port:</strong> e.g., running on `8080` locally versus standard ports in production.</li>
+          <li><strong>Connection Pool Size:</strong> Maximum number of simultaneous database connections.</li>
+          <li><strong>Timeouts:</strong> Maximum time (e.g., 60 seconds) the server waits before dropping a long-running request.</li>
+        </ul>
+
+        <h2>2. Database Configuration</h2>
+        <p>Includes all the details required for the backend to connect to its primary database.</p>
+        <ul>
+          <li>Host and Port.</li>
+          <li>Username and Password.</li>
+          <li>Database Name.</li>
+          <li>Query execution timeouts.</li>
+        </ul>
+
+        <h2>3. External Services</h2>
+        <p>Configurations required to integrate with third-party tools and APIs.</p>
+        <ul>
+          <li><strong>Email Providers:</strong> Resend, Mailchimp API keys.</li>
+          <li><strong>Payment Processors:</strong> Stripe secret keys.</li>
+          <li><strong>Authentication Providers:</strong> Clerk, Auth0 API keys.</li>
+        </ul>
+
+        <h2>4. Feature Flags</h2>
+        <p>Used to dynamically enable or disable specific features of an application without redeploying code.</p>
+        <ul>
+          <li><strong>A/B Testing:</strong> Enabling a new checkout flow for 50% of users.</li>
+          <li><strong>Geographic Rollouts:</strong> Enabling a feature for users in the US but keeping it disabled in India.</li>
+        </ul>
+
+        <h2>5. Other Configurations</h2>
+        <ul>
+          <li><strong>Infrastructure Config:</strong> DevOps related settings.</li>
+          <li><strong>Security Config:</strong> JWT secrets, session secrets, encryption keys.</li>
+          <li><strong>Performance Tuning:</strong> Environment variables for maximum CPU usage or memory limits (e.g., Go `GOMAXPROCS`).</li>
+          <li><strong>Business Rules:</strong> Centralized rules like "maximum order amount" or "discount limits".</li>
+        </ul>
+
+        <div class="nav-buttons bottom">
+          <a href="01-Scope of Configuration.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="03-Storage and Sources.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+      
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>Imagine your application as a restaurant. The <strong>Application Settings</strong> are the opening hours and seating capacity. <strong>Database Config</strong> is the lock to the pantry. <strong>External Services</strong> are your suppliers (meat, veggies). <strong>Feature Flags</strong> are special menu items you're testing on VIP guests.</p>
+        </div>
+
+        <div class="premium-box box-amber">
+          <h3>Important Terms</h3>
+          <p><strong>Feature Flag:</strong> A configuration technique that allows you to enable or disable functionality remotely without changing code.</p>
+          <p><strong>Connection Pool:</strong> A cache of database connections maintained so that they can be reused when future requests to the database are required.</p>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Categorizing configs helps apply appropriate security.</li>
+            <li>Not all configs are secrets (e.g., feature flags).</li>
+            <li>Application configs change the behavior of the server.</li>
+            <li>Database and external services configs handle connectivity.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>App Settings:</strong> Timeouts, ports, log levels.</li>
+            <li><strong>Database:</strong> URL, username, password, host.</li>
+            <li><strong>External:</strong> Stripe, Mailchimp API keys.</li>
+            <li><strong>Feature Flags:</strong> A/B testing, selective rollouts.</li>
+            <li><strong>Security:</strong> JWT secrets, session keys.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

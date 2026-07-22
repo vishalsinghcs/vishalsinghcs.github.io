@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Logging and Log Levels</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="01-Introduction and Overview.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="03-Monitoring and Metrics.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 15 - Logging, Monitoring and Observability &gt; Logging and Log Levels</div>
+
+        <h1>Logging and Log Levels</h1>
+        <p class="lead">Recording crucial events throughout an application's lifecycle.</p>
+
+        <p>Logging is the practice of maintaining a journal or diary of all important, suspicious, and security-related events in your backend application. When the time comes to debug an issue, logs tell us exactly what happened, when it happened, and the context surrounding it.</p>
+        <p>Context is provided through <strong>metadata</strong> attached to a log line—such as user ID, the latency of a request, the specific HTTP method, and the unique request ID.</p>
+
+        <h2>Standard Log Levels</h2>
+        <p>We categorize logs by severity. A well-configured application will only output certain levels depending on the environment (e.g., hiding debug logs in production).</p>
+        <ul>
+          <li><strong>Debug:</strong> Overwhelmingly detailed logs used strictly during development to troubleshoot logic. Disabled in production to reduce noise.</li>
+          <li><strong>Info:</strong> General operational logs indicating a successful flow. For example, <em>"User account created."</em></li>
+          <li><strong>Warn:</strong> Suspicious or faulty behavior that isn't the application's fault, such as a user typing an incorrect password or an incoming invalid payload.</li>
+          <li><strong>Error:</strong> Clear failures, such as a database query timing out or an external API going down.</li>
+          <li><strong>Fatal:</strong> Critical bugs causing the application process to forcibly crash and restart.</li>
+        </ul>
+
+        <h2>Structured vs. Unstructured Logs</h2>
+        <p>The format of your logs is just as important as the content. We use different formats for humans versus machines.</p>
+
+        <h3>Unstructured Logs (Console)</h3>
+        <p>During local development, we want logs to be printed in plain text with colors. This makes them highly human-readable, allowing developers to spot errors at a glance inside their VS Code terminal.</p>
+
+        <h3>Structured Logs (JSON)</h3>
+        <p>In a production environment, reading logs line-by-line is impossible. Logs are ingested by log management stacks (like ELK or Grafana Loki). If you use plain text in production, these tools struggle to parse and extract valuable parameters.</p>
+        <p>Therefore, production logs are printed in <strong>JSON format</strong>. JSON allows log aggregators to easily index fields like `userId` or `statusCode`, making your logs highly searchable.</p>
+
+        <div class="nav-buttons bottom">
+          <a href="01-Introduction and Overview.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="03-Monitoring and Metrics.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+      
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>Logging levels are like filters. In development, you want the net wide open (Debug) to catch everything. In production, you tighten the net (Info and above) so you don't drown in unnecessary data.</p>
+        </div>
+
+        <div class="premium-box box-amber">
+          <h3>Important Terms</h3>
+          <p><strong>Metadata:</strong> Additional contextual data appended to a log (e.g., timestamps, User IDs, latencies).</p>
+          <p><strong>Structured Logging:</strong> Outputting logs in machine-readable formats (like JSON) so external aggregators can parse and index the variables.</p>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Always attach metadata to logs for better debugging context.</li>
+            <li>Use <code>Debug</code> strictly for development; keep production noise low.</li>
+            <li>Never use plain text logs in production; they break parsers.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>Debug:</strong> High detail, dev only.</li>
+            <li><strong>Info:</strong> Standard operations.</li>
+            <li><strong>Warn:</strong> User errors, unusual state.</li>
+            <li><strong>Error:</strong> System failures.</li>
+            <li><strong>Fatal:</strong> App crashes.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

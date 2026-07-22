@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scope of Observability</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="../14-Configuration Management/interview-questions.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="02-Logging and Log Levels.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 15 - Logging, Monitoring and Observability &gt; Introduction</div>
+
+        <h1>Introduction to Observability</h1>
+        <p class="lead">Understanding the landscape of tracking, measuring, and debugging modern distributed systems.</p>
+
+        <p>Logging, monitoring, and observability constitute a vast domain. There are no strict rules—it is more of a <em>spectrum of practices</em>. No single system follows every single "good practice," but understanding these methodologies is essential to avoid being intimidated by the myriad of keywords, tools, and practices in the industry.</p>
+
+        <h2>Why Do We Need This?</h2>
+        <p>Modern applications and full-stack backends no longer run in isolation. They are highly distributed:</p>
+        <ul>
+          <li>Running on multiple servers.</li>
+          <li>Deployed across different global regions.</li>
+          <li>Serving a worldwide user base.</li>
+        </ul>
+        <p>Given these scenarios, we need practices and tools to keep track of what's happening across all our services and infrastructure. Without them, identifying the root cause of an outage or a performance bottleneck is nearly impossible.</p>
+
+        <h2>The Core Concepts</h2>
+        <p>To keep our applications highly available, we track the following parameters:</p>
+        <ul>
+          <li><strong>Logging:</strong> Recording important, suspicious, or security-related events across the lifecycle of a request, tagged with useful metadata (like User IDs or latencies).</li>
+          <li><strong>Monitoring:</strong> Keeping track of the real-time state of applications—checking server CPU, memory, active database connections, and tracking historical patterns over time.</li>
+          <li><strong>Observability:</strong> Determining the internal state of a complex system purely by examining its external outputs (logs, metrics, and traces).</li>
+        </ul>
+
+        <h2>A Shift from Traditional Monitoring</h2>
+        <p>A decade ago, backend debugging heavily relied on traditional monitoring. We set up alerts, and when a threshold was crossed, we were notified. However, <strong>monitoring only tells you <em>that</em> there is a problem.</strong></p>
+        <p>The modern movement towards <strong>Observability</strong> goes a step further. While it will inform you that something is wrong, given that you have correctly implemented its three pillars (Logs, Metrics, and Traces), it will also tell you <em>exactly what is wrong</em>.</p>
+
+        <div class="nav-buttons bottom">
+          <a href="../14-Configuration Management/interview-questions.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="02-Logging and Log Levels.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+      
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>Think of <strong>Monitoring</strong> as the dashboard in your car—it tells you the engine is overheating. Think of <strong>Observability</strong> as popping the hood with advanced diagnostic tools that tell you <em>exactly which valve</em> is malfunctioning.</p>
+        </div>
+
+        <div class="premium-box box-amber">
+          <h3>Important Terms</h3>
+          <p><strong>Spectrum of Practices:</strong> Observability isn't a simple binary (yes or no); systems implement these tools and rules to varying degrees.</p>
+          <p><strong>Distributed Systems:</strong> The complex environment of modern backends where services are spread globally, making tracking crucial.</p>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>No system has "perfect" observability; it's a spectrum.</li>
+            <li>Monitoring reveals a problem; Observability reveals the root cause.</li>
+            <li>Tracking is essential for globally distributed architecture.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>Logs:</strong> Events with metadata.</li>
+            <li><strong>Metrics:</strong> Real-time and historical states.</li>
+            <li><strong>Traces:</strong> Request transactions across boundaries.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

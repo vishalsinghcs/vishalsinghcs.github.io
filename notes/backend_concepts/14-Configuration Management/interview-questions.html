@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interview Questions: Configuration Management</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <div
+      class="page-wrapper"
+      style="max-width: 900px; display: block; margin: 0 auto"
+    >
+      <main>
+        <div class="nav-buttons">
+          <a
+            href="../index.html"
+            class="nav-btn back"
+            aria-label="Back to Index"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="mind-map.html" class="nav-btn prev" aria-label="Previous">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="../15-Logging Monitoring and Observability/01-Introduction and Overview.html" class="nav-btn next" aria-label="Next">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+
+        <div class="breadcrumb">
+          <a href="../index.html">Home</a> &gt; 14 - Configuration Management &gt;
+          Interview Questions
+        </div>
+
+        <h1 style="text-align: center">Interview Questions</h1>
+        <p class="lead" style="text-align: center">
+          14 - Configuration Management: Security, Validation, and Scalability.
+        </p>
+
+        <p class="muted" style="margin-bottom: 3rem; text-align: center">
+          These questions evaluate your deep understanding of how to manage distributed configurations, secure sensitive secrets, debug environment drift, and design fault-tolerant startup sequences.
+        </p>
+
+        <div class="interview-box" style="margin-bottom: 2rem">
+          <h3 style="color: #111">1. Scenario-based Questions</h3>
+          <ul style="color: #333">
+            <li style="margin-bottom: 1rem">
+              A new backend deployment is failing on startup with a "Cannot connect to database" error in the production environment, but it runs perfectly on staging. The database credentials are mathematically identical. How would you investigate the source of the configuration mismatch?
+            </li>
+            <li style="margin-bottom: 1rem">
+              You have a feature flag to enable a new payment gateway, and it is explicitly set to `false` in production configuration. However, a small subset of users report they are seeing the new gateway and it's failing. How would you track down the configuration drift causing this?
+            </li>
+            <li style="margin-bottom: 1rem">
+              During a high-traffic event (e.g., Black Friday), your application suddenly crashes with "too many connections" errors from the database. Which configuration parameters would you investigate, and how would you safely tune them in a live system?
+            </li>
+            <li style="margin-bottom: 1rem">
+              A junior developer accidentally commits a `.env` file containing production database credentials to a public GitHub repository. What is your immediate incident response plan, and how do you prevent this systemically in the future?
+            </li>
+            <li style="margin-bottom: 1rem">
+              Your application uses AWS Parameter Store to fetch configurations at startup. Suddenly, AWS Parameter Store goes down in your region, and your application instances (which are auto-scaling due to high traffic) are failing to boot. How would you architect your configuration loading to survive this upstream outage?
+            </li>
+            <li style="margin-bottom: 1rem">
+              You notice that your production logs are filled with massive amounts of noise, including sensitive user payloads, making it impossible to debug real issues. How would you re-architect the application's configuration to handle dynamic log levels safely without requiring a restart?
+            </li>
+            <li style="margin-bottom: 1rem">
+              Your backend services need to rotate the JWT signing secret every 30 days for security compliance. However, simply updating the secret instantly invalidates all active user sessions, forcing everyone to log out. How do you manage this configuration rotation gracefully?
+            </li>
+            <li style="margin-bottom: 1rem">
+              An application works perfectly on a developer's Mac, but fails instantly in the Dockerized CI/CD pipeline due to a missing environment variable. How do you enforce a strict configuration contract so developers know exactly what variables are required before running the app?
+            </li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem">
+          <h3 style="color: #111">2. "What if?" Questions</h3>
+          <ul style="color: #333">
+            <li style="margin-bottom: 1rem">
+              What if your application blindly trusted all environment variables injected at startup without validating their structure or existence? What are the cascading failure scenarios?
+            </li>
+            <li style="margin-bottom: 1rem">
+              What if your team decided to store all configurations (including secrets) in a shared Google Sheet that the application fetches on startup, instead of using a Cloud Secret Manager? Discuss the security and reliability implications.
+            </li>
+            <li style="margin-bottom: 1rem">
+              What if you designed a system where the backend application polls a configuration file every 5 seconds to dynamically apply changes, instead of restarting on configuration updates? What are the edge cases and race conditions?
+            </li>
+            <li style="margin-bottom: 1rem">
+              What if staging and production shared the exact same Redis cluster, but used different database indexes based on an environment variable, and the variable was accidentally omitted during a deployment?
+            </li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem">
+          <h3 style="color: #111">3. Debugging Questions</h3>
+          <ul style="color: #333">
+            <li style="margin-bottom: 1rem">
+              An Express API route sporadically fails with a 500 error related to a third-party API timeout. The timeout config is clearly set to 5000ms in `config.yaml`, but the logs show the request failing after exactly 1000ms. Where could this override be coming from?
+            </li>
+            <li style="margin-bottom: 1rem">
+              Your application is reading from HashiCorp Vault successfully, but certain newly added keys are returning `null` or `undefined` inside the application context, despite being clearly visible in the Vault UI. What layers of the configuration pipeline would you inspect?
+            </li>
+            <li style="margin-bottom: 1rem">
+              In a microservices architecture, Service A successfully sends requests to Service B locally. However, in production, Service A throws "connection refused" errors when reaching Service B, even though both are running flawlessly. How do you trace the configuration mismatch?
+            </li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem">
+          <h3 style="color: #111">4. Design Questions</h3>
+          <ul style="color: #333">
+            <li style="margin-bottom: 1rem">
+              Design a robust configuration management system for a monolithic application that needs to pull secrets from AWS Secrets Manager, non-sensitive variables from a `config.yaml` file, and overrides from local environment variables. How do you prioritize them, and when does validation happen?
+            </li>
+            <li style="margin-bottom: 1rem">
+              Design a feature flag system from scratch that can enable a feature for exactly 5% of users in the EU region, and allows product managers to flip this flag without needing engineering to redeploy the backend.
+            </li>
+            <li style="margin-bottom: 1rem">
+              Design a secure configuration pipeline for an application where frontend developers need access to public API keys (like Stripe Publishable Key) but must strictly not have access to the Stripe Secret Key, while both keys are stored in the same monorepo for infrastructure-as-code.
+            </li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem">
+          <h3 style="color: #111">5. Architecture & Trade-off Questions</h3>
+          <ul style="color: #333">
+            <li style="margin-bottom: 1rem">
+              When managing configurations, what are the trade-offs of baking configuration files directly into a Docker image at build time versus injecting them at runtime via volume mounts or environment variables?
+            </li>
+            <li style="margin-bottom: 1rem">
+              When managing secrets in a large distributed system, what are the architectural trade-offs between having each microservice directly fetch its own secrets from a Secret Manager on boot, versus having an orchestration tool (like Kubernetes) fetch them and inject them into the container's environment?
+            </li>
+          </ul>
+        </div>
+
+        <div class="nav-buttons bottom">
+          <a href="mind-map.html" class="nav-btn prev" aria-label="Previous">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="../15-Logging Monitoring and Observability/01-Introduction and Overview.html" class="nav-btn next" aria-label="Next">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

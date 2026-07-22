@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Environment Specific Configs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="03-Storage and Sources.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="05-Security and Validation.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 14-Configuration Management &gt; Environment Specific Configs</div>
+
+        <h1>Environment Specific Configs</h1>
+        <p class="lead">Why do configurations change? Because different environments have fundamentally different priorities, from rapid debugging to maximum reliability.</p>
+
+        <h2>Why Different Environments?</h2>
+        <p>The code remains identical across all stages of deployment, but the application's behavior adapts based on environment-specific configurations. This allows developers to test heavily without breaking production and operators to scale dynamically.</p>
+
+        <h2>1. Development Environment</h2>
+        <p>Your local machine (`localhost`).</p>
+        <ul>
+          <li><strong>Priority:</strong> Developer productivity and debugging speed.</li>
+          <li><strong>Characteristics:</strong> High logging output (`debug` level), small connection pools (e.g., max pool size of 10), and loose security settings to minimize friction.</li>
+          <li><strong>Cost Optimization:</strong> Since it runs locally, cloud costs are zero.</li>
+        </ul>
+
+        <h2>2. Test Environment</h2>
+        <p>Usually spun up automatically via CI/CD pipelines (e.g., GitHub Actions).</p>
+        <ul>
+          <li><strong>Priority:</strong> Automated validation and Quality Assurance (QA).</li>
+          <li><strong>Characteristics:</strong> Configured to use mock databases or in-memory stores. It runs fast, validates the logic, and tears itself down.</li>
+        </ul>
+
+        <h2>3. Staging Environment</h2>
+        <p>A hosted version of the app that mirrors production as closely as possible.</p>
+        <ul>
+          <li><strong>Priority:</strong> Catching production bugs before they happen and saving cloud costs.</li>
+          <li><strong>Characteristics:</strong> Same architectural layout as production, but scaled down. For example, database connection pools are minimized (e.g., pool size of 2) to save money since there is minimal traffic.</li>
+        </ul>
+
+        <h2>4. Production Environment</h2>
+        <p>The live environment interacting with real users.</p>
+        <ul>
+          <li><strong>Priority:</strong> Reliability, security, and performance.</li>
+          <li><strong>Characteristics:</strong> Large connection pools (e.g., pool size of 50) to handle traffic spikes. Log levels are set to `info` to reduce noise. Highest level of security and access control is enforced.</li>
+        </ul>
+
+        <h2>Comparison of Configs by Environment</h2>
+        
+        <table>
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>Development</th>
+              <th>Staging</th>
+              <th>Production</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Log Level</strong></td>
+              <td>Debug</td>
+              <td>Info/Debug</td>
+              <td>Info</td>
+            </tr>
+            <tr>
+              <td><strong>DB Pool Size</strong></td>
+              <td>10</td>
+              <td>2</td>
+              <td>50+</td>
+            </tr>
+            <tr>
+              <td><strong>Cost Focus</strong></td>
+              <td>Free (Local)</td>
+              <td>Minimize</td>
+              <td>Performance-driven</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="nav-buttons bottom">
+          <a href="03-Storage and Sources.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="05-Security and Validation.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+      
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>Think of environments like testing a race car. <strong>Dev</strong> is the engineering garage (checking if the engine starts). <strong>Test</strong> is the wind tunnel (simulations). <strong>Staging</strong> is a test lap on the track (real conditions, low speed). <strong>Production</strong> is the actual race.</p>
+        </div>
+
+        <div class="premium-box box-amber">
+          <h3>Important Terms</h3>
+          <p><strong>Staging:</strong> An environment that exactly mirrors production architecture but operates with fake or sanitized data and fewer resources.</p>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Application code does not change, only configs do.</li>
+            <li>Dev prioritizes debugging speed.</li>
+            <li>Staging mirrors production functionality but prioritizes cost savings.</li>
+            <li>Production prioritizes performance and scaling for real users.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>Dev:</strong> Fast debugging, high logs, local.</li>
+            <li><strong>Test:</strong> Automated QA, GitHub Actions.</li>
+            <li><strong>Staging:</strong> Mirror prod, but scaled down to save money.</li>
+            <li><strong>Production:</strong> Reliability, scaling, tight security.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tools and Implementation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="04-Observability and Traces.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="mind-map.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 15 - Logging, Monitoring and Observability &gt; Tools and Implementation</div>
+
+        <h1>Tools and Implementation</h1>
+        <p class="lead">Turning observability concepts into code and dashboards.</p>
+
+        <p>Implementing observability requires both infrastructure-level tools to aggregate data, and code-level practices to generate that data. It is a collective effort between developers and DevOps engineers.</p>
+
+        <h2>Ecosystems and Tools</h2>
+        <p>Teams generally choose between managing open-source stacks or paying for proprietary all-in-one solutions, depending on their resources and scale.</p>
+        
+        <ul>
+          <li><strong>The Open Source Stack (LGTM):</strong>
+            <ul>
+              <li><strong>Loki / Promtail:</strong> Systems for storing and parsing logs.</li>
+              <li><strong>Grafana:</strong> The dashboard and visualization front-end.</li>
+              <li><strong>Traces (Jaeger):</strong> Backend for storing and analyzing distributed traces.</li>
+              <li><strong>Metrics (Prometheus):</strong> Backend for storing and aggregating metrics.</li>
+            </ul>
+          </li>
+          <li><strong>Proprietary Solutions:</strong> New Relic, Datadog. Unified, out-of-the-box platforms that handle logging, monitoring, and tracing seamlessly without requiring you to maintain the complex underlying infrastructure.</li>
+        </ul>
+
+        <h2>Instrumentation and OpenTelemetry</h2>
+        <p><strong>Instrumentation</strong> is the code-level practice of measuring your application's behavior. We wrap functions, inject context, and log metadata so that our observability tools have data to consume.</p>
+        <p>To prevent vendor lock-in, the industry is moving towards <strong>OpenTelemetry</strong>. OpenTelemetry is an open standard providing APIs, SDKs, and tools to instrument your application. Regardless of whether you use New Relic or Grafana on the backend, you write your code against the OpenTelemetry standard, allowing you to seamlessly swap out the observability backend later.</p>
+
+        <h2>Implementing in Code</h2>
+        <p>A common pattern to instrument a backend (e.g., in Go or Node.js) involves injecting a transaction into the request context:</p>
+
+        <ol>
+          <li><strong>Middleware Layer:</strong> When a request arrives, an "enhanced tracing" middleware creates a new Transaction. It extracts metadata (IP address, user agent, requested route) and attaches this Transaction to the request Context.</li>
+          <li><strong>Service Layer:</strong> The service function extracts the Transaction from the context. It adds specific attributes (e.g., the User ID or the Title of the To-Do item).</li>
+          <li><strong>Database Layer:</strong> Before running the query, a log is emitted: <em>"Initiating process of creating a new To-Do."</em> If the database fails, it logs an Error, attaches the error to the trace, and ends the segment.</li>
+        </ol>
+
+        <p>Because the Transaction object follows the request context through every function layer, the tracing tool can draw a perfect timeline of execution and pinpoint exactly where a bottleneck or failure occurred.</p>
+
+        <div class="nav-buttons bottom">
+          <a href="04-Observability and Traces.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="mind-map.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+      
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p><strong>Instrumentation</strong> is like attaching sensors to a formula one car before a race. The <strong>Observability Stack</strong> is the pit crew's monitor that reads those sensors in real-time.</p>
+        </div>
+
+        <div class="premium-box box-amber">
+          <h3>Important Terms</h3>
+          <p><strong>Instrumentation:</strong> Modifying code to emit logs, traces, and metrics.</p>
+          <p><strong>OpenTelemetry:</strong> A vendor-agnostic, open-source standard for instrumenting, generating, collecting, and exporting telemetry data.</p>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>OpenTelemetry prevents vendor lock-in.</li>
+            <li>Instrumentation requires passing context objects through function calls.</li>
+            <li>Choose proprietary tools (New Relic) for ease, OSS (Grafana) for control.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>Grafana:</strong> Dashboard</li>
+            <li><strong>Prometheus:</strong> Metrics</li>
+            <li><strong>Loki:</strong> Logs</li>
+            <li><strong>Jaeger:</strong> Traces</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

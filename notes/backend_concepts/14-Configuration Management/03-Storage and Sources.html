@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Storage and Sources</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="02-Types of Configuration.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="04-Environment Specific Configs.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 14-Configuration Management &gt; Storage and Sources</div>
+
+        <h1>Storage and Sources</h1>
+        <p class="lead">Where and how you store your configurations depends heavily on security, speed, and the environment your application is running in.</p>
+
+        <h2>1. Environment Variables</h2>
+        <p>The most ubiquitous way of passing configuration to applications across all modern languages (Node.js, Python, Go, etc.).</p>
+        <ul>
+          <li><strong>Local Development:</strong> Stored in `.env` files. Libraries like `dotenv` load these values into the operating system's environment on startup.</li>
+          <li><strong>Cloud/Container Deployments:</strong> Cloud providers inject environment variables directly into the container running your application.</li>
+        </ul>
+
+        <h2>2. Configuration Files</h2>
+        <p>For complex, hierarchical settings, simple key-value pairs aren't enough. Configuration files offer a structured format.</p>
+        <ul>
+          <li><strong>JSON:</strong> Structured but lacks support for comments, making it hard to document settings.</li>
+          <li><strong>YAML:</strong> Highly preferred because it supports comments and clean hierarchical data (e.g., `config.yaml`). Commonly used in Go applications and open-source projects.</li>
+          <li><strong>TOML:</strong> A newer standard gaining popularity for its explicit syntax and ease of reading.</li>
+        </ul>
+
+        <h2>3. Cloud Native & Key-Value Stores</h2>
+        <p>Lightweight, distributed data stores specifically designed for configuration in distributed systems.</p>
+        <ul>
+          <li><strong>Tools:</strong> Consul, etcd.</li>
+          <li><strong>Use Case:</strong> They act like centralized environment variables that can be updated dynamically across a cluster.</li>
+        </ul>
+
+        <h2>4. Cloud Secrets Managers</h2>
+        <p>Dedicated services for securely storing sensitive configurations in a distributed infrastructure.</p>
+        <ul>
+          <li><strong>Providers:</strong> HashiCorp Vault, AWS Parameter Store, Azure Key Vault, Google Secret Manager.</li>
+          <li><strong>Workflow:</strong> Deployment pipelines fetch encrypted secrets from these providers and inject them into the application's environment.</li>
+        </ul>
+
+        <h2>5. Hybrid Strategies</h2>
+        <p>Large applications often use a combination of sources prioritized in a specific order. When the application starts, it builds a single configuration object.</p>
+        
+        <div class="custom-diagram">
+          <div class="diagram-node" style="animation-delay: 0s">Priority 1: AWS Parameter Store</div>
+          <div class="diagram-arrow">↓</div>
+          <div class="diagram-node" style="animation-delay: 0.2s">Priority 2: config.yaml</div>
+          <div class="diagram-arrow">↓</div>
+          <div class="diagram-node" style="animation-delay: 0.4s">Priority 3: Environment Variables (.env)</div>
+        </div>
+
+        <div class="nav-buttons bottom">
+          <a href="02-Types of Configuration.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="04-Environment Specific Configs.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+      
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>Think of configuration storage as an inheritance hierarchy. Your default `.yaml` file is the base class. Your environment variables override specific settings depending on the context, and your secrets manager injects the highly secure, hidden traits.</p>
+        </div>
+
+        <div class="premium-box box-amber">
+          <h3>Important Terms</h3>
+          <p><strong>HashiCorp Vault:</strong> A popular cloud-agnostic tool used for managing secrets and protecting sensitive data across distributed systems.</p>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Env vars are standard but lack structure.</li>
+            <li>YAML is preferred for structured configs due to comment support.</li>
+            <li>Cloud Secret Managers are essential for security.</li>
+            <li>Applications combine multiple sources to build final configs.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>Environment:</strong> `.env` loaded via OS context.</li>
+            <li><strong>Files:</strong> YAML > JSON (because of comments).</li>
+            <li><strong>Key-Value:</strong> Consul, etcd.</li>
+            <li><strong>Cloud Secrets:</strong> Vault, Parameter Store.</li>
+            <li><strong>Hybrid:</strong> Priority-based loading.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

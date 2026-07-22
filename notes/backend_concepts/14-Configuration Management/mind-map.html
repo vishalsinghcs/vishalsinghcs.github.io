@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mind Map: Configuration Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+      .mermaid {
+        display: flex;
+        justify-content: center;
+        background: #f8f9fa;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        overflow-x: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-wrapper" style="max-width: 1200px; display: block; margin: 0 auto;">
+      <main>
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="05-Security and Validation.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="interview-questions.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 14 - Configuration Management &gt; Mind Map</div>
+
+        <h1 style="text-align: center;">Configuration Management Mind Map</h1>
+        <p class="lead" style="text-align: center; margin-bottom: 2rem;">
+          A visual cheat sheet covering the core concepts of production-grade configuration.
+        </p>
+
+        <div class="mermaid">
+flowchart LR
+    Root((Config Management))
+
+    Root --> Scope{1. Scope}
+    Scope --> S1[Systematic Approach]
+    S1 --> S1a([App DNA])
+    Scope --> S2[Beyond Secrets]
+    S2 --> S2a([Controls Connections & Logging])
+
+    Root --> Types{2. Types}
+    Types --> T1[App Settings]
+    T1 --> T1a([Timeouts, Ports, Logging])
+    Types --> T2[Databases]
+    T2 --> T2a([Host & Credentials])
+    Types --> T3[External APIs]
+    T3 --> T3a([Stripe, Email Keys])
+    Types --> T4[Feature Flags]
+    T4 --> T4a([A/B Testing, Rollouts])
+
+    Root --> Storage{3. Storage Sources}
+    Storage --> St1[Env Variables]
+    St1 --> St1a([Loaded from OS or .env])
+    Storage --> St2[Config Files]
+    St2 --> St2a([YAML preferred for comments])
+    Storage --> St3[Cloud Secrets]
+    St3 --> St3a([Vault, AWS Parameter Store])
+
+    Root --> Env{4. Environments}
+    Env --> E1[Development]
+    E1 --> E1a([Priority: Debugging speed])
+    Env --> E2[Staging]
+    E2 --> E2a([Mirror Prod for testing])
+    Env --> E3[Production]
+    E3 --> E3a([Priority: Reliability & Scale])
+
+    Root --> Sec{5. Security & Validation}
+    Sec --> Se1[Validation]
+    Se1 --> Se1a([Crash early if invalid])
+    Sec --> Se2[Encryption]
+    Se2 --> Se2a([Encrypted at rest & transit])
+    Sec --> Se3[Access Control]
+    Se3 --> Se3a([Least Privilege rule])
+
+    classDef root fill:#475569,stroke:#1e293b,stroke-width:2px,color:#fff,font-weight:bold;
+    
+    classDef branch1 fill:#2563eb,stroke:#1d4ed8,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef node1  fill:#dbeafe,stroke:#93c5fd,stroke-width:1px,color:#1e3a8a;
+    classDef leaf1  fill:#bfdbfe,stroke:#60a5fa,stroke-width:1px,color:#1e3a8a;
+    
+    classDef branch2 fill:#16a34a,stroke:#15803d,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef node2  fill:#dcfce7,stroke:#86efac,stroke-width:1px,color:#14532d;
+    classDef leaf2  fill:#bbf7d0,stroke:#4ade80,stroke-width:1px,color:#14532d;
+    
+    classDef branch3 fill:#ea580c,stroke:#c2410c,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef node3  fill:#ffedd5,stroke:#fdba74,stroke-width:1px,color:#7c2d12;
+    classDef leaf3  fill:#fed7aa,stroke:#fb923c,stroke-width:1px,color:#7c2d12;
+    
+    classDef branch4 fill:#9333ea,stroke:#7e22ce,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef node4  fill:#f3e8ff,stroke:#d8b4fe,stroke-width:1px,color:#581c87;
+    classDef leaf4  fill:#e9d5ff,stroke:#c084fc,stroke-width:1px,color:#581c87;
+
+    classDef branch5 fill:#db2777,stroke:#be185d,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef node5  fill:#fce7f3,stroke:#f9a8d4,stroke-width:1px,color:#831843;
+    classDef leaf5  fill:#fbcfe8,stroke:#f472b6,stroke-width:1px,color:#831843;
+
+    class Root root;
+    class Scope branch1;
+    class S1,S2 node1;
+    class S1a,S2a leaf1;
+    class Types branch2;
+    class T1,T2,T3,T4 node2;
+    class T1a,T2a,T3a,T4a leaf2;
+    class Storage branch3;
+    class St1,St2,St3 node3;
+    class St1a,St2a,St3a leaf3;
+    class Env branch4;
+    class E1,E2,E3 node4;
+    class E1a,E2a,E3a leaf4;
+    class Sec branch5;
+    class Se1,Se2,Se3 node5;
+    class Se1a,Se2a,Se3a leaf5;
+        </div>
+
+        <div class="nav-buttons bottom">
+          <a href="05-Security and Validation.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="interview-questions.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+    </div>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+  </body>
+</html>

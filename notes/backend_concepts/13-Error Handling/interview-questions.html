@@ -4,70 +4,137 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Interview Questions: Error Handling</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="../styles.css" />
   </head>
   <body>
-    <div class="page-wrapper" style="max-width: 900px; display: block; margin: 0 auto;">
+    <div
+      class="page-wrapper"
+      style="max-width: 900px; display: block; margin: 0 auto"
+    >
       <main>
         <div class="nav-buttons">
-          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <a
+            href="../index.html"
+            class="nav-btn back"
+            aria-label="Back to Index"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <line x1="19" y1="12" x2="5" y2="12"></line>
               <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
           </a>
           <a href="mind-map.html" class="nav-btn prev" aria-label="Previous">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <polyline points="15 18 9 12 15 6"></polyline>
             </svg>
           </a>
-          <a href="../index.html" class="nav-btn next" aria-label="Next">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <a href="../14-Configuration Management/01-Scope of Configuration.html" class="nav-btn next" aria-label="Next">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
           </a>
         </div>
-        
+
         <div class="breadcrumb">
-          <a href="../index.html">Home</a> &gt; 13 - Error Handling &gt; Interview Questions
+          <a href="../index.html">Home</a> &gt; 13 - Error Handling &gt;
+          Interview Questions
         </div>
 
-        <h1 style="text-align: center;">Interview Questions</h1>
-        <p class="lead" style="text-align: center;">
+        <h1 style="text-align: center">Interview Questions</h1>
+        <p class="lead" style="text-align: center">
           13 - Error Handling: Fault Tolerance, Global Middleware, and Security.
         </p>
 
-        <p class="muted" style="margin-bottom: 3rem; text-align: center;">
-          These questions evaluate your deep understanding of how to build resilient systems, manage unpredicted failures, and architect secure error propagation. The goal is engineering thinking, not recitation of terms.
+        <p class="muted" style="margin-bottom: 3rem; text-align: center">
+          These questions evaluate your deep understanding of how to build
+          resilient systems, manage unpredicted failures, and architect secure
+          error propagation. The goal is engineering thinking, not recitation of
+          terms.
         </p>
 
         <div class="interview-box" style="margin-bottom: 2rem">
           <h3 style="color: #111">1. Scenario-based Questions</h3>
           <ul style="color: #333">
             <li style="margin-bottom: 1rem">
-              Your backend application is successfully returning 200 OK for all health checks, but users are complaining that payments are failing. How would you investigate the disconnect between the health checks and the user experience?
+              Your backend application is successfully returning 200 OK for all
+              health checks, but users are complaining that payments are
+              failing. How would you investigate the disconnect between the
+              health checks and the user experience?
             </li>
             <li style="margin-bottom: 1rem">
-              A new deployment goes out, and suddenly your API starts returning 500 errors across all routes that interact with an external AI service. The external service's status page shows all systems operational. What could be the issue?
+              A new deployment goes out, and suddenly your API starts returning
+              500 errors across all routes that interact with an external AI
+              service. The external service's status page shows all systems
+              operational. What could be the issue?
             </li>
             <li style="margin-bottom: 1rem">
-              During a flash sale, your application starts getting thousands of 429 Too Many Requests responses from your transactional email provider. How do you handle this gracefully without losing emails or crashing your system?
+              During a flash sale, your application starts getting thousands of
+              429 Too Many Requests responses from your transactional email
+              provider. How do you handle this gracefully without losing emails
+              or crashing your system?
             </li>
             <li style="margin-bottom: 1rem">
-              Users report that their newly registered accounts are occasionally showing negative wallet balances. The application logs don't show any crashes or exceptions. How do you track down this error?
+              Users report that their newly registered accounts are occasionally
+              showing negative wallet balances. The application logs don't show
+              any crashes or exceptions. How do you track down this error?
             </li>
             <li style="margin-bottom: 1rem">
-              Your error monitoring dashboard shows a sudden spike in 404 errors for an endpoint fetching user profiles. However, your database team confirms all requested users actually exist. What could be causing this?
+              Your error monitoring dashboard shows a sudden spike in 404 errors
+              for an endpoint fetching user profiles. However, your database
+              team confirms all requested users actually exist. What could be
+              causing this?
             </li>
             <li style="margin-bottom: 1rem">
-              You notice that a specific database query occasionally times out during peak hours. You suspect a deadlock. How do you confirm this, and how can the backend application recover from it?
+              You notice that a specific database query occasionally times out
+              during peak hours. You suspect a deadlock. How do you confirm
+              this, and how can the backend application recover from it?
             </li>
             <li style="margin-bottom: 1rem">
-              Your platform relies on a 3rd party authentication provider which goes down entirely for 2 hours. What proactive strategies could your backend have in place to provide a degraded but functional experience?
+              Your platform relies on a 3rd party authentication provider which
+              goes down entirely for 2 hours. What proactive strategies could
+              your backend have in place to provide a degraded but functional
+              experience?
             </li>
             <li style="margin-bottom: 1rem">
-              An attacker is systematically submitting incorrect passwords for thousands of emails. Your monitoring flags this, but the attacker is rotating IPs. How should your login error responses be structured to prevent them from enumerating which emails belong to valid accounts?
+              An attacker is systematically submitting incorrect passwords for
+              thousands of emails. Your monitoring flags this, but the attacker
+              is rotating IPs. How should your login error responses be
+              structured to prevent them from enumerating which emails belong to
+              valid accounts?
             </li>
           </ul>
         </div>
@@ -76,16 +143,25 @@
           <h3 style="color: #111">2. "What if?" Questions</h3>
           <ul style="color: #333">
             <li style="margin-bottom: 1rem">
-              What if you designed a system where every single layer (Controller, Service, Repository) independently caught errors and sent HTTP responses directly to the client? What architectural problems would arise?
+              What if you designed a system where every single layer
+              (Controller, Service, Repository) independently caught errors and
+              sent HTTP responses directly to the client? What architectural
+              problems would arise?
             </li>
             <li style="margin-bottom: 1rem">
-              What if your application blindly logged the full error objects (including stack traces) from the database whenever an exception occurred? What are the security and compliance risks?
+              What if your application blindly logged the full error objects
+              (including stack traces) from the database whenever an exception
+              occurred? What are the security and compliance risks?
             </li>
             <li style="margin-bottom: 1rem">
-              What if you decided to implement aggressive retry logic (e.g., retrying immediately up to 10 times without delay) for all failed external API calls? What could go wrong?
+              What if you decided to implement aggressive retry logic (e.g.,
+              retrying immediately up to 10 times without delay) for all failed
+              external API calls? What could go wrong?
             </li>
             <li style="margin-bottom: 1rem">
-              What if your application only validated configuration variables (like API keys) lazily when they were first used by a user request, instead of at startup?
+              What if your application only validated configuration variables
+              (like API keys) lazily when they were first used by a user
+              request, instead of at startup?
             </li>
           </ul>
         </div>
@@ -94,13 +170,21 @@
           <h3 style="color: #111">3. Debugging Questions</h3>
           <ul style="color: #333">
             <li style="margin-bottom: 1rem">
-              A user attempts to create a new book but receives a raw PostgreSQL constraint violation error message in their browser. Where did the error handling strategy break down in the backend architecture?
+              A user attempts to create a new book but receives a raw PostgreSQL
+              constraint violation error message in their browser. Where did the
+              error handling strategy break down in the backend architecture?
             </li>
             <li style="margin-bottom: 1rem">
-              You have a global error handling middleware, but a specific API route is causing the Node.js/Python process to crash completely, bypassing the middleware. What type of error could bypass a centralized exception handler?
+              You have a global error handling middleware, but a specific API
+              route is causing the Node.js/Python process to crash completely,
+              bypassing the middleware. What type of error could bypass a
+              centralized exception handler?
             </li>
             <li style="margin-bottom: 1rem">
-              Your logs in Datadog show a spike in database connection errors. The database server CPU is low, and network latency is normal. Where else in the backend architecture would you look for the bottleneck?
+              Your logs in Datadog show a spike in database connection errors.
+              The database server CPU is low, and network latency is normal.
+              Where else in the backend architecture would you look for the
+              bottleneck?
             </li>
           </ul>
         </div>
@@ -109,13 +193,21 @@
           <h3 style="color: #111">4. Design Questions</h3>
           <ul style="color: #333">
             <li style="margin-bottom: 1rem">
-              Design a resilient webhook delivery system that must send notifications to hundreds of external client servers. How do you handle clients that are temporarily down or rate-limiting your requests?
+              Design a resilient webhook delivery system that must send
+              notifications to hundreds of external client servers. How do you
+              handle clients that are temporarily down or rate-limiting your
+              requests?
             </li>
             <li style="margin-bottom: 1rem">
-              Design a centralized error handling middleware for a REST API. How do you map low-level database errors (e.g., foreign key violations, unique constraints) to standard HTTP status codes without leaking database details?
+              Design a centralized error handling middleware for a REST API. How
+              do you map low-level database errors (e.g., foreign key
+              violations, unique constraints) to standard HTTP status codes
+              without leaking database details?
             </li>
             <li style="margin-bottom: 1rem">
-              Design a proactive health checking system for a monolithic e-commerce application that relies on Postgres, Redis, Stripe, and AWS S3. What exactly do you test beyond a simple HTTP ping?
+              Design a proactive health checking system for a monolithic
+              e-commerce application that relies on Postgres, Redis, Stripe, and
+              AWS S3. What exactly do you test beyond a simple HTTP ping?
             </li>
           </ul>
         </div>
@@ -124,22 +216,49 @@
           <h3 style="color: #111">5. Architecture & Trade-off Questions</h3>
           <ul style="color: #333">
             <li style="margin-bottom: 1rem">
-              When handling failed operations, what are the trade-offs between implementing an Exponential Backoff retry strategy versus failing fast and pushing the error to a Dead Letter Queue for manual intervention?
+              When handling failed operations, what are the trade-offs between
+              implementing an Exponential Backoff retry strategy versus failing
+              fast and pushing the error to a Dead Letter Queue for manual
+              intervention?
             </li>
             <li style="margin-bottom: 1rem">
-              Some teams prefer throwing exceptions (e.g., Python/Java/JS) for business logic errors, while others prefer returning error objects/values (e.g., Go/Rust). What are the architectural trade-offs of treating errors as exceptions versus treating them as values?
+              Some teams prefer throwing exceptions (e.g., Python/Java/JS) for
+              business logic errors, while others prefer returning error
+              objects/values (e.g., Go/Rust). What are the architectural
+              trade-offs of treating errors as exceptions versus treating them
+              as values?
             </li>
           </ul>
         </div>
 
         <div class="nav-buttons bottom">
           <a href="mind-map.html" class="nav-btn prev" aria-label="Previous">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <polyline points="15 18 9 12 15 6"></polyline>
             </svg>
           </a>
-          <a href="../index.html" class="nav-btn next" aria-label="Next">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <a href="../14-Configuration Management/01-Scope of Configuration.html" class="nav-btn next" aria-label="Next">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
           </a>

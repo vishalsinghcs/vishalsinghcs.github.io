@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Observability and Traces</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <main class="left-column">
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="03-Monitoring and Metrics.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="05-Tools and Implementation.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 15 - Logging, Monitoring and Observability &gt; Observability and Traces</div>
+
+        <h1>Observability and Traces</h1>
+        <p class="lead">Connecting the dots to understand exactly where a request failed.</p>
+
+        <p>We call a backend system <em>observable</em> when we can determine its internal state purely by looking at external outputs. Observability is a relatively modern practice that relies on three core pillars coming together.</p>
+
+        <h2>The Three Pillars of Observability</h2>
+        <ul>
+          <li><strong>Logs:</strong> Tell us <em>what</em> happened.</li>
+          <li><strong>Metrics:</strong> Tell us about <em>patterns and trends</em>.</li>
+          <li><strong>Traces:</strong> Tell us about <em>component interactions</em>.</li>
+        </ul>
+
+        <h2>What are Traces?</h2>
+        <p>You can imagine <strong>traces as transactions</strong>. When a request hits your infrastructure (whether originating from a front-end client, a load balancer, or another backend), a trace tracks that specific request as it travels through your system.</p>
+        <p>A single trace will show you exactly how the request touched the <strong>Handler Layer &rarr; Validation Layer &rarr; Service Layer &rarr; Repository Layer &rarr; Database Layer</strong>.</p>
+
+        <h2>The Debugging Workflow</h2>
+        <p>When you have logs, metrics, and traces properly configured, debugging an incident in production becomes a highly streamlined workflow:</p>
+
+        <div class="custom-diagram" style="margin-top: 2rem; margin-bottom: 2rem;">
+          <div class="diagram-node" style="animation-delay: 0s">1. Alert triggers (Slack: Error rate > 80%)</div>
+          <div class="diagram-arrow">↓</div>
+          <div class="diagram-node" style="animation-delay: 0.2s">2. View Metric (See high failure count on Dashboard)</div>
+          <div class="diagram-arrow">↓</div>
+          <div class="diagram-node" style="animation-delay: 0.4s">3. View Logs (Find specific 500 errors associated with the metric)</div>
+          <div class="diagram-arrow">↓</div>
+          <div class="diagram-node" style="animation-delay: 0.6s">4. View Trace (Click a log to see exactly which function/DB call failed)</div>
+        </div>
+
+        <p>Instead of guessing which microservice or function broke, the trace visually points you to the exact line or database query that failed in the transaction, instantly isolating the bug.</p>
+
+        <div class="nav-buttons bottom">
+          <a href="03-Monitoring and Metrics.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="05-Tools and Implementation.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+      
+      <aside class="right-column">
+        <div class="premium-box box-blue">
+          <h3>Mental Model</h3>
+          <p>Think of a <strong>Trace</strong> like a shipping tracker for a package. It shows you exactly when it left the warehouse (handler), hit the sorting facility (service logic), and failed delivery at the destination (database).</p>
+        </div>
+
+        <div class="premium-box box-amber">
+          <h3>Important Terms</h3>
+          <p><strong>Trace:</strong> The entire lifecycle of a request as it traverses through various services and layers in a distributed architecture.</p>
+          <p><strong>Span:</strong> A single unit of work within a trace (e.g., a specific database query or API call).</p>
+        </div>
+
+        <div class="premium-box box-green">
+          <h3>Key Takeaways</h3>
+          <ul>
+            <li>Metrics tell you there's a fire.</li>
+            <li>Logs tell you what caught fire.</li>
+            <li>Traces show you the path the fire traveled.</li>
+          </ul>
+        </div>
+
+        <div class="cloud-box">
+          <h3>Quick Revision</h3>
+          <ul>
+            <li><strong>Three Pillars:</strong> Logs, Metrics, Traces.</li>
+            <li><strong>Workflow:</strong> Alert &rarr; Metric &rarr; Log &rarr; Trace.</li>
+            <li><strong>Goal:</strong> Find exact component failure instantly.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interview Questions: Logging, Monitoring & Observability</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <div
+      class="page-wrapper"
+      style="max-width: 900px; display: block; margin: 0 auto"
+    >
+      <main>
+        <div class="nav-buttons">
+          <a
+            href="../index.html"
+            class="nav-btn back"
+            aria-label="Back to Index"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="mind-map.html" class="nav-btn prev" aria-label="Previous">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="#" class="nav-btn next" aria-label="Next" style="visibility: hidden">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+
+        <div class="breadcrumb">
+          <a href="../index.html">Home</a> &gt; 15 - Logging, Monitoring and Observability &gt;
+          Interview Questions
+        </div>
+
+        <h1 style="text-align: center">Interview Questions</h1>
+        <p class="lead" style="text-align: center">
+          15 - Logging, Monitoring and Observability: Instrumentation, Tracing, and System Health.
+        </p>
+
+        <p class="muted" style="margin-bottom: 3rem; text-align: center">
+          These questions evaluate your ability to debug complex distributed systems, implement actionable alerts without fatigue, secure logging pipelines, and trace bottlenecks across microservice boundaries.
+        </p>
+
+        <div class="interview-box" style="margin-bottom: 2rem">
+          <h3 style="color: #111">1. Scenario-based Questions</h3>
+          <ul style="color: #333">
+            <li style="margin-bottom: 1rem">
+              You deploy a new microservice and suddenly your centralized logging system (e.g., ELK/Loki) crashes due to OOM. What could be causing this, and how would you fix it immediately?
+            </li>
+            <li style="margin-bottom: 1rem">
+              During a massive spike in traffic, your API goes down. You check the logs, but there are no error logs. The metrics show high CPU utilization. How do you investigate what happened?
+            </li>
+            <li style="margin-bottom: 1rem">
+              A user reports that their checkout failed, but you can't find any failure logs for their User ID. How do you trace the request across your distributed systems to figure out where it dropped?
+            </li>
+            <li style="margin-bottom: 1rem">
+              Your alert goes off in Slack stating that the database latency is over 5 seconds. You check the traces, and the DB queries themselves are fast. Where else in the transaction could the latency be coming from?
+            </li>
+            <li style="margin-bottom: 1rem">
+              You notice that your production logs contain plaintext credit card numbers and passwords because a developer logged the entire request payload. What is your incident response plan to remediate this?
+            </li>
+            <li style="margin-bottom: 1rem">
+              Your application is experiencing intermittent 502 Bad Gateway errors. You look at the logs for your backend service, but it shows 200 OK for all requests. How do you determine where the failure is happening?
+            </li>
+            <li style="margin-bottom: 1rem">
+              You are running out of disk space on your production server rapidly, and it turns out the application logs are consuming 50GB per day. How do you implement a robust log rotation and retention policy without losing critical debug info?
+            </li>
+            <li style="margin-bottom: 1rem">
+              You receive an alert for a high error rate (over 80%). You jump to the logs, but the logs are entirely unstructured text, and there are millions of lines. How would you systematically find the root cause, and how would you prevent this debugging nightmare in the future?
+            </li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem">
+          <h3 style="color: #111">2. "What if?" Questions</h3>
+          <ul style="color: #333">
+            <li style="margin-bottom: 1rem">
+              What if you only ever logged at the `ERROR` level, entirely skipping `INFO` and `DEBUG`? How would this impact your ability to run a reliable system?
+            </li>
+            <li style="margin-bottom: 1rem">
+              What if you decided to write all logs directly to a relational database synchronously during the API request lifecycle?
+            </li>
+            <li style="margin-bottom: 1rem">
+              What if you implement distributed tracing but forget to pass the trace context (Trace ID) to downstream asynchronous workers (like a background queue)?
+            </li>
+            <li style="margin-bottom: 1rem">
+              What if you set your monitoring metric resolution to 1 millisecond instead of the standard 10-15 seconds?
+            </li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem">
+          <h3 style="color: #111">3. Debugging Questions</h3>
+          <ul style="color: #333">
+            <li style="margin-bottom: 1rem">
+              A single request trace in Jaeger shows a gap of 2 seconds between the API Gateway receiving the request and your backend service starting to process it. What are the potential causes for this gap?
+            </li>
+            <li style="margin-bottom: 1rem">
+              Your application uses unstructured console logs in production. When you search for a specific `userId` in your log aggregator, it returns results for completely different users. Why might this happen, and how does structured logging solve it?
+            </li>
+            <li style="margin-bottom: 1rem">
+              You instrumented your application with OpenTelemetry, but your traces are broken—each microservice call creates a brand new trace instead of continuing the existing one. What fundamental tracing concept was implemented incorrectly?
+            </li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem">
+          <h3 style="color: #111">4. Design Questions</h3>
+          <ul style="color: #333">
+            <li style="margin-bottom: 1rem">
+              Design an observability stack for a high-throughput, low-latency financial trading platform where you cannot afford the performance overhead of logging every transaction, but you absolutely must have an audit trail for failed trades.
+            </li>
+            <li style="margin-bottom: 1rem">
+              Design an alerting strategy for a distributed e-commerce application. How do you ensure your engineers aren't overwhelmed by alert fatigue while still being notified of critical business failures?
+            </li>
+            <li style="margin-bottom: 1rem">
+              Design a logging structure for a multi-tenant SaaS application. What metadata fields are strictly required, and how do you ensure isolation so tenant A's data doesn't bleed into tenant B's log queries?
+            </li>
+          </ul>
+        </div>
+
+        <div class="interview-box" style="margin-bottom: 2rem">
+          <h3 style="color: #111">5. Architecture & Trade-off Questions</h3>
+          <ul style="color: #333">
+            <li style="margin-bottom: 1rem">
+              Why might a large engineering organization choose an open-source observability stack (Grafana, Prometheus, Jaeger) over a managed, proprietary solution (New Relic, Datadog)? Discuss the trade-offs regarding cost, maintenance, and scalability.
+            </li>
+            <li style="margin-bottom: 1rem">
+              What are the trade-offs between sampling 100% of your distributed traces versus implementing a probabilistic sampling strategy (e.g., 5%)? When would you choose one over the other?
+            </li>
+          </ul>
+        </div>
+
+        <div class="nav-buttons bottom">
+          <a href="mind-map.html" class="nav-btn prev" aria-label="Previous">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="#" class="nav-btn next" aria-label="Next" style="visibility: hidden">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

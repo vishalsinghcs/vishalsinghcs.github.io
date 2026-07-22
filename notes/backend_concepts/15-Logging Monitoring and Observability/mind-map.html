@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mind Map: Logging, Monitoring & Observability</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+      .mermaid {
+        display: flex;
+        justify-content: center;
+        background: #f8f9fa;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        overflow-x: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-wrapper" style="max-width: 1200px; display: block; margin: 0 auto;">
+      <main>
+        <div class="nav-buttons">
+          <a href="../index.html" class="nav-btn back" aria-label="Back to Index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </a>
+          <a href="05-Tools and Implementation.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="interview-questions.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+        
+        <div class="breadcrumb"><a href="../index.html">Home</a> &gt; 15 - Logging, Monitoring and Observability &gt; Mind Map</div>
+
+        <h1 style="text-align: center;">Observability Mind Map</h1>
+        <p class="lead" style="text-align: center; margin-bottom: 2rem;">
+          A visual cheat sheet covering the core concepts of system health and debugging.
+        </p>
+
+        <div class="mermaid">
+flowchart LR
+    Root((Observability))
+
+    Root --> Scope{1. Concept}
+    Scope --> S1[Internal State]
+    S1 --> S1a([Determined via outputs])
+    Scope --> S2[Distributed Systems]
+    S2 --> S2a([Global tracking needed])
+
+    Root --> Logging{2. Logging}
+    Logging --> L1[Record Events]
+    L1 --> L1a([Errors & operations])
+    Logging --> L2[Log Levels]
+    L2 --> L2a([Debug, Info, Error, Fatal])
+    Logging --> L3[Formats]
+    L3 --> L3a([JSON for production])
+
+    Root --> Monitoring{3. Monitoring}
+    Monitoring --> M1[Track Health]
+    M1 --> M1a([10-15s delay normal])
+    Monitoring --> M2[Metrics]
+    M2 --> M2a([CPU, Throughput])
+    Monitoring --> M3[Alerting]
+    M3 --> M3a([Trigger on trends])
+
+    Root --> Traces{4. Traces}
+    Traces --> T1[Transactions]
+    T1 --> T1a([Track across services])
+    Traces --> T2[Workflow]
+    T2 --> T2a([Alert > Log > Trace])
+
+    Root --> Impl{5. Implementation}
+    Impl --> I1[OSS Stack]
+    I1 --> I1a([Grafana, Prometheus, Loki])
+    Impl --> I2[Proprietary]
+    I2 --> I2a([New Relic, Datadog])
+    Impl --> I3[OpenTelemetry]
+    I3 --> I3a([Vendor-neutral standard])
+
+    classDef root fill:#475569,stroke:#1e293b,stroke-width:2px,color:#fff,font-weight:bold;
+    
+    classDef branch1 fill:#2563eb,stroke:#1d4ed8,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef node1  fill:#dbeafe,stroke:#93c5fd,stroke-width:1px,color:#1e3a8a;
+    classDef leaf1  fill:#bfdbfe,stroke:#60a5fa,stroke-width:1px,color:#1e3a8a;
+    
+    classDef branch2 fill:#16a34a,stroke:#15803d,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef node2  fill:#dcfce7,stroke:#86efac,stroke-width:1px,color:#14532d;
+    classDef leaf2  fill:#bbf7d0,stroke:#4ade80,stroke-width:1px,color:#14532d;
+    
+    classDef branch3 fill:#ea580c,stroke:#c2410c,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef node3  fill:#ffedd5,stroke:#fdba74,stroke-width:1px,color:#7c2d12;
+    classDef leaf3  fill:#fed7aa,stroke:#fb923c,stroke-width:1px,color:#7c2d12;
+    
+    classDef branch4 fill:#9333ea,stroke:#7e22ce,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef node4  fill:#f3e8ff,stroke:#d8b4fe,stroke-width:1px,color:#581c87;
+    classDef leaf4  fill:#e9d5ff,stroke:#c084fc,stroke-width:1px,color:#581c87;
+
+    classDef branch5 fill:#db2777,stroke:#be185d,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef node5  fill:#fce7f3,stroke:#f9a8d4,stroke-width:1px,color:#831843;
+    classDef leaf5  fill:#fbcfe8,stroke:#f472b6,stroke-width:1px,color:#831843;
+
+    class Root root;
+    class Scope branch1;
+    class S1,S2 node1;
+    class S1a,S2a leaf1;
+    class Logging branch2;
+    class L1,L2,L3 node2;
+    class L1a,L2a,L3a leaf2;
+    class Monitoring branch3;
+    class M1,M2,M3 node3;
+    class M1a,M2a,M3a leaf3;
+    class Traces branch4;
+    class T1,T2 node4;
+    class T1a,T2a leaf4;
+    class Impl branch5;
+    class I1,I2,I3 node5;
+    class I1a,I2a,I3a leaf5;
+        </div>
+
+        <div class="nav-buttons bottom">
+          <a href="05-Tools and Implementation.html" class="nav-btn prev" aria-label="Previous">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </a>
+          <a href="interview-questions.html" class="nav-btn next" aria-label="Next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </div>
+      </main>
+    </div>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+  </body>
+</html>

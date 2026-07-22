@@ -16,4 +16,4 @@ Requirements:
 - Keep the diagram readable; if a topic becomes too large, split it into multiple major branches instead of making one huge branch.
 - Optimize for quick revision in under 5 minutes.
 - The final mind map should act as a visual cheat sheet rather than complete notes.
-- I want you to make it in tree structure with proper visual spacing so that it doesn't feel messed and no nodes should overlap over each other.
+- I want you to make it in tree structure which is linear and branching towards right with proper visual spacing so that it doesn't feel messed and no nodes should overlap over each other.
